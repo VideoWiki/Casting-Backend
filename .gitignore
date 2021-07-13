@@ -1,0 +1,15 @@
+db.sqlite3
+venv/
+.idea/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+api/global_variable.py
+media/
+static/
+ffmpeg/
+
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
