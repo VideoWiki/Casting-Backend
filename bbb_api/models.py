@@ -83,7 +83,7 @@ class Meeting(models.Model):
             ('meetingID', self.meeting_id),
         ))
         hashed = self.api_call(query, call)
-        url = settings.BBB_API_URL + call + '?' + hashed
+        url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
         result = parse(urlopen(url).read())
         if result:
             return result.find('running').text
@@ -98,7 +98,7 @@ class Meeting(models.Model):
             ('password', password),
         ))
         hashed = cls.api_call(query, call)
-        url = settings.BBB_API_URL + call + '?' + hashed
+        url = settings.BBB_API_URL + 'api/' +call + '?' + hashed
         result = parse(urlopen(url).read())
         return result
 
@@ -133,7 +133,7 @@ class Meeting(models.Model):
             ('random', 'random'),
         ))
         hashed = cls.api_call(query, call)
-        url = settings.BBB_API_URL + call + '?' + hashed
+        url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
         result = parse(urlopen(url).read())
         if result:
             # Create dict of values for easy use in template
@@ -224,7 +224,7 @@ class Meeting(models.Model):
             ('meetingID', meeting_id),
         ))
         hashed = cls.api_call(query, call)
-        url = settings.BBB_API_URL + call + '?' + hashed
+        url = settings.BBB_API_URL + 'api/' +call + '?' + hashed
         result = parse(urlopen(url).read())
         if result:
             return result.find('running').text
