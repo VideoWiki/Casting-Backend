@@ -189,7 +189,6 @@ class Meeting(models.Model):
             ('lockSettingsLockedLayout', self.lock_layout),
             ('lockSettingsLockOnJoin', self.lock_on_join),
             ('lockSettingsHideUserList', self.hide_users),
-            ('allowDuplicateExtUserid', self.duplicate_user),
 
 
         ))

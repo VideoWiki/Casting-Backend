@@ -67,7 +67,6 @@ class create_event(APIView):
         meeting.lock_layout = request.data['lock_layout']
         meeting.lock_on_join = request.data['lock_on_join']
         meeting.hide_users = request.data['hide_users']
-        meeting.duplicate_user = request.data['duplicate_user']
         meeting.schedule_time = request.data['schedule_time']
 
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
