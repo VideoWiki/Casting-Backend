@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 import uuid
@@ -6,7 +5,6 @@ from .models import Meeting
 from rest_framework.response import Response
 from django_q.tasks import schedule
 from django_q.models import Schedule
-# Create your views here.
 from rest_framework_simplejwt.backends import TokenBackend
 from django.utils.crypto import get_random_string
 
@@ -70,19 +68,14 @@ class create_event(APIView):
         meeting.lock_on_join = request.data['lock_on_join']
         meeting.hide_users = request.data['hide_users']
         meeting.duplicate_user = request.data['duplicate_user']
-        print("before schedule time")
         meeting.schedule_time = request.data['schedule_time']
 
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
         user_id = user_info(token)
-        print((user_id))
         if user_id == -1:
             return Response({'status': True, 'message': 'User validation error'})
         meeting.user_id = user_id
         meeting.save()
-        print("time")
-        print(meeting.schedule_time,"time")
-        print(meeting.schedule_time[0:4], meeting.schedule_time[5:7], meeting.schedule_time[8:10], meeting.schedule_time[11:13], meeting.schedule_time[14:16])
         schedule('bbb_api.views.event_scheduler',
                  meeting.meeting_id,
                  repeats=-1,
@@ -115,7 +108,6 @@ class join_meeting(APIView):
         if meeting_type == 'public':
 
             meeting_user_id = meeting_obj.user_id
-            print('meeting user id', meeting_user_id)
             curr_user_id = -1
             try:
                 token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
@@ -123,16 +115,11 @@ class join_meeting(APIView):
             except:
                 pass
 
-
-            print('curr user ', curr_user_id)
-
             if curr_user_id == meeting_user_id:
-                print('user is mod')
                 result = Meeting.join_url(meeting_id, name, meeting_obj.moderator_password, avatar_url, guest, skip_check_audio,
                                           skip_check_audio_on_first_join)
                 return Response({'status': True, 'url': result})
             else:  # attendee
-                print('user is attendee')
                 result = Meeting.join_url(meeting_id, name, meeting_obj.attendee_password, avatar_url, guest, skip_check_audio,
                                           skip_check_audio_on_first_join)
                 return Response({'status': True, 'url': result})
@@ -191,7 +178,6 @@ def event_scheduler(meeting_id):
     return 'created'
 
 def user_info(token):
-        # token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
 
         data = {'token': token}
         try:
@@ -200,6 +186,5 @@ def user_info(token):
             return user_id
 
         except ValidationError as v:
-            print("validation error", v)
             return -1
 

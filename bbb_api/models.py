@@ -196,9 +196,7 @@ class Meeting(models.Model):
         ))
         hashed = self.api_call(query, call)
         url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
-        print(url,"a")
         result = parse(urlopen(url).read())
-        print(result,'res')
         return result
 
     @classmethod
@@ -212,17 +210,11 @@ class Meeting(models.Model):
             ('guest', guest),
             ('userdata-bbb_ask_for_feedback_on_logout=', 'False'),
             ('userdata-bbb_skip_check_audio=', skip_check_audio),
-            # ('userdata-bbb_skip_check_audio_on_first_join=', skip_check_audio_on_first_join),
             ('userdata-bbb_auto_join_audio=', True)
 
         ))
         hashed = cls.api_call(query, call)
         url = settings.BBB_API_URL + 'api/' +call + '?' + hashed
-        print(url)
-        # if url:
-        #     url_parse = parse(urlopen(url).read())
-        #     url_meet = url_parse.find('url').text
-        #     print(url_meet)
         return url
 
     @classmethod
