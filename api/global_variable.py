@@ -5,14 +5,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if development == False:
     Q_C = {'orm': 'default', 'sync': True}
     BASE_URL = 'http://localhost:8000/'
-    # DATABASE = {
-    #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #         'NAME': 'cricket',
-    #         'USER': 'postgres',
-    #         'PASSWORD': 'Sumit@123',
-    #         'HOST': 'localhost',
-    #         'PORT': '5432',
-    #     }
 
     DATABASE = {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -28,7 +20,7 @@ if development == False:
 
 else:
     Q_C = {
-        'name': 'videowiki',
+        'name': 'casting-backend',
         'workers': 2,
         'recycle': 500,
         'timeout': 1000000,
@@ -49,15 +41,8 @@ else:
             }
         }
     }
-    BASE_URL = "https://dev.api.videowiki.pt/"
-    # DATABASE = {
-    #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #         'NAME': 'cricket',
-    #         'USER': 'postgres',
-    #         'PASSWORD': 'Sumit@123',
-    #         'HOST': 'localhost',
-    #         'PORT': '5432',
-    #     }
+    BASE_URL = "https://api.cast.video.wiki"
+
     DATABASE = {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
