@@ -34,7 +34,7 @@ class create_event(APIView):
         else:
             meeting.attendee_password = attendee_password
 
-        mod_password = request.data['moderator_password'];
+        mod_password = request.data['moderator_password']
 
         if mod_password == '':
             random_password = generate_random_key()
