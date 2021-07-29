@@ -70,7 +70,7 @@ class create_event(APIView):
         meeting.schedule_time = request.data['schedule_time']
 
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
-        user_id = user_info(token)
+        user_id = user_info(str(token))
         if user_id == -1:
             return Response({'status': True, 'message': 'User validation error'})
         meeting.user_id = user_id
