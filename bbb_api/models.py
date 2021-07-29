@@ -68,7 +68,6 @@ class Meeting(models.Model):
     lock_layout = models.BooleanField(default=False)
     lock_on_join = models.BooleanField(default=True)
     hide_users = models.BooleanField(default=False)
-    duplicate_user = models.BooleanField(default=True)
     schedule_time = models.DateTimeField(blank=False, default=django.utils.timezone.now)
     @classmethod
     def api_call(self, query, call):
