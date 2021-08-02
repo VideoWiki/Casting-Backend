@@ -49,7 +49,6 @@ class create_event(APIView):
         meeting.logout_url = request.data['logout_url']
         meeting.mute_on_start = request.data['mute_on_start']
         meeting.banner_text = request.data['banner_text']
-        meeting.banner_color = request.data['banner_color']
         meeting.copyright = request.data['copyright']
         meeting.moderator_only_message = request.data['moderator_only_message']
         meeting.logo = request.data['logo']

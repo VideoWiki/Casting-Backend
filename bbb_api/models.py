@@ -43,7 +43,6 @@ class Meeting(models.Model):
     duration = models.IntegerField(default=60)
     mute_on_start = models.BooleanField(default=True)
     banner_text = models.CharField(max_length=300, blank=True)
-    banner_color = models.CharField(max_length=10, blank=True)
     copyright = models.CharField(max_length=100, blank=True)
     moderator_only_message = models.CharField(max_length=300, blank=True)
     logo = models.URLField(blank=True)
@@ -171,7 +170,6 @@ class Meeting(models.Model):
             ('logoutURL', self.logout_url),
             ('muteOnStart', self.mute_on_start),
             ('bannerText', self.banner_text),
-            ('bannerColor', self.banner_color),
             ('copyright', self.copyright),
             ('moderatorOnlyMessage', self.moderator_only_message),
             ('logo', self.logo),
