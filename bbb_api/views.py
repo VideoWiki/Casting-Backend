@@ -7,6 +7,7 @@ from django_q.tasks import schedule
 from django_q.models import Schedule
 from rest_framework_simplejwt.backends import TokenBackend
 from django.utils.crypto import get_random_string
+from .create_event_email_sender import event_registration_mail, time_subtractor
 
 
 def generate_random_key():
@@ -15,16 +16,23 @@ def generate_random_key():
 
     return secret_key
 
-def meeeting_id_generator():
+def private_meeting_id_generator():
     id = str(uuid.uuid4())
     return id
 
+def public_meeting_id_generator():
+    chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+    public_meeting_id = get_random_string(3, chars) + '-' + get_random_string(3, chars) + '-' + get_random_string(3, chars)
+    return public_meeting_id
 
 class create_event(APIView):
     def post(self, request):
         meeting = Meeting()
         meeting.name = request.data['name']
-        meeting.meeting_id = meeeting_id_generator()
+        meeting.private_meeting_id = private_meeting_id_generator()
+        meeting.public_meeting_id = public_meeting_id_generator()
+        print(meeting.public_meeting_id,'public meeting id')
+
         meeting.meeting_type = request.data['meeting_type']
         attendee_password = request.data['attendee_password']
 
@@ -75,7 +83,7 @@ class create_event(APIView):
         meeting.user_id = user_id
         meeting.save()
         schedule('bbb_api.views.event_scheduler',
-                 meeting.meeting_id,
+                 meeting.private_meeting_id,
                  repeats=-1,
                  schedule_type=Schedule.ONCE,
                  next_run= ('{}-{}-{} {}:{}:00'.format(
@@ -85,24 +93,42 @@ class create_event(APIView):
                      meeting.schedule_time[11:13],
                      meeting.schedule_time[14:16]
                  )))
+        user_email = user_info_email(token)
+        send_mail = event_registration_mail(user_email, meeting.name, meeting.schedule_time)
+        reminder_time = meeting.schedule_time
+        print(reminder_time, "reminder time")
+        subtracted_time = time_subtractor(reminder_time)
+        subtracted_time_final = str(subtracted_time)
+        print(subtracted_time_final,'qwerty')
+        schedule('bbb_api.create_event_email_sender.event_reminder_mail',
+                 user_email, meeting.name, meeting.schedule_time,
+                 schedule_type=Schedule.ONCE,
+                 next_run=('{}-{}-{} {}:{}:00'.format(
+                     reminder_time[0:4],
+                     reminder_time[5:7],
+                     reminder_time[8:10],
+                     subtracted_time_final[0:2],
+                     subtracted_time_final[3:5]
+                 )))
         msg = 'meeting scheduled successfully'
-        return Response({'status': True, 'meeting_id': meeting.meeting_id, 'message': msg})
+        return Response({'status': True, 'meeting_id': meeting.public_meeting_id, 'message': msg})
 
 
 
 class join_meeting(APIView):
     def post(self, request):
         name = request.data['name']
-        meeting_id = request.data['meeting_id']
+        public_meeting_id = request.data['public_meeting_id']
+
         password = request.data['password']
         room_type = request.data['room_type']
         avatar_url = request.data['avatar_url']
         guest = request.data['guest']
         skip_check_audio = request.data['skip_check_audio']
         skip_check_audio_on_first_join = request.data['skip_check_audio_on_first_join']
-        meeting_obj = Meeting.objects.get(meeting_id=meeting_id)
+        meeting_obj = Meeting.objects.get(public_meeting_id=public_meeting_id)
         meeting_type = meeting_obj.meeting_type
-
+        private_meeting_id = meeting_obj.private_meeting_id
         if meeting_type == 'public':
 
             meeting_user_id = meeting_obj.user_id
@@ -114,11 +140,11 @@ class join_meeting(APIView):
                 pass
 
             if curr_user_id == meeting_user_id:
-                result = Meeting.join_url(meeting_id, name, meeting_obj.moderator_password, avatar_url, guest, skip_check_audio,
+                result = Meeting.join_url(private_meeting_id, name, meeting_obj.moderator_password, avatar_url, guest, skip_check_audio,
                                           skip_check_audio_on_first_join)
                 return Response({'status': True, 'url': result})
             else:  # attendee
-                result = Meeting.join_url(meeting_id, name, meeting_obj.attendee_password, avatar_url, guest, skip_check_audio,
+                result = Meeting.join_url(private_meeting_id, name, meeting_obj.attendee_password, avatar_url, guest, skip_check_audio,
                                           skip_check_audio_on_first_join)
                 return Response({'status': True, 'url': result})
 
@@ -126,12 +152,12 @@ class join_meeting(APIView):
             attendee_password = meeting_obj.attendee_password
             mod_password = meeting_obj.moderator_password
             if password == attendee_password:
-                result = Meeting.join_url(meeting_id, name, password, avatar_url, guest, skip_check_audio,
+                result = Meeting.join_url(private_meeting_id, name, password, avatar_url, guest, skip_check_audio,
                                           skip_check_audio_on_first_join)
                 return Response({'status': True, 'url': result})
 
             elif password == mod_password:
-                result = Meeting.join_url(meeting_id, name, password, avatar_url, guest, skip_check_audio,
+                result = Meeting.join_url(private_meeting_id, name, password, avatar_url, guest, skip_check_audio,
                                           skip_check_audio_on_first_join)
                 return Response({'status': True, 'url': result})
 
@@ -158,8 +184,9 @@ class meetings(APIView):
 
 class is_meeting_running(APIView):
     def post(self, request):
-        meeting_id = request.data['meeting_id']
-        result = Meeting.is_meeting_running(meeting_id)
+        public_meeting_id = request.data['public_meeting_id']
+        private_meeting_id = Meeting.objects.get(public_meeting_id=public_meeting_id)
+        result = Meeting.is_meeting_running(private_meeting_id)
         return Response({'status': True, 'meeting_running': result})
 
 class meeting_info(APIView):
@@ -170,8 +197,8 @@ class meeting_info(APIView):
         return Response({'status': True, 'meeting_info': result})
 
 
-def event_scheduler(meeting_id):
-    meeting_object = Meeting.objects.get(meeting_id=meeting_id)
+def event_scheduler(private_meeting_id):
+    meeting_object = Meeting.objects.get(private_meeting_id=private_meeting_id)
     meeting_object.start()
     return 'created'
 
@@ -186,3 +213,13 @@ def user_info(token):
         except ValidationError as v:
             return -1
 
+
+def user_info_email(token):
+    data = {'token': token}
+    try:
+        valid_data = TokenBackend(algorithm='HS256').decode(token, verify=False)
+        email = valid_data['email']
+        return email
+
+    except ValidationError as v:
+        return -1
