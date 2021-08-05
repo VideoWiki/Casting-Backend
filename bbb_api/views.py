@@ -96,10 +96,11 @@ class create_event(APIView):
         user_email = user_info_email(token)
         send_mail = event_registration_mail(user_email, meeting.name, meeting.schedule_time)
         reminder_time = meeting.schedule_time
-        print(reminder_time, "reminder time")
         subtracted_time = time_subtractor(reminder_time)
         subtracted_time_final = str(subtracted_time)
-        print(subtracted_time_final,'qwerty')
+        a = subtracted_time_final.split(":")
+        if len(a[0]) == 1:
+            a[0] = "0"+a[0]
         schedule('bbb_api.create_event_email_sender.event_reminder_mail',
                  user_email, meeting.name, meeting.schedule_time,
                  schedule_type=Schedule.ONCE,
@@ -107,8 +108,8 @@ class create_event(APIView):
                      reminder_time[0:4],
                      reminder_time[5:7],
                      reminder_time[8:10],
-                     subtracted_time_final[0:2],
-                     subtracted_time_final[3:5]
+                     a[0],
+                     a[1]
                  )))
         msg = 'meeting scheduled successfully'
         return Response({'status': True, 'meeting_id': meeting.public_meeting_id, 'message': msg})
