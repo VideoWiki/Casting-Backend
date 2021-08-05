@@ -3,4 +3,4 @@ from .models import Meeting
 # Register your models here.
 @admin.register(Meeting)
 class MeetAdmin(admin.ModelAdmin):
-    list_display = ('id','name', 'meeting_id')
+    list_display = ('id','name')

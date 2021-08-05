@@ -27,7 +27,8 @@ def parse(response):
 class Meeting(models.Model):
     user_id = models.IntegerField(blank=False)
     name = models.CharField(max_length=100, unique=True)
-    meeting_id = models.CharField(max_length=100, unique=True)
+    private_meeting_id = models.CharField(max_length=100, unique=True)
+    public_meeting_id = models.CharField(max_length=100, unique=True)
     meeting_type = models.CharField(max_length=10)
     attendee_password = models.CharField(max_length=50)
     moderator_password = models.CharField(max_length=50)
@@ -53,7 +54,7 @@ class Meeting(models.Model):
     auto_start_recording = models.BooleanField(default=False)
     allow_start_stop_recording = models.BooleanField(default=True)
     breakout_room = models.BooleanField(default=True)
-    parent_meeting_id = models.CharField(max_length=50, default=meeting_id)
+    parent_meeting_id = models.CharField(max_length=50, default=private_meeting_id)
     free_join = models.BooleanField(default=False)
     breakout_room_enabled = models.BooleanField(default=True)
     breakout_room_private_chat_enabled = models.BooleanField(default=True)
@@ -78,21 +79,18 @@ class Meeting(models.Model):
     def is_running(self):
         call = 'isMeetingRunning'
         query = urlencode((
-            ('meetingID', self.meeting_id),
+            ('meetingID', self.private_meeting_id),
         ))
         hashed = self.api_call(query, call)
         url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
         result = parse(urlopen(url).read())
-        if result:
-            return result.find('running').text
-        else:
-            return 'error'
+        return result.find('running').text
 
     @classmethod
-    def end_meeting(cls, meeting_id, password):
+    def end_meeting(cls, private_meeting_id, password):
         call = 'end'
         query = urlencode((
-            ('meetingID', meeting_id),
+            ('meetingID', private_meeting_id),
             ('password', password),
         ))
         hashed = cls.api_call(query, call)
@@ -101,10 +99,10 @@ class Meeting(models.Model):
         return result
 
     @classmethod
-    def meeting_info(cls, meeting_id, password):
+    def meeting_info(cls, private_meeting_id, password):
         call = 'getMeetingInfo'
         query = urlencode((
-            ('meetingID', meeting_id),
+            ('meetingID', private_meeting_id),
             ('password', password),
         ))
         hashed = cls.api_call(query, call)
@@ -150,16 +148,16 @@ class Meeting(models.Model):
                         password)
                 })
             return d
-        else:
-            return 'error'
+        # else:
+        #     return 'error'
 
     def start(self):
         call = 'create'
         voicebridge = 70000 + random.randint(0, 9999)
-        print(self.meeting_id)
+        print(self.private_meeting_id)
         query = urlencode((
             ('name', self.name),
-            ('meetingID', self.meeting_id),
+            ('meetingID', self.private_meeting_id),
             ('attendeePW', self.attendee_password),
             ('moderatorPW', self.moderator_password),
             ('voiceBridge', voicebridge),
@@ -206,6 +204,7 @@ class Meeting(models.Model):
             ('guest', guest),
             ('userdata-bbb_ask_for_feedback_on_logout=', 'False'),
             ('userdata-bbb_skip_check_audio=', skip_check_audio),
+            # ('userdata-bbb_skip_check_audio_on_first_join=', skip_check_audio_on_first_join),
             ('userdata-bbb_auto_join_audio=', True)
 
         ))

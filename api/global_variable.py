@@ -54,3 +54,5 @@ else:
         'root': BASE_DIR,
     }
 
+    MANDRILL_API_KEY = "feczsxGoFPR7Kc1Wq841Vw"
+
