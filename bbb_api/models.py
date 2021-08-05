@@ -27,8 +27,8 @@ def parse(response):
 class Meeting(models.Model):
     user_id = models.IntegerField(blank=False)
     name = models.CharField(max_length=100, unique=True)
-    private_meeting_id = models.CharField(max_length=100, unique=True)
-    public_meeting_id = models.CharField(max_length=100, unique=True)
+    private_meeting_id = models.CharField(max_length=100, unique=True, blank=False)
+    public_meeting_id = models.CharField(max_length=100, unique=True, blank=False)
     meeting_type = models.CharField(max_length=10)
     attendee_password = models.CharField(max_length=50)
     moderator_password = models.CharField(max_length=50)
