@@ -10,6 +10,7 @@ from api import settings
 from django.core.validators import RegexValidator
 from django.core.validators import MaxValueValidator, MinValueValidator
 import django.utils.timezone
+import uuid
 # Create your models here.
 
 def parse(response):
@@ -27,8 +28,8 @@ def parse(response):
 class Meeting(models.Model):
     user_id = models.IntegerField(blank=False)
     name = models.CharField(max_length=100, unique=True)
-    private_meeting_id = models.CharField(max_length=100, unique=True, blank=False)
-    public_meeting_id = models.CharField(max_length=100, unique=True, blank=False)
+    private_meeting_id = models.CharField(max_length=100, unique=True, blank=False, default=uuid.uuid1)
+    public_meeting_id = models.CharField(max_length=100, unique=True, blank=False, default=uuid.uuid1)
     meeting_type = models.CharField(max_length=10)
     attendee_password = models.CharField(max_length=50)
     moderator_password = models.CharField(max_length=50)
