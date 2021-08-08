@@ -42,6 +42,8 @@ else:
         }
     }
     BASE_URL = "https://api.cast.video.wiki"
+    PRO_URL = "https://cast.video.wiki"
+
 
     DATABASE = {
             'ENGINE': 'django.db.backends.sqlite3',

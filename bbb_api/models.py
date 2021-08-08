@@ -10,7 +10,6 @@ from api import settings
 from django.core.validators import RegexValidator
 from django.core.validators import MaxValueValidator, MinValueValidator
 import django.utils.timezone
-import uuid
 # Create your models here.
 
 def parse(response):
@@ -28,15 +27,12 @@ def parse(response):
 class Meeting(models.Model):
     user_id = models.IntegerField(blank=False)
     name = models.CharField(max_length=100, unique=True)
-    private_meeting_id = models.CharField(max_length=100, unique=True, blank=False, default=uuid.uuid1)
-    public_meeting_id = models.CharField(max_length=100, unique=True, blank=False, default=uuid.uuid1)
+    private_meeting_id = models.CharField(max_length=100, unique=True)
+    public_meeting_id = models.CharField(max_length=100, unique=True)
     meeting_type = models.CharField(max_length=10)
     attendee_password = models.CharField(max_length=50)
     moderator_password = models.CharField(max_length=50)
     welcome = models.CharField(max_length=400, default='welcome')
-    dial_number = models.CharField(max_length=12, default=613 - 555 - 1234)
-    voice_bridge = models.CharField(max_length=5, validators=[RegexValidator(r'^\d{1,10}$')],
-                                    default=70000 + random.randint(0, 9999))
     max_participant = models.IntegerField(default=0, validators=[
         MaxValueValidator(1000),
         MinValueValidator(0)
@@ -56,10 +52,6 @@ class Meeting(models.Model):
     allow_start_stop_recording = models.BooleanField(default=True)
     breakout_room = models.BooleanField(default=True)
     parent_meeting_id = models.CharField(max_length=50, default=private_meeting_id)
-    free_join = models.BooleanField(default=False)
-    breakout_room_enabled = models.BooleanField(default=True)
-    breakout_room_private_chat_enabled = models.BooleanField(default=True)
-    breakout_room_record = models.BooleanField(default=False)
     disable_cam = models.BooleanField(default=False)
     disable_mic = models.BooleanField(default=False)
     disable_private_chat = models.BooleanField(default=False)
@@ -70,6 +62,8 @@ class Meeting(models.Model):
     lock_on_join = models.BooleanField(default=True)
     hide_users = models.BooleanField(default=False)
     schedule_time = models.DateTimeField(blank=False, default=django.utils.timezone.now)
+    moderators = models.EmailField(blank=True)
+
     @classmethod
     def api_call(self, query, call):
         prepared = "%s%s%s" % (call, query, settings.SALT)
@@ -202,11 +196,6 @@ class Meeting(models.Model):
             ('password', password),
             ('fullName', name),
             ('avatarURL', avatar_url),
-            ('guest', guest),
-            ('userdata-bbb_ask_for_feedback_on_logout=', 'False'),
-            ('userdata-bbb_skip_check_audio=', skip_check_audio),
-            # ('userdata-bbb_skip_check_audio_on_first_join=', skip_check_audio_on_first_join),
-            ('userdata-bbb_auto_join_audio=', True)
 
         ))
         hashed = cls.api_call(query, call)
@@ -214,18 +203,41 @@ class Meeting(models.Model):
         return url
 
     @classmethod
-    def is_meeting_running(cls, meeting_id):
-        call = 'isMeetingRunning'
+    def get_recordings(cls, private_meeting_id):
+        call = "getRecordings"
+        print(private_meeting_id)
         query = urlencode((
-            ('meetingID', meeting_id),
+            ('meetingID', private_meeting_id),
         ))
         hashed = cls.api_call(query, call)
-        url = settings.BBB_API_URL + 'api/' +call + '?' + hashed
+        url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
+        print(url)
         result = parse(urlopen(url).read())
-        if result:
-            return result.find('running').text
-        else:
-            return 'error'
+        d = []
+        r = result[1].findall('recording')
+        for m in r:
+            a = m.findall("playback")
+            for i in a:
+                a = i.findall("format")
+                for i in a:
+                    url = i.find("url").text
+                    print(url)
+                    return url
+        return None
+
+    @classmethod
+    def is_meeting_running(cls, private_meeting_id):
+        call = 'isMeetingRunning'
+        query = urlencode((
+            ('meetingID', private_meeting_id),
+        ))
+        hashed = cls.api_call(query, call)
+        url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
+        result = parse(urlopen(url).read())
+        return result.find('running').text
+
+
+
 
 
 # class map_meeting(models.Model):
