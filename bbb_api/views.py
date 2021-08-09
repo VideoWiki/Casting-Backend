@@ -34,7 +34,6 @@ class create_event(APIView):
         meeting.name = request.data['name']
         meeting.private_meeting_id = private_meeting_id_generator()
         meeting.public_meeting_id = public_meeting_id_generator()
-        print(meeting.public_meeting_id,'public meeting id')
 
         meeting.meeting_type = request.data['meeting_type']
         attendee_password = request.data['attendee_password']
@@ -53,15 +52,14 @@ class create_event(APIView):
         else:
             meeting.moderator_password = mod_password
 
-
+        meeting.max_participant = request.data['max_participant']
         meeting.welcome = request.data['welcome_text']
         meeting.record = request.data['record']
         meeting.duration = request.data['duration']
         meeting.logout_url = request.data['logout_url']
         meeting.mute_on_start = request.data['mute_on_start']
         meeting.banner_text = request.data['banner_text']
-        meeting.copyright = request.data['copyright']
-        meeting.moderator_only_message = request.data['moderator_only_message']
+        # meeting.moderator_only_message = request.data['moderator_only_message']
         meeting.logo = request.data['logo']
         meeting.end_when_no_moderator = request.data['end_when_no_moderator']
         meeting.guest_policy = request.data['guest_policy']
@@ -71,15 +69,14 @@ class create_event(APIView):
         meeting.allow_start_stop_recording = request.data['allow_start_stop_recording']
         meeting.disable_cam = request.data['disable_cam']
         meeting.disable_mic = request.data['disable_mic']
-        meeting.disable_note = request.data['disable_note']
-        meeting.disable_public_chat = request.data['disable_public_chat']
-        meeting.disable_private_chat = request.data['disable_private_chat']
+        meeting.disable_note = True
+        meeting.disable_public_chat = True
+        meeting.disable_private_chat = True
         meeting.lock_layout = request.data['lock_layout']
         meeting.lock_on_join = request.data['lock_on_join']
         meeting.hide_users = request.data['hide_users']
         meeting.schedule_time = request.data['schedule_time']
         meeting.moderators = request.data['moderator_emails']
-        print(meeting.moderators)
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
         user_id = user_info(str(token))
         if user_id == -1:
@@ -98,7 +95,6 @@ class create_event(APIView):
                      meeting.schedule_time[14:16]
                  )))
         m_list = meeting.moderators
-        print(m_list,";;;")
         for email in m_list:
             meeting_url = PRO_URL + "/join={}/".format(meeting.public_meeting_id)
             attendee_password = meeting.attendee_password
@@ -137,9 +133,6 @@ class join_meeting(APIView):
         password = request.data['password']
         room_type = request.data['room_type']
         avatar_url = request.data['avatar_url']
-        guest = request.data['guest']
-        skip_check_audio = request.data['skip_check_audio']
-        skip_check_audio_on_first_join = request.data['skip_check_audio_on_first_join']
         meeting_obj = Meeting.objects.get(public_meeting_id=public_meeting_id)
         meeting_type = meeting_obj.meeting_type
         private_meeting_id = meeting_obj.private_meeting_id
@@ -154,31 +147,26 @@ class join_meeting(APIView):
                 pass
 
             if curr_user_id == meeting_user_id:
-                result = Meeting.join_url(private_meeting_id, name, meeting_obj.moderator_password, avatar_url, guest, skip_check_audio,
-                                          skip_check_audio_on_first_join)
+                result = Meeting.join_url(private_meeting_id, name, meeting_obj.moderator_password, avatar_url)
                 return Response({'status': True, 'url': result})
 
             if password == meeting_obj.moderator_password:
-                result = Meeting.join_url(private_meeting_id, name, meeting_obj.moderator_password, avatar_url, guest, skip_check_audio,
-                                          skip_check_audio_on_first_join)
+                result = Meeting.join_url(private_meeting_id, name, meeting_obj.moderator_password, avatar_url)
                 return Response({'status': True, 'url': result})
 
             else:  # attendee
-                result = Meeting.join_url(private_meeting_id, name, meeting_obj.attendee_password, avatar_url, guest, skip_check_audio,
-                                          skip_check_audio_on_first_join)
+                result = Meeting.join_url(private_meeting_id, name, meeting_obj.attendee_password, avatar_url)
                 return Response({'status': True, 'url': result})
 
         else: # meeting is private. password will come
             attendee_password = meeting_obj.attendee_password
             mod_password = meeting_obj.moderator_password
             if password == attendee_password:
-                result = Meeting.join_url(private_meeting_id, name, password, avatar_url, guest, skip_check_audio,
-                                          skip_check_audio_on_first_join)
+                result = Meeting.join_url(private_meeting_id, name, password, avatar_url)
                 return Response({'status': True, 'url': result})
 
             elif password == mod_password:
-                result = Meeting.join_url(private_meeting_id, name, password, avatar_url, guest, skip_check_audio,
-                                          skip_check_audio_on_first_join)
+                result = Meeting.join_url(private_meeting_id, name, password, avatar_url)
                 return Response({'status': True, 'url': result})
 
             else:

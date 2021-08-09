@@ -41,8 +41,6 @@ class Meeting(models.Model):
     duration = models.IntegerField(default=60)
     mute_on_start = models.BooleanField(default=True)
     banner_text = models.CharField(max_length=300, blank=True)
-    copyright = models.CharField(max_length=100, blank=True)
-    moderator_only_message = models.CharField(max_length=300, blank=True)
     logo = models.URLField(blank=True)
     guest_policy = models.CharField(max_length=25, default='ALWAYS_ACCEPT')
     end_when_no_moderator = models.BooleanField(default=False)
@@ -50,13 +48,11 @@ class Meeting(models.Model):
     webcam_only_for_moderator = models.BooleanField(default=False)
     auto_start_recording = models.BooleanField(default=False)
     allow_start_stop_recording = models.BooleanField(default=True)
-    breakout_room = models.BooleanField(default=True)
-    parent_meeting_id = models.CharField(max_length=50, default=private_meeting_id)
     disable_cam = models.BooleanField(default=False)
     disable_mic = models.BooleanField(default=False)
-    disable_private_chat = models.BooleanField(default=False)
-    disable_public_chat = models.BooleanField(default=False)
-    disable_note = models.BooleanField(default=False)
+    disable_private_chat = models.BooleanField(default=True)
+    disable_public_chat = models.BooleanField(default=True)
+    disable_note = models.BooleanField(default=True)
     logout_url = models.URLField(blank=True)
     lock_layout = models.BooleanField(default=False)
     lock_on_join = models.BooleanField(default=True)
@@ -163,8 +159,6 @@ class Meeting(models.Model):
             ('logoutURL', self.logout_url),
             ('muteOnStart', self.mute_on_start),
             ('bannerText', self.banner_text),
-            ('copyright', self.copyright),
-            ('moderatorOnlyMessage', self.moderator_only_message),
             ('logo', self.logo),
             ('endWhenNoModerator', self.end_when_no_moderator),
             ('guestPolicy', self.guest_policy),
@@ -189,14 +183,13 @@ class Meeting(models.Model):
         return result
 
     @classmethod
-    def join_url(cls, meeting_id, name, password, avatar_url, guest, skip_check_audio, skip_check_audio_on_first_join):
+    def join_url(cls, meeting_id, name, password, avatar_url):
         call = 'join'
         query = urlencode((
             ('meetingID', meeting_id),
             ('password', password),
             ('fullName', name),
             ('avatarURL', avatar_url),
-
         ))
         hashed = cls.api_call(query, call)
         url = settings.BBB_API_URL + 'api/' +call + '?' + hashed
@@ -236,16 +229,6 @@ class Meeting(models.Model):
         result = parse(urlopen(url).read())
         return result.find('running').text
 
-
-
-
-
-# class map_meeting(models.Model):
-#     meeting_id = models.CharField(max_length=100)
-#     url_suffix = models.CharField(max_length=25)
-#
-#     def __str__(self):
-#         return self.title
 
 class event_scheduler(models.Model):
     task_id = models.CharField(max_length= 50)
