@@ -290,8 +290,9 @@ class meeting_type_checker(APIView):
             return Response({"status": True, "event_type": type})
 
 
-class my_events(APIView):
-    def post(self, request):
+
+class get_my_events(APIView):
+    def get(self, request):
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
         user_id = user_info(str(token))
         user_meetings = Meeting.objects.filter(user_id=user_id).all().order_by('-schedule_time')
@@ -329,8 +330,6 @@ class my_events(APIView):
         return Response({"status": True,
                          "my_events": my_event_list
                          })
-
-
 
 
 def event_scheduler(private_meeting_id):
