@@ -242,7 +242,7 @@ class user_recordings(APIView):
 
 
 class scheduled_meetings(APIView):
-    def post(self, request):
+    def get(self, request):
         meeting = Meeting
         scheduled_meetings = meeting.objects.filter().all().order_by('-schedule_time')
         a = list(scheduled_meetings)

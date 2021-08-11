@@ -15,7 +15,7 @@ urlpatterns = [
     path('event/meeting/info/', meeting_info.as_view()),
     path('event/recordings/', get_recordings.as_view()),
     path('event/user/recordings/', user_recordings.as_view()),
-    path('event/scheduled/meetings/', scheduled_meetings.as_view()),
+    path('event/scheduled/events/', scheduled_meetings.as_view()),
     path('event/meeting/type/', meeting_type_checker.as_view()),
     path('event/user/events/', get_my_events.as_view()),
 ]
