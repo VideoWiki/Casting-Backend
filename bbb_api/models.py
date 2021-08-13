@@ -29,7 +29,7 @@ class Meeting(models.Model):
     name = models.CharField(max_length=100, unique=True)
     private_meeting_id = models.CharField(max_length=100, unique=True)
     public_meeting_id = models.CharField(max_length=100, unique=True)
-    meeting_type = models.CharField(max_length=10)
+    meeting_type = models.CharField(max_length=10, default='private')
     attendee_password = models.CharField(max_length=50)
     moderator_password = models.CharField(max_length=50)
     welcome = models.CharField(max_length=400, default='welcome')

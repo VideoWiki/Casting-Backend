@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_q',
     'corsheaders',
+    'storages',
     'bbb_api',
+    'custom_background',
+    'library'
 ]
 
 MIDDLEWARE = [
@@ -141,3 +144,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 BBB_API_URL = 'https://dev.stream.videowiki.pt/bigbluebutton/'
 SALT = 'k4TmgRP474utcJnJoVwR8zzA4XLhWYTADmpLJE5KFos'
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+

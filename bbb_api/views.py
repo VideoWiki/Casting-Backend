@@ -31,11 +31,17 @@ def public_meeting_id_generator():
 class create_event(APIView):
     def post(self, request):
         meeting = Meeting()
-        meeting.name = request.data['name']
+        name = request.data['name']
+        if Meeting.objects.filter(name__iexact=name):
+            return Response({"status": False, "message": "event with this name is already present"})
+        else:
+            meeting.name = name
         meeting.private_meeting_id = private_meeting_id_generator()
         meeting.public_meeting_id = public_meeting_id_generator()
 
         meeting.meeting_type = request.data['meeting_type']
+        if meeting.meeting_type == "":
+            meeting.meeting_type = "private"
         attendee_password = request.data['attendee_password']
 
         if attendee_password == '':
