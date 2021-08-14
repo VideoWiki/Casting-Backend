@@ -7,7 +7,6 @@ from hashlib import sha1
 import xml.etree.ElementTree as ET
 import random
 from api import settings
-from django.core.validators import RegexValidator
 from django.core.validators import MaxValueValidator, MinValueValidator
 import django.utils.timezone
 # Create your models here.
@@ -29,7 +28,7 @@ class Meeting(models.Model):
     name = models.CharField(max_length=100, unique=True)
     private_meeting_id = models.CharField(max_length=100, unique=True)
     public_meeting_id = models.CharField(max_length=100, unique=True)
-    meeting_type = models.CharField(max_length=10, default='private')
+    meeting_type = models.CharField(max_length=10)
     attendee_password = models.CharField(max_length=50)
     moderator_password = models.CharField(max_length=50)
     welcome = models.CharField(max_length=400, default='welcome')
@@ -41,6 +40,8 @@ class Meeting(models.Model):
     duration = models.IntegerField(default=60)
     mute_on_start = models.BooleanField(default=True)
     banner_text = models.CharField(max_length=300, blank=True)
+    # banner_color = models.CharField(max_length=10, blank=True)
+    # moderator_only_message = models.CharField(max_length=300, blank=True)
     logo = models.URLField(blank=True)
     guest_policy = models.CharField(max_length=25, default='ALWAYS_ACCEPT')
     end_when_no_moderator = models.BooleanField(default=False)
@@ -50,15 +51,18 @@ class Meeting(models.Model):
     allow_start_stop_recording = models.BooleanField(default=True)
     disable_cam = models.BooleanField(default=False)
     disable_mic = models.BooleanField(default=False)
-    disable_private_chat = models.BooleanField(default=True)
-    disable_public_chat = models.BooleanField(default=True)
-    disable_note = models.BooleanField(default=True)
+    disable_private_chat = models.BooleanField(default=False)
+    disable_public_chat = models.BooleanField(default=False)
+    disable_note = models.BooleanField(default=False)
     logout_url = models.URLField(blank=True)
     lock_layout = models.BooleanField(default=False)
     lock_on_join = models.BooleanField(default=True)
     hide_users = models.BooleanField(default=False)
     schedule_time = models.DateTimeField(blank=False, default=django.utils.timezone.now)
     moderators = models.EmailField(blank=True)
+    primary_color = models.CharField(blank=True, max_length=20)
+    secondary_color = models.CharField(blank=True, max_length=20)
+    back_image = models.URLField(blank=True)
 
     @classmethod
     def api_call(self, query, call):
@@ -97,7 +101,7 @@ class Meeting(models.Model):
             ('password', password),
         ))
         hashed = cls.api_call(query, call)
-        url = settings.BBB_API_URL + call + '?' + hashed
+        url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
         r = parse(urlopen(url).read())
         if r:
             # Create dict of values for easy use in template
@@ -139,13 +143,11 @@ class Meeting(models.Model):
                         password)
                 })
             return d
-        # else:
-        #     return 'error'
+
 
     def start(self):
         call = 'create'
         voicebridge = 70000 + random.randint(0, 9999)
-        print(self.private_meeting_id)
         query = urlencode((
             ('name', self.name),
             ('meetingID', self.private_meeting_id),
@@ -174,6 +176,14 @@ class Meeting(models.Model):
             ('lockSettingsLockedLayout', self.lock_layout),
             ('lockSettingsLockOnJoin', self.lock_on_join),
             ('lockSettingsHideUserList', self.hide_users),
+            ('meta_bbb-origin', 'Greenlight'),
+            ('meta_bbb-origin-version', "v2"),
+            ('meta_bbb-origin-server-name', 'class.video.wiki'),
+            ('meta_primary-color', self.primary_color),
+            ('meta_secondary-color', self.secondary_color),
+            ('meta_back-image', self.back_image),
+            ('meta_gl-listed', False)
+
 
 
         ))
@@ -193,18 +203,17 @@ class Meeting(models.Model):
         ))
         hashed = cls.api_call(query, call)
         url = settings.BBB_API_URL + 'api/' +call + '?' + hashed
+        print(url)
         return url
 
     @classmethod
     def get_recordings(cls, private_meeting_id):
         call = "getRecordings"
-        print(private_meeting_id)
         query = urlencode((
             ('meetingID', private_meeting_id),
         ))
         hashed = cls.api_call(query, call)
         url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
-        print(url)
         result = parse(urlopen(url).read())
         d = []
         r = result[1].findall('recording')
@@ -214,7 +223,6 @@ class Meeting(models.Model):
                 a = i.findall("format")
                 for i in a:
                     url = i.find("url").text
-                    print(url)
                     return url
         return None
 
@@ -230,8 +238,14 @@ class Meeting(models.Model):
         return result.find('running').text
 
 
-class event_scheduler(models.Model):
-    task_id = models.CharField(max_length= 50)
-    meeting_id = models.CharField(max_length=25)
-    scheduled_time = models.DateTimeField(blank=False)
+
+
+
+
+
+
+
+
+
+
 
