@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from ..models import Meeting
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
-
+from rest_framework import status
 
 class meeting_type_checker(APIView):
     def get(self, request):
@@ -12,7 +12,8 @@ class meeting_type_checker(APIView):
             get_model = Meeting.objects.get(public_meeting_id=session_key)
             type = get_model.meeting_type
         except ObjectDoesNotExist:
-            return Response({"status": False, "message": "incorrect session key"})
+            return Response({"status": False, "message": "incorrect session key"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         if type == "public":
             return Response({"status": True, "event_type": type})

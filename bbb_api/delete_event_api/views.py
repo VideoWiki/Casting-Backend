@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from ..models import Meeting
 from rest_framework.response import Response
 from library.helper import user_info
-
+from rest_framework import status
 
 
 class delete_meeting(APIView):
@@ -22,4 +22,5 @@ class delete_meeting(APIView):
             Meeting.end_meeting(meeting_obj.private_meeting_id, password)
             return Response({'status': True, 'message': 'meeting deleted successfully'})
         else:
-            return Response({'status': False, 'message': 'Unable to end meeting'})
+            return Response({'status': False, 'message': 'Unable to end meeting'},
+                            status=status.HTTP_400_BAD_REQUEST)

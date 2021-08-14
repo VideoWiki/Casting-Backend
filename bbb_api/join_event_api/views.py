@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from ..models import Meeting
 from rest_framework.response import Response
 from library.helper import user_info
-
+from rest_framework import status
 
 class join_meeting(APIView):
     def post(self, request):
@@ -54,4 +54,5 @@ class join_meeting(APIView):
                 return Response({'status': True, 'url': result})
 
             else:
-                return Response({'status': False, 'url':None, 'message': 'User validation error'})
+                return Response({'status': False, 'url':None, 'message': 'User validation error'},
+                                status=status.HTTP_400_BAD_REQUEST)
