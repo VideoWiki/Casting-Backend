@@ -14,11 +14,11 @@ class get_my_events(APIView):
         scheduled_event_list = []
         events = Meeting.objects.filter(schedule_time__gt=django.utils.timezone.now())
         for i in events:
-            event = i.name
+            event = i.event_name
             scheduled_event_list.append(event)
         for i in events:
             private_meeting_id = i.private_meeting_id
-            name = i.name
+            name = i.event_name
             event = Meeting.is_meeting_running(private_meeting_id=private_meeting_id)
             scheduled_event_list.append(name)
         for event in user_meetings:
@@ -31,8 +31,10 @@ class get_my_events(APIView):
             event.is_running = Meeting.is_meeting_running(private_meeting_id)
             is_running = event.is_running
             public_meeting_id = event.public_meeting_id
+            event_id = event.id
+            short_description = event.short_description
 
-            if event.name in scheduled_event_list:
+            if event.event_name in scheduled_event_list:
                 event_expired = False
             else:
                 event_expired = True
@@ -42,7 +44,9 @@ class get_my_events(APIView):
                                   "event_time": event_time,
                                   "is_running": is_running,
                                   "event_expired": event_expired,
-                                  "public_meeting_id": public_meeting_id
+                                  "public_meeting_id": public_meeting_id,
+                                  "event_id": event_id,
+                                  "short_description": short_description
                          })
         return Response({"status": True,
                          "my_events": my_event_list

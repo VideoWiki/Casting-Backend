@@ -154,7 +154,7 @@ class Meeting(models.Model):
         call = 'create'
         voicebridge = 70000 + random.randint(0, 9999)
         query = urlencode((
-            ('name', self.name),
+            ('name', self.event_name),
             ('meetingID', self.private_meeting_id),
             ('attendeePW', self.attendee_password),
             ('moderatorPW', self.moderator_password),

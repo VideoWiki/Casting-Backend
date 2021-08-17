@@ -50,8 +50,15 @@ class join_meeting(APIView):
                 result = Meeting.join_url(private_meeting_id, name, meeting_obj.moderator_password, avatar_url)
                 return Response({'status': True, 'url': result})
             elif password == attendee_password:
-                result = Meeting.join_url(private_meeting_id, name, password, avatar_url)
-                return Response({'status': True, 'url': result})
+                try:
+                    status = Meeting.is_meeting_running(private_meeting_id)
+                    if status == "false":
+                        raise "the event you are trying to join has either ended or yet to begin"
+                    result = Meeting.join_url(private_meeting_id, name, password, avatar_url)
+                    return Response({'status': True, 'url': result})
+                except:
+                    message = "the event you are trying to join has either ended or yet to begin"
+                    return  Response({'status': False, 'message': message})
 
             else:
                 return Response({'status': False, 'url':None, 'message': 'User validation error'},

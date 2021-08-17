@@ -13,14 +13,14 @@ class meeting_info(APIView):
             # result = Meeting.meeting_info(private_meeting_id_object.private_meeting_id, private_meeting_id_object.moderator_password)
             event_name = event_object.event_name
             event_creator_name = event_object.event_creator_name
-            event_creator_email = event_object.event_creator_email
+            public_meeting_id = event_object.public_meeting_id
             description = event_object.short_description
             event_day = event_object.schedule_time.date()
             event_time = event_object.schedule_time.time()
 
             return Response({'status': True, 'meeting_info': {"event_name": event_name,
                                                               "event_creator_name": event_creator_name,
-                                                              "event_creator_email": event_creator_email,
+                                                              "public_meeting_id": public_meeting_id,
                                                               "description": description,
                                                               "date": event_day,
                                                               "time": event_time}})
