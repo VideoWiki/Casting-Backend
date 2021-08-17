@@ -23,7 +23,7 @@ class get_my_events(APIView):
             scheduled_event_list.append(name)
         for event in user_meetings:
             print(scheduled_event_list,"list")
-            event_name = event.name
+            event_name = event.event_name
             event_password = event.moderator_password
             event_date = event.schedule_time.date()
             event_time = event.schedule_time.time()
