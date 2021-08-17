@@ -44,4 +44,14 @@ def user_info_email(token):
     except ValidationError as v:
         return -1
 
+def user_info_name(token):
+    data = {'token': token}
+    try:
+        valid_data = TokenBackend(algorithm='HS256').decode(token, verify=False)
+        name = valid_data['username']
+        return name
+
+    except ValidationError as v:
+        return -1
+
 

@@ -8,16 +8,16 @@ from ..create_event_email_sender import event_registration_mail, \
 from api.global_variable import PRO_URL
 from library.helper import private_meeting_id_generator, \
     public_meeting_id_generator, user_info, \
-    user_info_email, generate_random_key
-
+    user_info_email, generate_random_key, \
+    user_info_name
 class create_event(APIView):
     def post(self, request):
         meeting = Meeting()
-        name = request.data['name']
-        if Meeting.objects.filter(name__iexact=name):
+        name = request.data['event_name']
+        if Meeting.objects.filter(event_name__iexact=name):
             return Response({"status": False, "message": "event with this name is already present"})
         else:
-            meeting.name = name
+            meeting.event_name = name
         meeting.private_meeting_id = private_meeting_id_generator()
         meeting.public_meeting_id = public_meeting_id_generator()
         print(meeting.public_meeting_id,'public meeting id')
@@ -43,6 +43,8 @@ class create_event(APIView):
 
         meeting.max_participant = request.data['max_participant']
         meeting.welcome = request.data['welcome_text']
+        meeting.description = request.data['description']
+        meeting.short_description = request.data['short_description']
         meeting.record = request.data['record']
         meeting.duration = request.data['duration']
         meeting.logout_url = request.data['logout_url']
@@ -69,12 +71,18 @@ class create_event(APIView):
         meeting.primary_color = request.data['primary_color']
         meeting.secondary_color = request.data['secondary_color']
         meeting.back_image = request.data['back_image']
+        meeting.event_tag = request.data['event_tag']
+
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
         user_id = user_info(str(token))
         if user_id == -1:
             return Response({'status': True, 'message': 'User validation error'})
         meeting.user_id = user_id
-        meeting.save()
+        # meeting.save()
+        user_name = user_info_name(token)
+        if user_id == -1:
+            return Response({'status': True, 'message': 'User validation error'})
+        meeting.event_creator_name = user_name
         schedule('bbb_api.create_event_api.views.event_scheduler',
                  meeting.private_meeting_id,
                  repeats=-1,
@@ -88,14 +96,15 @@ class create_event(APIView):
                  )))
         m_list = meeting.moderators
         print(type(m_list), len(m_list))
-        print(m_list,";;;")
         for email in m_list:
             meeting_url = PRO_URL + "/join={}/".format(meeting.public_meeting_id)
             attendee_password = meeting.attendee_password
-            send_mail = attendee_mail(email, meeting.name, meeting.schedule_time, meeting_url, attendee_password)
+            send_mail_invite = attendee_mail(email, meeting.event_name, meeting.schedule_time, meeting_url, attendee_password)
 
         user_email = user_info_email(token)
-        send_mail = event_registration_mail(user_email, meeting.name, meeting.schedule_time)
+        send_mail_registration = event_registration_mail(user_email, meeting.event_name, meeting.schedule_time)
+        meeting.event_creator_email = user_email
+        meeting.save()
         reminder_time = meeting.schedule_time
         subtracted_time = time_subtractor(reminder_time)
         subtracted_time_final = str(subtracted_time)
@@ -106,7 +115,7 @@ class create_event(APIView):
             subtracted_time_final[0:2] = "0"+str(subtracted_time_final[0:2])
             print(subtracted_time_final[0:2],"895")
         schedule('bbb_api.create_event_email_sender.event_reminder_mail',
-                 user_email, meeting.name, meeting.schedule_time,
+                 user_email, meeting.event_name, meeting.schedule_time,
                  schedule_type=Schedule.ONCE,
                  next_run=('{}-{}-{} {}:{}:00'.format(
                      reminder_time[0:4],
@@ -116,7 +125,7 @@ class create_event(APIView):
                      a[1]
                  )))
         msg = 'meeting scheduled successfully'
-        return Response({'status': True, 'meeting_id': meeting.public_meeting_id, 'message': msg})
+        return Response({'status': True, 'event_name': meeting.event_name,'meeting_id': meeting.public_meeting_id, 'event_tag': meeting.event_tag, 'cover_image': meeting.cover_image, 'message': msg})
 
 
 def event_scheduler(private_meeting_id):

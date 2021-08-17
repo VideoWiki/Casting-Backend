@@ -25,13 +25,17 @@ def parse(response):
 # todo add meeting type
 class Meeting(models.Model):
     user_id = models.IntegerField(blank=False)
-    name = models.CharField(max_length=100, unique=True)
+    event_name = models.CharField(max_length=100, unique=True)
+    event_creator_name = models.CharField(max_length=50)
+    event_creator_email = models.CharField(max_length=50)
     private_meeting_id = models.CharField(max_length=100, unique=True)
     public_meeting_id = models.CharField(max_length=100, unique=True)
     meeting_type = models.CharField(max_length=10)
     attendee_password = models.CharField(max_length=50)
     moderator_password = models.CharField(max_length=50)
     welcome = models.CharField(max_length=400, default='welcome')
+    description = models.CharField(max_length=300)
+    short_description = models.CharField(max_length=150)
     max_participant = models.IntegerField(default=0, validators=[
         MaxValueValidator(1000),
         MinValueValidator(0)
@@ -63,6 +67,7 @@ class Meeting(models.Model):
     primary_color = models.CharField(blank=True, max_length=20)
     secondary_color = models.CharField(blank=True, max_length=20)
     back_image = models.URLField(blank=True)
+    event_tag = models.CharField(blank=True, max_length=25)
 
     @classmethod
     def api_call(self, query, call):
