@@ -246,7 +246,7 @@ class Meeting(models.Model):
 
 
 class TemporaryFiles(models.Model):
-    created_at = models.DateTimeField(default=django.utils.timezone.datetime.utcnow(), null=True, blank=True)
+    created_at = models.DateTimeField(default=django.utils.timezone.now, null=True, blank=True)
     temp_file = models.FileField(upload_to="temporary/%Y/%m/%d")
 
 
