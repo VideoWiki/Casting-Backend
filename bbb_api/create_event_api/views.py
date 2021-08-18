@@ -83,10 +83,15 @@ class create_event(APIView):
         if user_id == -1:
             return Response({'status': True, 'message': 'User validation error'})
         meeting.event_creator_name = user_name
+        schedular_name = meeting.private_meeting_id
+        meeting.schedular_name = schedular_name
+        remind_schedular = meeting.public_meeting_id
+        meeting.schedular_name_reminder = remind_schedular
         schedule('bbb_api.create_event_api.views.event_scheduler',
                  meeting.private_meeting_id,
                  repeats=-1,
                  schedule_type=Schedule.ONCE,
+                 name=schedular_name,
                  next_run= ('{}-{}-{} {}:{}:00'.format(
                      meeting.schedule_time[0:4],
                      meeting.schedule_time[5:7],
@@ -117,6 +122,7 @@ class create_event(APIView):
         schedule('bbb_api.create_event_email_sender.event_reminder_mail',
                  user_email, meeting.event_name, meeting.schedule_time,
                  schedule_type=Schedule.ONCE,
+                 name=remind_schedular,
                  next_run=('{}-{}-{} {}:{}:00'.format(
                      reminder_time[0:4],
                      reminder_time[5:7],
@@ -125,7 +131,7 @@ class create_event(APIView):
                      a[1]
                  )))
         msg = 'meeting scheduled successfully'
-        return Response({'status': True, 'event_name': meeting.event_name,'meeting_id': meeting.public_meeting_id, 'event_tag': meeting.event_tag, 'cover_image': meeting.cover_image, 'message': msg})
+        return Response({'status': True, 'event_name': meeting.event_name,'meeting_id': meeting.public_meeting_id, 'event_tag': meeting.event_tag, 'message': msg})
 
 
 def event_scheduler(private_meeting_id):
