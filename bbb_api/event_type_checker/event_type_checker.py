@@ -12,10 +12,13 @@ class meeting_type_checker(APIView):
             get_model = Meeting.objects.get(public_meeting_id=session_key)
             type = get_model.meeting_type
         except ObjectDoesNotExist:
-            return Response({"status": False, "message": "incorrect session key"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": False,
+                             "message": "incorrect session key"},
+                              status=status.HTTP_400_BAD_REQUEST)
 
         if type == "public":
-            return Response({"status": True, "event_type": type})
+            return Response({"status": True,
+                             "event_type": type})
         else:
-            return Response({"status": True, "event_type": type})
+            return Response({"status": True,
+                             "event_type": type})

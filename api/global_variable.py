@@ -58,3 +58,9 @@ else:
 
     MANDRILL_API_KEY = "feczsxGoFPR7Kc1Wq841Vw"
 
+AWS_ACCESS_KEY_ID = 'AKIAVYPW7ED4TK47VUNP'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'video.wiki'
+AWS_LOCATION = 'us-east-2'
+AWS_BASE_URL = 'https://s3.us-east-2.amazonaws.com/video.wiki/media/cover_images/'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

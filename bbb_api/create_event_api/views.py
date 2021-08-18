@@ -18,7 +18,11 @@ class create_event(APIView):
         meeting = Meeting()
         name = request.data['event_name']
         if Meeting.objects.filter(event_name__iexact=name):
-            return Response({"status": False, "message": "event with this name is already present"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "status": False,
+                "message": "event with this name is already present"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         else:
             meeting.event_name = name
         meeting.private_meeting_id = private_meeting_id_generator()
@@ -75,16 +79,22 @@ class create_event(APIView):
         meeting.secondary_color = request.data['secondary_color']
         meeting.back_image = request.data['back_image']
         meeting.event_tag = request.data['event_tag']
-
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
         user_id = user_info(str(token))
         if user_id == -1:
-            return Response({'status': True, 'message': 'User validation error'})
+            return Response({
+                'status': True,
+                'message': 'User validation error'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         meeting.user_id = user_id
         # meeting.save()
         user_name = user_info_name(token)
         if user_id == -1:
-            return Response({'status': True, 'message': 'User validation error'})
+            return Response({
+                'status': True,
+                'message': 'User validation error'},
+                status=status.HTTP_400_BAD_REQUEST)
         meeting.event_creator_name = user_name
         schedular_name = meeting.private_meeting_id
         meeting.schedular_name = schedular_name
@@ -103,14 +113,21 @@ class create_event(APIView):
                      meeting.schedule_time[14:16]
                  )))
         m_list = meeting.moderators
-        print(type(m_list), len(m_list))
         for email in m_list:
             meeting_url = PRO_URL + "/join={}/".format(meeting.public_meeting_id)
             attendee_password = meeting.attendee_password
-            send_mail_invite = attendee_mail(email, meeting.event_name, meeting.schedule_time, meeting_url, attendee_password)
+            send_mail_invite = attendee_mail(email,
+                                             meeting.event_name,
+                                             meeting.schedule_time,
+                                             meeting_url,
+                                             attendee_password
+                                             )
 
         user_email = user_info_email(token)
-        send_mail_registration = event_registration_mail(user_email, meeting.event_name, meeting.schedule_time)
+        send_mail_registration = event_registration_mail(user_email,
+                                                         meeting.event_name,
+                                                         meeting.schedule_time
+                                                         )
         meeting.event_creator_email = user_email
         meeting.save()
         reminder_time = meeting.schedule_time
@@ -134,7 +151,11 @@ class create_event(APIView):
                      a[1]
                  )))
         msg = 'meeting scheduled successfully'
-        return Response({'status': True, 'event_name': meeting.event_name,'meeting_id': meeting.public_meeting_id, 'event_tag': meeting.event_tag, 'message': msg})
+        return Response({'status': True, 'event_name': meeting.event_name,
+                         'meeting_id': meeting.public_meeting_id,
+                         'event_tag': meeting.event_tag,
+                         'message': msg}
+                        )
 
 
 def event_scheduler(private_meeting_id):

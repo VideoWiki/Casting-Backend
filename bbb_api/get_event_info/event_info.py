@@ -25,5 +25,6 @@ class meeting_info(APIView):
                                                               "date": event_day,
                                                               "time": event_time}})
         except ObjectDoesNotExist:
-            return Response({"status": False, "message": "meeting id does not exist"},
+            return Response({"status": False,
+                             "message": "meeting id does not exist"},
                             status=status.HTTP_400_BAD_REQUEST)

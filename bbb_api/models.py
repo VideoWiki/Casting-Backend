@@ -245,7 +245,9 @@ class Meeting(models.Model):
         return result.find('running').text
 
 
-
+class TemporaryFiles(models.Model):
+    created_at = models.DateTimeField(default=django.utils.timezone.datetime.utcnow(), null=True, blank=True)
+    temp_file = models.FileField(upload_to="temporary/%Y/%m/%d")
 
 
 

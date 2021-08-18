@@ -147,5 +147,4 @@ BBB_API_URL = 'https://class.video.wiki/bigbluebutton/'
 
 # SALT = 'k4TmgRP474utcJnJoVwR8zzA4XLhWYTADmpLJE5KFos'
 SALT = 'Mxa621WXrztimJ9swYh38ZORHPyVBN0prSjlN6ftWI'
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 

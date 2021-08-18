@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from ..models import Meeting
 from rest_framework.response import Response
 from library.helper import user_info
-from rest_framework import status
+from rest_framework.status import HTTP_400_BAD_REQUEST
 
 class join_meeting(APIView):
     def post(self, request):
@@ -25,16 +25,33 @@ class join_meeting(APIView):
                 pass
 
             if curr_user_id == meeting_user_id:
-                result = Meeting.join_url(private_meeting_id, name, meeting_obj.moderator_password, avatar_url)
-                return Response({'status': True, 'url': result})
+                result = Meeting.join_url(private_meeting_id,
+                                          name,
+                                          meeting_obj.moderator_password,
+                                          avatar_url
+                                          )
+                return Response({'status': True,
+                                 'url': result}
+                                )
 
             if password == meeting_obj.moderator_password:
-                result = Meeting.join_url(private_meeting_id, name, meeting_obj.moderator_password, avatar_url)
-                return Response({'status': True, 'url': result})
+                result = Meeting.join_url(private_meeting_id,
+                                          name,
+                                          meeting_obj.moderator_password,
+                                          avatar_url
+                                          )
+                return Response({'status': True,
+                                 'url': result})
 
             else:  # attendee
-                result = Meeting.join_url(private_meeting_id, name, meeting_obj.attendee_password, avatar_url)
-                return Response({'status': True, 'url': result})
+                result = Meeting.join_url(private_meeting_id,
+                                          name,
+                                          meeting_obj.attendee_password,
+                                          avatar_url
+                                          )
+                return Response({'status': True,
+                                 'url': result}
+                                )
 
         else: # meeting is private. password will come
             attendee_password = meeting_obj.attendee_password
@@ -47,19 +64,35 @@ class join_meeting(APIView):
                 pass
 
             if curr_user_id == meeting_user_id:
-                result = Meeting.join_url(private_meeting_id, name, meeting_obj.moderator_password, avatar_url)
-                return Response({'status': True, 'url': result})
+                result = Meeting.join_url(private_meeting_id,
+                                          name,
+                                          meeting_obj.moderator_password,
+                                          avatar_url)
+                return Response({'status': True,
+                                 'url': result}
+                                )
             elif password == attendee_password:
                 try:
                     status = Meeting.is_meeting_running(private_meeting_id)
                     if status == "false":
                         raise "the event you are trying to join has either ended or yet to begin"
-                    result = Meeting.join_url(private_meeting_id, name, password, avatar_url)
-                    return Response({'status': True, 'url': result})
+                    result = Meeting.join_url(private_meeting_id,
+                                              name,
+                                              password,
+                                              avatar_url
+                                              )
+                    return Response({'status': True,
+                                     'url': result}
+                                    )
                 except:
                     message = "the event you are trying to join has either ended or yet to begin"
-                    return  Response({'status': False, 'message': message})
+                    return  Response({'status': False,
+                                      'message': message},
+                                     status=HTTP_400_BAD_REQUEST
+                                     )
 
             else:
-                return Response({'status': False, 'url':None, 'message': 'User validation error'},
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response({'status': False,
+                                 'url':None,
+                                 'message': 'User validation error'},
+                                status=HTTP_400_BAD_REQUEST)
