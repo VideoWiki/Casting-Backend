@@ -3,6 +3,7 @@ from ..models import Meeting
 from rest_framework.response import Response
 from library.helper import user_info
 from rest_framework import status
+from django_q.models import Schedule
 
 
 class delete_meeting(APIView):
@@ -18,7 +19,10 @@ class delete_meeting(APIView):
         except:
             pass
         if curr_user_id == meeting_user_id:
-            password = meeting_obj.moderator_password
+            get_scheduled_object = Schedule.objects.get(name__iexact=meeting_obj.private_meeting_id)
+            get_scheduled_object.delete()
+            get_remind_object = Schedule.objects.get(name__iexact=meeting_obj.public_meeting_id)
+            get_remind_object.delete()
             meeting_obj.delete()
             return Response({'status': True, 'message': 'meeting deleted successfully'})
         else:
