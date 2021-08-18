@@ -10,12 +10,15 @@ from library.helper import private_meeting_id_generator, \
     public_meeting_id_generator, user_info, \
     user_info_email, generate_random_key, \
     user_info_name
+from rest_framework import status
+
+
 class create_event(APIView):
     def post(self, request):
         meeting = Meeting()
         name = request.data['event_name']
         if Meeting.objects.filter(event_name__iexact=name):
-            return Response({"status": False, "message": "event with this name is already present"})
+            return Response({"status": False, "message": "event with this name is already present"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             meeting.event_name = name
         meeting.private_meeting_id = private_meeting_id_generator()
