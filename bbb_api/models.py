@@ -71,6 +71,7 @@ class Meeting(models.Model):
     schedular_name_meeting = models.CharField(max_length=50)
     schedular_name_reminder = models.CharField(max_length=50)
 
+
     @classmethod
     def api_call(self, query, call):
         prepared = "%s%s%s" % (call, query, settings.SALT)

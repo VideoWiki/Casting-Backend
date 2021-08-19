@@ -14,7 +14,8 @@ class meeting_info(APIView):
             event_name = event_object.event_name
             event_creator_name = event_object.event_creator_name
             public_meeting_id = event_object.public_meeting_id
-            description = event_object.short_description
+            description = event_object.description
+            short_description = event_object.short_description
             event_day = event_object.schedule_time.date()
             event_time = event_object.schedule_time.time()
 
@@ -22,6 +23,7 @@ class meeting_info(APIView):
                                                               "event_creator_name": event_creator_name,
                                                               "public_meeting_id": public_meeting_id,
                                                               "description": description,
+                                                              "short_description": short_description,
                                                               "date": event_day,
                                                               "time": event_time}})
         except ObjectDoesNotExist:
