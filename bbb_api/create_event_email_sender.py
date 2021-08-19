@@ -58,3 +58,11 @@ def time_subtractor(time):
     print(subtracted_time)
     return subtracted_time
 
+def time_subtractor2(time):
+    s1 = '00:00:30'
+    s2 = '{}:{}:00'.format(time[11:13], time[14:16])
+    format = '%H:%M:%S'
+    subtracted_time = datetime.strptime(s2, format) - datetime.strptime(s1, format)
+    print(subtracted_time)
+    return subtracted_time
+

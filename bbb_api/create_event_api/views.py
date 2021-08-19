@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from django_q.tasks import schedule
 from django_q.models import Schedule
 from ..create_event_email_sender import event_registration_mail, \
-    time_subtractor, attendee_mail
+    time_subtractor, attendee_mail, time_subtractor2
 from api.global_variable import PRO_URL
 from library.helper import private_meeting_id_generator, \
     public_meeting_id_generator, user_info, \
@@ -100,17 +100,27 @@ class create_event(APIView):
         meeting.schedular_name = schedular_name
         remind_schedular = meeting.public_meeting_id
         meeting.schedular_name_reminder = remind_schedular
+        print(meeting.schedule_time, "ppp")
+        s_time = meeting.schedule_time
+        subtracted_time_1 = time_subtractor2(s_time)
+        subtracted_time_final_1 = str(subtracted_time_1)
+        b = subtracted_time_final_1.split(":")
+        if len(b[0]) == 1:
+            b[0] = "0" + b[0]
+        if len(subtracted_time_final_1[0:2]) == 1:
+            subtracted_time_final_1[0:2] = "0" + str(subtracted_time_final_1[0:2])
         schedule('bbb_api.create_event_api.views.event_scheduler',
                  meeting.private_meeting_id,
                  repeats=-1,
                  schedule_type=Schedule.ONCE,
                  name=schedular_name,
-                 next_run= ('{}-{}-{} {}:{}:00'.format(
+                 next_run= ('{}-{}-{} {}:{}:{}'.format(
                      meeting.schedule_time[0:4],
                      meeting.schedule_time[5:7],
                      meeting.schedule_time[8:10],
-                     meeting.schedule_time[11:13],
-                     meeting.schedule_time[14:16]
+                     b[0],
+                     b[1],
+                     b[2]
                  )))
         m_list = meeting.moderators
         for email in m_list:
