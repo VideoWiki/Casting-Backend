@@ -11,6 +11,8 @@ class delete_meeting(APIView):
         public_meeting_id = request.data['public_meeting_id']
         # password = request.data['password']
         meeting_obj = Meeting.objects.get(public_meeting_id= public_meeting_id)
+        private_meeting_id = meeting_obj.private_meeting_id
+        public_meeting_id = meeting_obj.public_meeting_id
         meeting_user_id = meeting_obj.user_id
         curr_user_id = -1
         try:
@@ -21,9 +23,9 @@ class delete_meeting(APIView):
         if curr_user_id == meeting_user_id:
             meeting_obj.delete()
             try:
-                get_scheduled_object = Schedule.objects.get(name__iexact=meeting_obj.private_meeting_id)
+                get_scheduled_object = Schedule.objects.get(name__iexact=private_meeting_id)
                 get_scheduled_object.delete()
-                get_remind_object = Schedule.objects.get(name__iexact=meeting_obj.public_meeting_id)
+                get_remind_object = Schedule.objects.get(name__iexact=public_meeting_id)
                 get_remind_object.delete()
             except:
                 pass
