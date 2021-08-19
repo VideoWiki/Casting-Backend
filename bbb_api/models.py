@@ -117,8 +117,7 @@ class Meeting(models.Model):
                 'end_time': r.find('endTime').text,
                 'participant_count': r.find('participantCount').text,
                 'moderator_count': r.find('moderatorCount').text,
-                'moderator_pw': r.find('moderatorPW').text,
-                'attendee_pw': r.find('attendeePW').text,
+                'max_users': r.find('maxUsers').text
             }
             return d
         else:
@@ -138,13 +137,12 @@ class Meeting(models.Model):
             d = []
             r = result[1].findall('meeting')
             for m in r:
-                meeting_id = m.find('meetingID').text
+                name = m.find('meetingName').text
                 password = m.find('moderatorPW').text
+                meeting_id = m.find('meetingID').text
                 d.append({
-                    'name': meeting_id,
+                    'name': name,
                     'running': m.find('running').text,
-                    'moderator_pw': password,
-                    'attendee_pw': m.find('attendeePW').text,
                     'info': Meeting.meeting_info(
                         meeting_id,
                         password)
@@ -183,7 +181,6 @@ class Meeting(models.Model):
             ('lockSettingsLockedLayout', self.lock_layout),
             ('lockSettingsLockOnJoin', self.lock_on_join),
             ('lockSettingsHideUserList', self.hide_users),
-            ('meetingExpireIfNoUserJoinedInMinutes', 10),
             ('meta_bbb-origin', 'Greenlight'),
             ('meta_bbb-origin-version', "v2"),
             ('meta_bbb-origin-server-name', 'class.video.wiki'),
@@ -191,7 +188,6 @@ class Meeting(models.Model):
             ('meta_secondary-color', self.secondary_color),
             ('meta_back-image', self.back_image),
             ('meta_gl-listed', False)
-
 
 
 
@@ -250,8 +246,6 @@ class Meeting(models.Model):
 class TemporaryFiles(models.Model):
     created_at = models.DateTimeField(default=django.utils.timezone.now, null=True, blank=True)
     temp_file = models.FileField(upload_to="temporary/%Y/%m/%d")
-
-
 
 
 

@@ -7,7 +7,7 @@ def send_mail( to_email, name,subject, global_merge_vars, text):
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
             'from_email': 'puneet@boarded.in',
-            'from_name': 'Puneet Gupta',
+            'from_name': 'Video.Wiki',
             'global_merge_vars': global_merge_vars,
             # need reply mail
             'headers': {'Reply-To': 'support@videowiki.pt'},
