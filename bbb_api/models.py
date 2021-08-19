@@ -183,6 +183,7 @@ class Meeting(models.Model):
             ('lockSettingsLockedLayout', self.lock_layout),
             ('lockSettingsLockOnJoin', self.lock_on_join),
             ('lockSettingsHideUserList', self.hide_users),
+            ('meetingExpireIfNoUserJoinedInMinutes', 10),
             ('meta_bbb-origin', 'Greenlight'),
             ('meta_bbb-origin-version', "v2"),
             ('meta_bbb-origin-server-name', 'class.video.wiki'),
@@ -190,6 +191,7 @@ class Meeting(models.Model):
             ('meta_secondary-color', self.secondary_color),
             ('meta_back-image', self.back_image),
             ('meta_gl-listed', False)
+
 
 
 

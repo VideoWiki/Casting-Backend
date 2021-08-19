@@ -19,11 +19,14 @@ class delete_meeting(APIView):
         except:
             pass
         if curr_user_id == meeting_user_id:
-            get_scheduled_object = Schedule.objects.get(name__iexact=meeting_obj.private_meeting_id)
-            get_scheduled_object.delete()
-            get_remind_object = Schedule.objects.get(name__iexact=meeting_obj.public_meeting_id)
-            get_remind_object.delete()
             meeting_obj.delete()
+            try:
+                get_scheduled_object = Schedule.objects.get(name__iexact=meeting_obj.private_meeting_id)
+                get_scheduled_object.delete()
+                get_remind_object = Schedule.objects.get(name__iexact=meeting_obj.public_meeting_id)
+                get_remind_object.delete()
+            except:
+                pass
             return Response({'status': True, 'message': 'meeting deleted successfully'})
         else:
             return Response({'status': False, 'message': 'Unable to end meeting'},
