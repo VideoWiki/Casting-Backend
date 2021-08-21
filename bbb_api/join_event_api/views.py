@@ -5,6 +5,7 @@ from library.helper import user_info
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from datetime import datetime, timedelta
 
+
 class join_meeting(APIView):
     def post(self, request):
         name = request.data['name']
@@ -56,6 +57,7 @@ class join_meeting(APIView):
 
         else: # meeting is private. password will come
             attendee_password = meeting_obj.attendee_password
+            mod_password = meeting_obj.moderator_password
             meeting_user_id = meeting_obj.user_id
             curr_user_id = -1
             try:
@@ -84,6 +86,25 @@ class join_meeting(APIView):
                                     status=HTTP_400_BAD_REQUEST
                                     )
             elif password == attendee_password:
+                try:
+                    status = Meeting.is_meeting_running(private_meeting_id)
+                    if status == "false":
+                        raise "the event you are trying to join has either ended or yet to begin"
+                    result = Meeting.join_url(private_meeting_id,
+                                              name,
+                                              password,
+                                              avatar_url
+                                              )
+                    return Response({'status': True,
+                                     'url': result}
+                                    )
+                except:
+                    message = "the event you are trying to join has either ended or yet to begin"
+                    return  Response({'status': False,
+                                      'message': message},
+                                     status=HTTP_400_BAD_REQUEST
+                                     )
+            elif password == mod_password:
                 try:
                     status = Meeting.is_meeting_running(private_meeting_id)
                     if status == "false":
