@@ -3,6 +3,7 @@ from ..models import Meeting
 from rest_framework.response import Response
 from library.helper import user_info
 from rest_framework.status import HTTP_400_BAD_REQUEST
+from datetime import datetime, timedelta
 
 class join_meeting(APIView):
     def post(self, request):
@@ -62,15 +63,26 @@ class join_meeting(APIView):
                 curr_user_id = user_info(token)
             except:
                 pass
-
             if curr_user_id == meeting_user_id:
-                result = Meeting.join_url(private_meeting_id,
-                                          name,
-                                          meeting_obj.moderator_password,
-                                          avatar_url)
-                return Response({'status': True,
-                                 'url': result}
-                                )
+                sch_time = meeting_obj.schedule_time.time()
+                duration = meeting_obj.duration
+                reach_time = time_adder(sch_time, duration)
+                current = datetime.utcnow().time()
+                status = time_in_range(sch_time, reach_time, current)
+                if status == True:
+                    event_scheduler(private_meeting_id)
+                    result = Meeting.join_url(private_meeting_id,
+                                              name,
+                                              meeting_obj.moderator_password,
+                                              avatar_url)
+                    return Response({'status': True,
+                                     'url': result}
+                                    )
+                else:
+                    return Response({"status": False,
+                                     "message": "please check the scheduled cast start time"},
+                                    status=HTTP_400_BAD_REQUEST
+                                    )
             elif password == attendee_password:
                 try:
                     status = Meeting.is_meeting_running(private_meeting_id)
@@ -96,3 +108,22 @@ class join_meeting(APIView):
                                  'url':None,
                                  'message': 'User validation error'},
                                 status=HTTP_400_BAD_REQUEST)
+
+def event_scheduler(private_meeting_id):
+    meeting_object = Meeting.objects.get(private_meeting_id=private_meeting_id)
+    meeting_object.start()
+    return 'created'
+
+
+def time_adder(b, duration):
+    s2 = '{}:{}:{}'.format(b.hour, b.minute, b.second)
+    format = '%H:%M:%S'
+    durarion_add = datetime.strptime(s2, format)  + timedelta(minutes=duration)
+    duration_added = durarion_add.time()
+    added_time = datetime.strptime(str(duration_added), format)  + timedelta(minutes=30)
+    return added_time.time()
+
+
+def time_in_range(start, end, current):
+
+    return start <= current <= end

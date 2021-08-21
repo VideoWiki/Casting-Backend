@@ -23,8 +23,6 @@ class delete_meeting(APIView):
         if curr_user_id == meeting_user_id:
             meeting_obj.delete()
             try:
-                get_scheduled_object = Schedule.objects.get(name__iexact=private_meeting_id)
-                get_scheduled_object.delete()
                 get_remind_object = Schedule.objects.get(name__iexact=public_meeting_id)
                 get_remind_object.delete()
             except:

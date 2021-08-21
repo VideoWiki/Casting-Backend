@@ -34,7 +34,7 @@ def event_reminder_mail(email, event_name, time):
     status = status_res
     return status
 
-def attendee_mail(email, event_name, time, meeting_url, attendee_password):
+def attendee_mail(invitee_name, email, event_name, time, meeting_url, attendee_password):
     name = email.split('@')[0]
     global_merge_vars = [
         {
@@ -43,16 +43,16 @@ def attendee_mail(email, event_name, time, meeting_url, attendee_password):
         }
 
     ]
-    subject = "Reminder email for your event"
-    text = "Your event -'{}' will start at {} UTC. Your event url is {} and event password is -'{}'. " \
-           "Please do not miss it.".format(event_name, time, meeting_url, attendee_password)
+    subject = "Invitation"
+    text = "Dear {}, You have been invited to join a cast -'{}' will start at {} UTC. Your cast url is {} and password is -'{}'. " \
+           "Please do not miss it.".format(invitee_name, event_name, time, meeting_url, attendee_password)
     status_res = send_mail(email, name, subject, global_merge_vars, text)
     status = status_res
     return status
 
 def time_subtractor(time):
     s1 = '00:10:00'
-    s2 = '{}:{}:00'.format(time[11:13], time[14:])
+    s2 = '{}:{}:00'.format(time[11:13], time[14:16])
     format = '%H:%M:%S'
     subtracted_time = datetime.strptime(s2, format) - datetime.strptime(s1, format)
     print(subtracted_time)

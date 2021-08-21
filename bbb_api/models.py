@@ -68,8 +68,8 @@ class Meeting(models.Model):
     secondary_color = models.CharField(blank=True, max_length=20)
     back_image = models.URLField(blank=True)
     event_tag = models.CharField(blank=True, max_length=25)
-    schedular_name_meeting = models.CharField(max_length=50)
     schedular_name_reminder = models.CharField(max_length=50)
+    cover_image = models.URLField(blank=True)
 
 
     @classmethod

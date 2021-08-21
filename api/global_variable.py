@@ -42,7 +42,7 @@ else:
         }
     }
     BASE_URL = "https://api.cast.video.wiki"
-    PRO_URL = "https://cast.video.wiki"
+    CLIENT_DOMAIN_URL = "https://dev.stream.videowiki.pt"
 
 
     DATABASE = {

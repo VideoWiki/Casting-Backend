@@ -10,6 +10,8 @@ from .all_scheduled_events.scheduled_events import scheduled_meetings
 from .event_type_checker.event_type_checker import meeting_type_checker
 from .my_events_api.views import get_my_events
 from bbb_api.create_event_api.upload_media import FileUploadView
+from .event_recording.event_recording import event_recording
+
 
 urlpatterns = [
     path('event/meeting/create/', create_event.as_view()),
@@ -24,6 +26,7 @@ urlpatterns = [
     path('event/meeting/type/', meeting_type_checker.as_view()),
     path('event/user/events/', get_my_events.as_view()),
     path('event/user/upload/media/', FileUploadView.as_view()),
+    path('event/meeting/recording/', event_recording.as_view())
 ]
 
 

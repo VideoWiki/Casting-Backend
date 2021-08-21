@@ -5,12 +5,13 @@ from django_q.tasks import schedule
 from django_q.models import Schedule
 from ..create_event_email_sender import event_registration_mail, \
     time_subtractor, attendee_mail, time_subtractor2
-from api.global_variable import PRO_URL
+from api.global_variable import CLIENT_DOMAIN_URL
 from library.helper import private_meeting_id_generator, \
     public_meeting_id_generator, user_info, \
     user_info_email, generate_random_key, \
     user_info_name
 from rest_framework import status
+from .cover_image import cover_image_uploader
 
 
 class create_event(APIView):
@@ -27,8 +28,6 @@ class create_event(APIView):
             meeting.event_name = name
         meeting.private_meeting_id = private_meeting_id_generator()
         meeting.public_meeting_id = public_meeting_id_generator()
-        print(meeting.public_meeting_id,'public meeting id')
-
         meeting.meeting_type = request.data['meeting_type']
         if meeting.meeting_type == "":
             meeting.meeting_type = "private"
@@ -52,33 +51,94 @@ class create_event(APIView):
         meeting.welcome = request.data['welcome_text']
         meeting.description = request.data['description']
         meeting.short_description = request.data['short_description']
-        meeting.record = request.data['record']
-        meeting.duration = request.data['duration']
-        meeting.logout_url = request.data['logout_url']
-        meeting.mute_on_start = request.data['mute_on_start']
-        meeting.banner_text = request.data['banner_text']
+        record = request.data['record']
+        if record == "":
+            record = False
+            meeting.record = record
+        duration = request.data['duration']
+        if duration == "":
+            duration = 0
+            meeting.duration = duration
+        logout_url = request.data['logout_url']
+        if logout_url == "":
+            logout_url = "https://video.wiki/"
+            meeting.logout_url = logout_url
+        mute_on_start = request.data['mute_on_start']
+        if mute_on_start == "":
+            mute_on_start = False
+            meeting.mute_on_start = mute_on_start
+        banner_text = request.data['banner_text']
+        if banner_text == "":
+            banner_text = "Welcome to the Cast"
+            meeting.banner_text = banner_text
         # meeting.banner_color = request.data['banner_color']
         meeting.logo = request.data['logo']
-        meeting.end_when_no_moderator = request.data['end_when_no_moderator']
-        meeting.guest_policy = request.data['guest_policy']
-        meeting.allow_moderator_to_unmute_user = request.data['allow_moderator_to_unmute_user']
-        meeting.webcam_only_for_moderator = request.data['webcam_only_for_moderator']
-        meeting.auto_start_recording = request.data['auto_start_recording']
-        meeting.allow_start_stop_recording = request.data['allow_start_stop_recording']
-        meeting.disable_cam = request.data['disable_cam']
-        meeting.disable_mic = request.data['disable_mic']
+        end_when_no_moderator = request.data['end_when_no_moderator']
+        if end_when_no_moderator =="":
+            end_when_no_moderator = True
+            meeting.end_when_no_moderator = end_when_no_moderator
+        guest_policy = request.data['guest_policy']
+        if guest_policy == "":
+            guest_policy = "ALWAYS_ACCEPT"
+            meeting.guest_policy = guest_policy
+        allow_moderator_to_unmute_user = request.data['allow_moderator_to_unmute_user']
+        if allow_moderator_to_unmute_user == "":
+            allow_moderator_to_unmute_user = True
+            meeting.allow_moderator_to_unmute_user = allow_moderator_to_unmute_user
+        webcam_only_for_moderator = request.data['webcam_only_for_moderator']
+        if webcam_only_for_moderator == "":
+            webcam_only_for_moderator = True
+            meeting.webcam_only_for_moderator = webcam_only_for_moderator
+        auto_start_recording = request.data['auto_start_recording']
+        if auto_start_recording == "":
+            auto_start_recording = True
+            meeting.auto_start_recording = auto_start_recording
+        allow_start_stop_recording = request.data['allow_start_stop_recording']
+        if allow_start_stop_recording == "":
+            allow_start_stop_recording =  True
+            meeting.allow_start_stop_recording = allow_start_stop_recording
+        disable_cam = request.data['disable_cam']
+        if disable_cam == "":
+            disable_cam = True
+            meeting.disable_cam = disable_cam
+        disable_mic = request.data['disable_mic']
+        if disable_mic == "":
+            disable_mic = True
+            meeting.disable_mic = disable_mic
         meeting.disable_note = True
         meeting.disable_public_chat = True
         meeting.disable_private_chat = True
-        meeting.lock_layout = request.data['lock_layout']
-        meeting.lock_on_join = request.data['lock_on_join']
-        meeting.hide_users = request.data['hide_users']
-        meeting.schedule_time = request.data['schedule_time']
-        meeting.moderators = request.data['moderator_emails']
+        lock_layout = request.data['lock_layout']
+        if lock_layout == "":
+            lock_layout = True
+            meeting.lock_layout = lock_layout
+        lock_on_join = request.data['lock_on_join']
+        if lock_on_join == "":
+            lock_on_join = True
+            meeting.lock_on_join = lock_on_join
+        hide_users = request.data['hide_users']
+        if hide_users == "":
+            hide_users = True
+            meeting.hide_users = hide_users
+        schedule_time = request.data['schedule_time']
+        if schedule_time == "":
+            return Response({"status": False,
+                             "message": "no time provided"},
+                            status=status.HTTP_400_BAD_REQUEST
+                            )
+        meeting.schedule_time = schedule_time
+        meeting.moderators = request.data['invitee_details']
         meeting.primary_color = request.data['primary_color']
         meeting.secondary_color = request.data['secondary_color']
         meeting.back_image = request.data['back_image']
         meeting.event_tag = request.data['event_tag']
+        cover_image = request.data["cover_image"]
+        if cover_image == "":
+            return Response({"status": False,
+                             "message": "please upload a cover image"},
+                            status=status.HTTP_400_BAD_REQUEST)
+        cover_image_status = cover_image_uploader(cover_image)
+        meeting.cover_image = cover_image_status
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
         user_id = user_info(str(token))
         if user_id == -1:
@@ -96,42 +156,31 @@ class create_event(APIView):
                 'message': 'User validation error'},
                 status=status.HTTP_400_BAD_REQUEST)
         meeting.event_creator_name = user_name
-        schedular_name = meeting.private_meeting_id
-        meeting.schedular_name = schedular_name
         remind_schedular = meeting.public_meeting_id
         meeting.schedular_name_reminder = remind_schedular
-        print(meeting.schedule_time, "ppp")
-        s_time = meeting.schedule_time
-        subtracted_time_1 = time_subtractor2(s_time)
-        subtracted_time_final_1 = str(subtracted_time_1)
-        b = subtracted_time_final_1.split(":")
-        if len(b[0]) == 1:
-            b[0] = "0" + b[0]
-        if len(subtracted_time_final_1[0:2]) == 1:
-            subtracted_time_final_1[0:2] = "0" + str(subtracted_time_final_1[0:2])
-        schedule('bbb_api.create_event_api.views.event_scheduler',
-                 meeting.private_meeting_id,
-                 repeats=-1,
-                 schedule_type=Schedule.ONCE,
-                 name=schedular_name,
-                 next_run= ('{}-{}-{} {}:{}:{}'.format(
-                     meeting.schedule_time[0:4],
-                     meeting.schedule_time[5:7],
-                     meeting.schedule_time[8:10],
-                     b[0],
-                     b[1],
-                     b[2]
-                 )))
         m_list = meeting.moderators
-        for email in m_list:
-            meeting_url = PRO_URL + "/join={}/".format(meeting.public_meeting_id)
-            attendee_password = meeting.attendee_password
-            send_mail_invite = attendee_mail(email,
-                                             meeting.event_name,
-                                             meeting.schedule_time,
-                                             meeting_url,
-                                             attendee_password
-                                             )
+        if len(m_list) != 0:
+            for item in m_list:
+                meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(meeting.public_meeting_id)
+                a_password = meeting.attendee_password
+                m_password = meeting.moderator_password
+                if item["type"] == "speaker":
+                    send_mail_invite = attendee_mail(item["name"],
+                                                     item["email"],
+                                                     meeting.event_name,
+                                                     meeting.schedule_time,
+                                                     meeting_url,
+                                                     m_password
+                                                     )
+
+                else:
+                    send_mail_invite = attendee_mail(item["name"],
+                                                     item["email"],
+                                                     meeting.event_name,
+                                                     meeting.schedule_time,
+                                                     meeting_url,
+                                                     a_password
+                                                     )
 
         user_email = user_info_email(token)
         send_mail_registration = event_registration_mail(user_email,
@@ -145,10 +194,9 @@ class create_event(APIView):
         subtracted_time_final = str(subtracted_time)
         a = subtracted_time_final.split(":")
         if len(a[0]) == 1:
-            a[0] = "0"+a[0]
+            a[0] = "0" + a[0]
         if len(subtracted_time_final[0:2]) == 1:
-            subtracted_time_final[0:2] = "0"+str(subtracted_time_final[0:2])
-            print(subtracted_time_final[0:2],"895")
+            subtracted_time_final[0:2] = "0" + str(subtracted_time_final[0:2])
         schedule('bbb_api.create_event_email_sender.event_reminder_mail',
                  user_email, meeting.event_name, meeting.schedule_time,
                  schedule_type=Schedule.ONCE,
@@ -163,12 +211,9 @@ class create_event(APIView):
         msg = 'meeting scheduled successfully'
         return Response({'status': True, 'event_name': meeting.event_name,
                          'meeting_id': meeting.public_meeting_id,
-                         'event_tag': meeting.event_tag,
+                         'tag': meeting.event_tag,
+                         'cover_image': meeting.cover_image,
                          'message': msg}
                         )
 
 
-def event_scheduler(private_meeting_id):
-    meeting_object = Meeting.objects.get(private_meeting_id=private_meeting_id)
-    meeting_object.start()
-    return 'created'
