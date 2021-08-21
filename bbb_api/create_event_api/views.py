@@ -134,9 +134,7 @@ class create_event(APIView):
         meeting.event_tag = request.data['event_tag']
         cover_image = request.data["cover_image"]
         if cover_image == "":
-            return Response({"status": False,
-                             "message": "please upload a cover image"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            cover_image = "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/PhotobyFranciscoGhisletti.jpg"
         cover_image_status = cover_image_uploader(cover_image)
         meeting.cover_image = cover_image_status
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
