@@ -33,7 +33,7 @@ class get_my_events(APIView):
             public_meeting_id = event.public_meeting_id
             event_id = event.id
             short_description = event.short_description
-
+            cover_image = event.cover_image
             if event.event_name in scheduled_event_list:
                 event_expired = False
             else:
@@ -46,7 +46,8 @@ class get_my_events(APIView):
                                   "event_expired": event_expired,
                                   "public_meeting_id": public_meeting_id,
                                   "event_id": event_id,
-                                  "short_description": short_description
+                                  "short_description": short_description,
+                                  "cover_image": cover_image
                          })
         return Response({"status": True,
                          "my_events": my_event_list
