@@ -44,8 +44,6 @@ class Meeting(models.Model):
     duration = models.IntegerField(default=60)
     mute_on_start = models.BooleanField(default=True)
     banner_text = models.CharField(max_length=300, blank=True)
-    # banner_color = models.CharField(max_length=10, blank=True)
-    # moderator_only_message = models.CharField(max_length=300, blank=True)
     logo = models.URLField(blank=True)
     guest_policy = models.CharField(max_length=25, default='ALWAYS_ACCEPT')
     end_when_no_moderator = models.BooleanField(default=False)
