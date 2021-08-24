@@ -19,7 +19,8 @@ class background_pictures(models.Model):
     )
     category = models.CharField(max_length=100, choices=picture_categories)
     created = models.DateTimeField(auto_now_add=True)
-    picture_url = models.URLField()
+    high_quality_url = models.URLField()
+    low_quality_url = models.URLField()
     credit = models.CharField(max_length=50, blank=True)
     class Meta:
         managed = True

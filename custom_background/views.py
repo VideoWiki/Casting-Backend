@@ -15,7 +15,9 @@ class photo_api(APIView):
                     "id": i.id,
                     "title": i.name,
                     "category": i.category,
-                    "url": i.picture_url
+                    "high_quality_url": i.high_quality_url,
+                    "low_quality_url": i.low_quality_url,
+                    "credit": i.credit
                 }
                 bg_images_list.append(picture_details)
             return Response({"message": "successful", 'status': True, "data": bg_images_list})
@@ -28,7 +30,9 @@ class photo_api(APIView):
                     "id": i.id,
                     "title": i.name,
                     "category": i.category,
-                    "url": i.picture_url
+                    "high_quality_url": i.high_quality_url,
+                    "low_quality_url": i.low_quality_url,
+                    "credit": i.credit
                 }
                 bg_images_list.append(picture_details)
             return Response({"message": "successful", 'status': True, "data": bg_images_list})

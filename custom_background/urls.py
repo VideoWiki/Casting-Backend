@@ -1,5 +1,6 @@
 from .views import photo_api
 from django.urls import path
+from .helper.helper import post_pictures
 
 urlpatterns = [
     path('photos/', photo_api.as_view()),

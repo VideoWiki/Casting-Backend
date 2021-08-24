@@ -9,6 +9,8 @@ api/global_variable.py
 media/
 static/
 ffmpeg/
+resized_images/
+bg_images/
 
 **/migrations/**
 !**/migrations
