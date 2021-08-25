@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from django_q.tasks import schedule
 from django_q.models import Schedule
 from ..create_event_email_sender import event_registration_mail, \
-    time_subtractor, attendee_mail, time_subtractor2
+    time_subtractor, attendee_mail
 from api.global_variable import CLIENT_DOMAIN_URL
 from library.helper import private_meeting_id_generator, \
     public_meeting_id_generator, user_info, \
@@ -55,21 +55,31 @@ class create_event(APIView):
         if record == "":
             record = False
             meeting.record = record
+        else:
+            meeting.record = record
         duration = request.data['duration']
         if duration == "":
             duration = 0
+            meeting.duration = duration
+        else:
             meeting.duration = duration
         logout_url = request.data['logout_url']
         if logout_url == "":
             logout_url = "https://video.wiki/"
             meeting.logout_url = logout_url
+        else:
+            meeting.logout_url = logout_url
         mute_on_start = request.data['mute_on_start']
         if mute_on_start == "":
             mute_on_start = False
             meeting.mute_on_start = mute_on_start
+        else:
+            meeting.mute_on_start = mute_on_start
         banner_text = request.data['banner_text']
         if banner_text == "":
             banner_text = "Welcome to the Cast"
+            meeting.banner_text = banner_text
+        else:
             meeting.banner_text = banner_text
         # meeting.banner_color = request.data['banner_color']
         meeting.logo = request.data['logo']
@@ -77,33 +87,49 @@ class create_event(APIView):
         if end_when_no_moderator =="":
             end_when_no_moderator = True
             meeting.end_when_no_moderator = end_when_no_moderator
+        else:
+            meeting.end_when_no_moderator = end_when_no_moderator
         guest_policy = request.data['guest_policy']
         if guest_policy == "":
             guest_policy = "ALWAYS_ACCEPT"
+            meeting.guest_policy = guest_policy
+        else:
             meeting.guest_policy = guest_policy
         allow_moderator_to_unmute_user = request.data['allow_moderator_to_unmute_user']
         if allow_moderator_to_unmute_user == "":
             allow_moderator_to_unmute_user = True
             meeting.allow_moderator_to_unmute_user = allow_moderator_to_unmute_user
+        else:
+            meeting.allow_moderator_to_unmute_user = allow_moderator_to_unmute_user
         webcam_only_for_moderator = request.data['webcam_only_for_moderator']
         if webcam_only_for_moderator == "":
             webcam_only_for_moderator = True
+            meeting.webcam_only_for_moderator = webcam_only_for_moderator
+        else:
             meeting.webcam_only_for_moderator = webcam_only_for_moderator
         auto_start_recording = request.data['auto_start_recording']
         if auto_start_recording == "":
             auto_start_recording = True
             meeting.auto_start_recording = auto_start_recording
+        else:
+            meeting.auto_start_recording = auto_start_recording
         allow_start_stop_recording = request.data['allow_start_stop_recording']
         if allow_start_stop_recording == "":
             allow_start_stop_recording =  True
+            meeting.allow_start_stop_recording = allow_start_stop_recording
+        else:
             meeting.allow_start_stop_recording = allow_start_stop_recording
         disable_cam = request.data['disable_cam']
         if disable_cam == "":
             disable_cam = True
             meeting.disable_cam = disable_cam
+        else:
+            meeting.disable_cam = disable_cam
         disable_mic = request.data['disable_mic']
         if disable_mic == "":
             disable_mic = True
+            meeting.disable_mic = disable_mic
+        else:
             meeting.disable_mic = disable_mic
         meeting.disable_note = True
         meeting.disable_public_chat = True
@@ -112,13 +138,19 @@ class create_event(APIView):
         if lock_layout == "":
             lock_layout = True
             meeting.lock_layout = lock_layout
+        else:
+            meeting.lock_layout = lock_layout
         lock_on_join = request.data['lock_on_join']
         if lock_on_join == "":
             lock_on_join = True
             meeting.lock_on_join = lock_on_join
+        else:
+            meeting.lock_on_join = lock_on_join
         hide_users = request.data['hide_users']
         if hide_users == "":
             hide_users = True
+            meeting.hide_users = hide_users
+        else:
             meeting.hide_users = hide_users
         schedule_time = request.data['schedule_time']
         if schedule_time == "":
@@ -182,7 +214,6 @@ class create_event(APIView):
                                                      meeting_url,
                                                      a_password
                                                      )
-
         user_email = user_info_email(token)
         send_mail_registration = event_registration_mail(user_email,
                                                          meeting.event_name,

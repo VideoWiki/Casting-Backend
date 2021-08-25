@@ -22,5 +22,8 @@ def send_mail( to_email, name,subject, global_merge_vars, text):
         }
         result = mandrill_client.messages.send(message = message)
         print(result)
+        print(result[0]["status"])
+        status = result[0]["status"]
+        return status
     except mandrill.Error as e:
         print("An exception occurred: {}".format(e.text))

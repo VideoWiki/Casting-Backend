@@ -142,9 +142,5 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = FILE_UPLOAD_MAX_MEMORY_SIZE
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# BBB_API_URL = 'https://dev.stream.videowiki.pt/bigbluebutton/'
-BBB_API_URL = 'https://class.video.wiki/bigbluebutton/'
 
-# SALT = 'k4TmgRP474utcJnJoVwR8zzA4XLhWYTADmpLJE5KFos'
-SALT = 'Mxa621WXrztimJ9swYh38ZORHPyVBN0prSjlN6ftWI'
 

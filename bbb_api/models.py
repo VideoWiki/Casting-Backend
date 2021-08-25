@@ -1,5 +1,3 @@
-import datetime
-
 from django.db import models
 from urllib.request import urlopen
 from urllib.parse import urlencode
@@ -9,6 +7,7 @@ import random
 from api import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 import django.utils.timezone
+from api.global_variable import SALT, BBB_API_URL
 # Create your models here.
 
 def parse(response):
@@ -72,7 +71,7 @@ class Meeting(models.Model):
 
     @classmethod
     def api_call(self, query, call):
-        prepared = "%s%s%s" % (call, query, settings.SALT)
+        prepared = "%s%s%s" % (call, query, SALT)
         checksum = sha1(prepared.encode('utf-8')).hexdigest()
         result = "%s&checksum=%s" % (query, checksum)
         return result
@@ -83,7 +82,7 @@ class Meeting(models.Model):
             ('meetingID', self.private_meeting_id),
         ))
         hashed = self.api_call(query, call)
-        url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
+        url = BBB_API_URL + 'api/' + call + '?' + hashed
         result = parse(urlopen(url).read())
         return result.find('running').text
 
@@ -95,7 +94,7 @@ class Meeting(models.Model):
             ('password', password),
         ))
         hashed = cls.api_call(query, call)
-        url = settings.BBB_API_URL + 'api/' +call + '?' + hashed
+        url = BBB_API_URL + 'api/' +call + '?' + hashed
         result = parse(urlopen(url).read())
         return result
 
@@ -107,7 +106,7 @@ class Meeting(models.Model):
             ('password', password),
         ))
         hashed = cls.api_call(query, call)
-        url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
+        url = BBB_API_URL + 'api/' + call + '?' + hashed
         r = parse(urlopen(url).read())
         if r:
             # Create dict of values for easy use in template
@@ -129,7 +128,7 @@ class Meeting(models.Model):
             ('random', 'random'),
         ))
         hashed = cls.api_call(query, call)
-        url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
+        url = BBB_API_URL + 'api/' + call + '?' + hashed
         result = parse(urlopen(url).read())
         if result:
             # Create dict of values for easy use in template
@@ -192,7 +191,7 @@ class Meeting(models.Model):
 
         ))
         hashed = self.api_call(query, call)
-        url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
+        url = BBB_API_URL + 'api/' + call + '?' + hashed
         result = parse(urlopen(url).read())
         return result
 
@@ -206,7 +205,7 @@ class Meeting(models.Model):
             ('avatarURL', avatar_url),
         ))
         hashed = cls.api_call(query, call)
-        url = settings.BBB_API_URL + 'api/' +call + '?' + hashed
+        url = BBB_API_URL + 'api/' +call + '?' + hashed
         print(url)
         return url
 
@@ -217,7 +216,7 @@ class Meeting(models.Model):
             ('meetingID', private_meeting_id),
         ))
         hashed = cls.api_call(query, call)
-        url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
+        url = BBB_API_URL + 'api/' + call + '?' + hashed
         result = parse(urlopen(url).read())
         d = []
         r = result[1].findall('recording')
@@ -237,7 +236,7 @@ class Meeting(models.Model):
             ('meetingID', private_meeting_id),
         ))
         hashed = cls.api_call(query, call)
-        url = settings.BBB_API_URL + 'api/' + call + '?' + hashed
+        url = BBB_API_URL + 'api/' + call + '?' + hashed
         result = parse(urlopen(url).read())
         return result.find('running').text
 

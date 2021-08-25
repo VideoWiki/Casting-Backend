@@ -18,9 +18,11 @@ class scheduled_meetings(APIView):
             event_id = i.id
             event_creator_name = i.event_creator_name
             event_creator_id = i.user_id
+            logo = i.logo
             d = {"event_name": name, "meeting_day": day,
                  "meeting_time": time, "description": description,
                  "session_key": session_key, "event_id": event_id,
-                 "creator_name": event_creator_name, "creator_id": event_creator_id}
+                 "creator_name": event_creator_name, "creator_id": event_creator_id,
+                 "logo": logo}
             l.append(d)
         return Response({"status": True, "scheduled_meetings": l})
