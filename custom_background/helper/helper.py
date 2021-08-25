@@ -58,3 +58,23 @@ class post_pictures(APIView):
 def file_path_mime(file_path):
     mime = magic.from_file(file_path, mime=True)
     return mime
+
+
+def logo_upload():
+    folder = os.listdir(BASE_DIR + "/casting_logo/")
+    for i in folder:
+        source = BASE_DIR + "/casting_logo/" + i
+        name = i
+        print(source, name, BASE_URL_AWS)
+        s3 = boto3.resource('s3', region_name=AWS_LOCATION,
+                                aws_access_key_id=AWS_ACCESS_KEY_ID,
+                                aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+        BUCKET = AWS_STORAGE_BUCKET_NAME
+        destination = "media/default_logo/{}".format(name)
+        mimetype = file_path_mime(source)
+        s3.Bucket(BUCKET).upload_file(source, destination, ExtraArgs={
+            "ContentType": mimetype
+        })
+        url = BASE_URL_AWS + "default_logo/" + name
+
+    return "url"

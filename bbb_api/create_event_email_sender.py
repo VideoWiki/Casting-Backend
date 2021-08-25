@@ -3,7 +3,6 @@ from datetime import datetime
 
 
 def event_registration_mail(email, event_name, time):
-    print(email,"98989")
     name = email.split('@')[0]
     global_merge_vars = [
         {
