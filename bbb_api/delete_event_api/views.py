@@ -9,9 +9,7 @@ from django_q.models import Schedule
 class delete_meeting(APIView):
     def post(self, request):
         public_meeting_id = request.data['public_meeting_id']
-        # password = request.data['password']
         meeting_obj = Meeting.objects.get(public_meeting_id= public_meeting_id)
-        private_meeting_id = meeting_obj.private_meeting_id
         public_meeting_id = meeting_obj.public_meeting_id
         meeting_user_id = meeting_obj.user_id
         curr_user_id = -1

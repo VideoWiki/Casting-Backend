@@ -1,10 +1,8 @@
 from rest_framework.views import APIView
 from ..models import Meeting
 from rest_framework.response import Response
-from django_q.tasks import schedule
-from django_q.models import Schedule
-from ..create_event_email_sender import event_registration_mail, \
-    time_subtractor, attendee_mail
+from ..create_event_email_sender import event_registration_mail,\
+    attendee_mail, time_subtractor
 from api.global_variable import CLIENT_DOMAIN_URL
 from library.helper import private_meeting_id_generator, \
     public_meeting_id_generator, user_info, \
@@ -12,6 +10,9 @@ from library.helper import private_meeting_id_generator, \
     user_info_name
 from rest_framework import status
 from .cover_image import cover_image_uploader
+from .helper import email_sender
+from django_q.tasks import schedule
+from django_q.models import Schedule
 
 
 class create_event(APIView):
@@ -197,6 +198,11 @@ class create_event(APIView):
         remind_schedular = meeting.public_meeting_id
         meeting.schedular_name_reminder = remind_schedular
         m_list = meeting.moderators
+        e_list = []
+        for i in m_list:
+            email = i["email"]
+            e_list.append(email)
+        task_schedular_list = []
         if len(m_list) != 0:
             for item in m_list:
                 meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(meeting.public_meeting_id)
@@ -220,6 +226,7 @@ class create_event(APIView):
                                                      a_password
                                                      )
         user_email = user_info_email(token)
+        e_list.append(user_email)
         send_mail_registration = event_registration_mail(user_email,
                                                          meeting.event_name,
                                                          meeting.schedule_time
@@ -234,8 +241,8 @@ class create_event(APIView):
             a[0] = "0" + a[0]
         if len(subtracted_time_final[0:2]) == 1:
             subtracted_time_final[0:2] = "0" + str(subtracted_time_final[0:2])
-        schedule('bbb_api.create_event_email_sender.event_reminder_mail',
-                 user_email, meeting.event_name, meeting.schedule_time,
+        schedule('bbb_api.create_event_api.helper.email_sender',
+                 e_list, meeting.event_name, meeting.schedule_time,
                  schedule_type=Schedule.ONCE,
                  name=remind_schedular,
                  next_run=('{}-{}-{} {}:{}:00'.format(
@@ -252,5 +259,3 @@ class create_event(APIView):
                          'cover_image': meeting.cover_image,
                          'message': msg}
                         )
-
-
