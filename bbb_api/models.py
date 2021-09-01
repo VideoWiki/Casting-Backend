@@ -67,6 +67,10 @@ class Meeting(models.Model):
     event_tag = models.CharField(blank=True, max_length=25)
     schedular_name_reminder = models.CharField(max_length=50)
     cover_image = models.URLField(blank=True)
+    is_streaming = models.BooleanField(default=False)
+    bbb_resolution = models.CharField(max_length=20, default="1280x720")
+    bbb_stream_url_facebook = models.URLField(blank=True)
+    bbb_stream_url_youtube = models.URLField(blank=True)
 
 
     @classmethod

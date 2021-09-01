@@ -1,10 +1,12 @@
+import json
+
 from rest_framework.views import APIView
 from ..models import Meeting
 from rest_framework.response import Response
 from library.helper import user_info
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from datetime import datetime, timedelta
-
+import requests
 
 class join_meeting(APIView):
     def post(self, request):
@@ -77,6 +79,28 @@ class join_meeting(APIView):
                                               name,
                                               meeting_obj.moderator_password,
                                               avatar_url)
+                    if meeting_obj.is_streaming == True:
+                        if meeting_obj.bbb_stream_url_facebook != "":
+                            s_url = str(meeting_obj.bbb_stream_url_facebook)
+                        else:
+                            s_url = meeting_obj.bbb_stream_url_youtube
+                        stream_dict = {
+                            "TZ": "Europe/Vienna",
+                            "BBB_RESOLUTION": str(meeting_obj.bbb_resolution),
+                            "BBB_START_MEETING": "false",
+                            "BBB_MEETING_ID": str(meeting_obj.private_meeting_id),
+                            "BBB_STREAM_URL": s_url,
+                            "BBB_SHOW_CHAT": "false",
+                            "BBB_USER_NAME": "Live",
+                            "BBB_ATTENDEE_PASSWORD": str(meeting_obj.attendee_password),
+                            "BBB_MODERATOR_PASSWORD": str(meeting_obj.moderator_password),
+                            "BBB_CHAT_MESSAGE": "Welcome to the stream"
+                        }
+                        url = "https://api.stream.video.wiki/api/cast/live/start"
+                        headers = {
+                            'Content-Type': 'application/json'
+                        }
+                        r = requests.post(url, data=json.dumps(stream_dict), headers= headers)
                     return Response({'status': True,
                                      'url': result}
                                     )

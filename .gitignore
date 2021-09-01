@@ -11,6 +11,7 @@ static/
 ffmpeg/
 resized_images/
 bg_images/
+casting_logo/
 
 **/migrations/**
 !**/migrations

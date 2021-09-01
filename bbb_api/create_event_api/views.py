@@ -177,7 +177,17 @@ class create_event(APIView):
         else:
             cover_image = "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/PhotobyFranciscoGhisletti.jpg"
             meeting.cover_image = cover_image
-
+        is_streaming = request.data["is_streaming"]
+        if is_streaming == "":
+            meeting.is_streaming = False
+        meeting.is_streaming = is_streaming
+        if is_streaming == True:
+            bbb_resolution = "1280x720"
+            meeting.bbb_resolution = bbb_resolution
+            facebook_stream_url = request.data["facebook_stream_url"]
+            meeting.bbb_stream_url_facebook = facebook_stream_url
+            youtube_stream_url = request.data["youtube_stream_url"]
+            meeting.bbb_stream_url_youtube = youtube_stream_url
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
         user_id = user_info(str(token))
         if user_id == -1:

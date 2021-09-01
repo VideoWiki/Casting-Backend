@@ -77,4 +77,4 @@ def logo_upload():
         })
         url = BASE_URL_AWS + "default_logo/" + name
 
-    return "url"
+    return url
