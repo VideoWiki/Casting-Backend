@@ -175,7 +175,7 @@ class create_event(APIView):
             cover_image_status = cover_image_uploader(cover_image)
             meeting.cover_image = cover_image_status
         else:
-            cover_image = "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/PhotobyFranciscoGhisletti.jpg"
+            cover_image = "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg"
             meeting.cover_image = cover_image
         is_streaming = request.data["is_streaming"]
         if is_streaming == "":
