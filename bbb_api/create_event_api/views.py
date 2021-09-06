@@ -89,7 +89,7 @@ class create_event(APIView):
             logo = "https://s3.us-east-2.amazonaws.com/video.wiki/media/default_logo/casting_logo.jpg"
             meeting.logo = logo
         else:
-            meeting.logo = logo_func(logo)
+            meeting.logo = logo
         end_when_no_moderator = request.data['end_when_no_moderator']
         if end_when_no_moderator =="":
             end_when_no_moderator = True

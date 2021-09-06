@@ -43,7 +43,7 @@ class Meeting(models.Model):
     duration = models.IntegerField(default=60)
     mute_on_start = models.BooleanField(default=True)
     banner_text = models.CharField(max_length=300, blank=True)
-    logo = models.URLField(blank=True)
+    logo = models.ImageField(blank=True)
     guest_policy = models.CharField(max_length=25, default='ALWAYS_ACCEPT')
     end_when_no_moderator = models.BooleanField(default=False)
     allow_moderator_to_unmute_user = models.BooleanField(default=False)
@@ -66,7 +66,7 @@ class Meeting(models.Model):
     back_image = models.URLField(blank=True)
     event_tag = models.CharField(blank=True, max_length=25)
     schedular_name_reminder = models.CharField(max_length=50)
-    cover_image = models.URLField(blank=True)
+    cover_image = models.ImageField(blank=True)
     is_streaming = models.BooleanField(default=False)
     bbb_resolution = models.CharField(max_length=20, default="1280x720")
     bbb_stream_url_facebook = models.URLField(blank=True)
@@ -168,7 +168,7 @@ class Meeting(models.Model):
             ('logoutURL', self.logout_url),
             ('muteOnStart', self.mute_on_start),
             ('bannerText', self.banner_text),
-            ('logo', self.logo),
+            ('logo', self.logo.url),
             ('endWhenNoModerator', self.end_when_no_moderator),
             ('guestPolicy', self.guest_policy),
             ('allowModsToUnmuteUsers', self.allow_moderator_to_unmute_user),
