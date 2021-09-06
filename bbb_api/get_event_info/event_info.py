@@ -3,7 +3,7 @@ from ..models import Meeting
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
-
+from api.global_variable import BASE_URL
 
 class meeting_info(APIView):
     def get(self, request):
@@ -18,7 +18,10 @@ class meeting_info(APIView):
             short_description = event_object.short_description
             event_day = event_object.schedule_time.date()
             event_time = event_object.schedule_time.time()
-            cover_image =event_object.cover_image
+            if event_object.cover_image != "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg":
+                c_i = BASE_URL + "/media/" + str(event_object.cover_image)
+            else:
+                c_i = event_object.cover_image
             return Response({'status': True, 'meeting_info': {"event_name": event_name,
                                                               "event_creator_name": event_creator_name,
                                                               "public_meeting_id": public_meeting_id,
@@ -26,7 +29,7 @@ class meeting_info(APIView):
                                                               "short_description": short_description,
                                                               "date": event_day,
                                                               "time": event_time,
-                                                              "cover_image": cover_image
+                                                              "cover_image": str(c_i)
                                                               }
                              }
                             )

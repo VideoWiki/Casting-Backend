@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from ..models import Meeting
 from rest_framework.response import Response
-
+from api.global_variable import BASE_URL
 
 class scheduled_meetings(APIView):
     def get(self, request):
@@ -19,12 +19,15 @@ class scheduled_meetings(APIView):
             event_creator_name = i.event_creator_name
             event_creator_id = i.user_id
             logo = i.logo
-            cover_image = i.cover_image
+            if i.cover_image != "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg":
+                c_i = BASE_URL + "/media/" + str(meeting.cover_image)
+            else:
+                c_i = i.cover_image
             d = {"event_name": name, "meeting_day": day,
                  "meeting_time": time, "description": description,
                  "session_key": session_key, "event_id": event_id,
                  "creator_name": event_creator_name, "creator_id": event_creator_id,
                  "logo": logo,
-                 "cover_image": cover_image}
+                 "cover_image": str(c_i)}
             l.append(d)
         return Response({"status": True, "scheduled_meetings": l})

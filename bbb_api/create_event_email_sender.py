@@ -43,7 +43,7 @@ def attendee_mail(invitee_name, email, event_name, time, meeting_url, attendee_p
 
     ]
     subject = "Invitation"
-    text = "Dear {}, You have been invited to join a cast -'{}'. The cast will begin at {} UTC. Your cast url is {} and password is -'{}'. " \
+    text = "Dear {}, You have been invited to join a cast -'{}'. The cast will begin at {} UTC. Your cast url is {} and password is -{}. " \
            "Please do not miss it.".format(invitee_name, event_name, time, meeting_url, attendee_password)
     status_res = send_mail(email, name, subject, global_merge_vars, text)
     status = status_res
