@@ -18,16 +18,16 @@ class scheduled_meetings(APIView):
             event_id = i.id
             event_creator_name = i.event_creator_name
             event_creator_id = i.user_id
-            logo = i.logo
+            logo = BASE_URL + "/media/" + str(i.logo)
             if i.cover_image != "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg":
-                c_i = BASE_URL + "/media/" + str(meeting.cover_image)
+                c_i = BASE_URL + "/media/" + str(i.cover_image)
             else:
                 c_i = i.cover_image
             d = {"event_name": name, "meeting_day": day,
                  "meeting_time": time, "description": description,
                  "session_key": session_key, "event_id": event_id,
                  "creator_name": event_creator_name, "creator_id": event_creator_id,
-                 "logo": logo,
+                 "logo": str(logo),
                  "cover_image": str(c_i)}
             l.append(d)
         return Response({"status": True, "scheduled_meetings": l})
