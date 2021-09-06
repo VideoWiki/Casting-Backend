@@ -9,8 +9,7 @@ from library.helper import private_meeting_id_generator, \
     user_info_email, generate_random_key, \
     user_info_name
 from rest_framework import status
-from .cover_image import cover_image_uploader,\
-    logo_func
+from api.global_variable import BASE_URL
 from .helper import email_sender
 from django_q.tasks import schedule
 from django_q.models import Schedule
@@ -24,7 +23,7 @@ class create_event(APIView):
             return Response({
                 "status": False,
                 "message": "event with this name is already present"},
-                status=status.HTTP_400_BAD_REQUEST
+                status= status.HTTP_400_BAD_REQUEST
             )
         else:
             meeting.event_name = name
@@ -173,10 +172,7 @@ class create_event(APIView):
         meeting.event_tag = request.data['event_tag']
         cover_image = request.data["cover_image"]
         if cover_image != "":
-            status = logo_func(cover_image)
-            meeting.cover_image = status
-            # cover_image_status = cover_image_uploader(cover_image)
-            # meeting.cover_image = cover_image_status
+            meeting.cover_image = cover_image
         else:
             cover_image = "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg"
             meeting.cover_image = cover_image
@@ -265,10 +261,14 @@ class create_event(APIView):
                      a[0],
                      a[1]
                  )))
+        if meeting.cover_image != "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg":
+            c_i = BASE_URL + "/media/" + str(meeting.cover_image)
+        else:
+            c_i = meeting.cover_image
         msg = 'meeting scheduled successfully'
         return Response({'status': True, 'event_name': meeting.event_name,
                          'meeting_id': meeting.public_meeting_id,
                          'tag': meeting.event_tag,
-                         'cover_image': meeting.cover_image,
+                         'cover_image': str(c_i),
                          'message': msg}
                         )
