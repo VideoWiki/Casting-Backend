@@ -3,6 +3,7 @@ from bbb_api.models import TemporaryFiles
 from api.global_variable import BASE_DIR, BASE_URL
 import boto3
 import magic
+import os
 from ..models import Meeting
 from api.global_variable import AWS_LOCATION, \
     AWS_SECRET_ACCESS_KEY, \
@@ -41,6 +42,7 @@ def logo_func(path):
         temp_file=path,
         created_at=datetime.utcnow()
     )
-    logo_path = BASE_URL + "/" + file.temp_file.url[1:]
+    logo_path = BASE_DIR + "/" + file.temp_file.url[1:]
+    logo_url = os.path.join(BASE_URL,file.temp_file.url[1:])
     print(logo_path)
-    return logo_path
+    return logo_url
