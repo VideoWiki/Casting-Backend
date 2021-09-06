@@ -9,7 +9,8 @@ from library.helper import private_meeting_id_generator, \
     user_info_email, generate_random_key, \
     user_info_name
 from rest_framework import status
-from .cover_image import cover_image_uploader
+from .cover_image import cover_image_uploader,\
+    logo_func
 from .helper import email_sender
 from django_q.tasks import schedule
 from django_q.models import Schedule
@@ -88,7 +89,7 @@ class create_event(APIView):
             logo = "https://s3.us-east-2.amazonaws.com/video.wiki/media/default_logo/casting_logo.jpg"
             meeting.logo = logo
         else:
-            meeting.logo = logo
+            meeting.logo = logo_func(logo)
         end_when_no_moderator = request.data['end_when_no_moderator']
         if end_when_no_moderator =="":
             end_when_no_moderator = True
@@ -172,8 +173,10 @@ class create_event(APIView):
         meeting.event_tag = request.data['event_tag']
         cover_image = request.data["cover_image"]
         if cover_image != "":
-            cover_image_status = cover_image_uploader(cover_image)
-            meeting.cover_image = cover_image_status
+            status = logo_func(cover_image)
+            meeting.cover_image = status
+            # cover_image_status = cover_image_uploader(cover_image)
+            # meeting.cover_image = cover_image_status
         else:
             cover_image = "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg"
             meeting.cover_image = cover_image

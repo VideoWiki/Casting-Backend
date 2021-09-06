@@ -1,6 +1,6 @@
 from datetime import datetime
 from bbb_api.models import TemporaryFiles
-from api.global_variable import BASE_DIR
+from api.global_variable import BASE_DIR, BASE_URL
 import boto3
 import magic
 from ..models import Meeting
@@ -35,3 +35,12 @@ def cover_image_uploader(path):
 def file_path_mime(file_path):
     mime = magic.from_file(file_path, mime=True)
     return mime
+
+def logo_func(path):
+    file = TemporaryFiles.objects.create(
+        temp_file=path,
+        created_at=datetime.utcnow()
+    )
+    logo_path = BASE_URL + "/" + file.temp_file.url[1:]
+    print(logo_path)
+    return logo_path
