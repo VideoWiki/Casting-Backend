@@ -269,6 +269,6 @@ class create_event(APIView):
         return Response({'status': True, 'event_name': meeting.event_name,
                          'meeting_id': meeting.public_meeting_id,
                          'tag': meeting.event_tag,
-                         'cover_image': meeting.cover_image.url,
+                         'cover_image': meeting.cover_image,
                          'message': msg}
                         )
