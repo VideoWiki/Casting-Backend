@@ -1,18 +1,12 @@
 from rest_framework.views import APIView
 from ..models import Meeting
 from rest_framework.response import Response
-from ..create_event_email_sender import event_registration_mail,\
-    attendee_mail, time_subtractor
-from api.global_variable import CLIENT_DOMAIN_URL
 from library.helper import private_meeting_id_generator, \
     public_meeting_id_generator, user_info, \
     user_info_email, generate_random_key, \
     user_info_name
 from rest_framework import status
 from api.global_variable import BASE_URL
-from .helper import email_sender
-from django_q.tasks import schedule
-from django_q.models import Schedule
 
 
 class create_event(APIView):
@@ -183,8 +177,10 @@ class create_event(APIView):
         if is_streaming == True:
             bbb_resolution = "1280x720"
             meeting.bbb_resolution = bbb_resolution
-            facebook_stream_url = request.data["facebook_stream_url"]
-            meeting.bbb_stream_url_facebook = facebook_stream_url
+            vw_stream_url = request.data["vw_stream_url"]
+            if vw_stream_url == True:
+                url = "rtmp://play.stream.video.wiki/stream/{}".format(meeting.public_meeting_id)
+                meeting.bbb_stream_url_vw = url
             youtube_stream_url = request.data["youtube_stream_url"]
             meeting.bbb_stream_url_youtube = youtube_stream_url
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
@@ -206,61 +202,9 @@ class create_event(APIView):
         meeting.event_creator_name = user_name
         remind_schedular = meeting.public_meeting_id
         meeting.schedular_name_reminder = remind_schedular
-        m_list = meeting.moderators
-        e_list = []
-        for i in m_list:
-            email = i["email"]
-            e_list.append(email)
-        task_schedular_list = []
-        if len(m_list) != 0:
-            for item in m_list:
-                meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(meeting.public_meeting_id)
-                a_password = meeting.attendee_password
-                m_password = meeting.moderator_password
-                if item["type"] == "speaker":
-                    send_mail_invite = attendee_mail(item["name"],
-                                                     item["email"],
-                                                     meeting.event_name,
-                                                     meeting.schedule_time,
-                                                     meeting_url,
-                                                     m_password
-                                                     )
-
-                else:
-                    send_mail_invite = attendee_mail(item["name"],
-                                                     item["email"],
-                                                     meeting.event_name,
-                                                     meeting.schedule_time,
-                                                     meeting_url,
-                                                     a_password
-                                                     )
         user_email = user_info_email(token)
-        e_list.append(user_email)
-        send_mail_registration = event_registration_mail(user_email,
-                                                         meeting.event_name,
-                                                         meeting.schedule_time
-                                                         )
         meeting.event_creator_email = user_email
         meeting.save()
-        reminder_time = meeting.schedule_time
-        subtracted_time = time_subtractor(reminder_time)
-        subtracted_time_final = str(subtracted_time)
-        a = subtracted_time_final.split(":")
-        if len(a[0]) == 1:
-            a[0] = "0" + a[0]
-        if len(subtracted_time_final[0:2]) == 1:
-            subtracted_time_final[0:2] = "0" + str(subtracted_time_final[0:2])
-        schedule('bbb_api.create_event_api.helper.email_sender',
-                 e_list, meeting.event_name, meeting.schedule_time,
-                 schedule_type=Schedule.ONCE,
-                 name=remind_schedular,
-                 next_run=('{}-{}-{} {}:{}:00'.format(
-                     reminder_time[0:4],
-                     reminder_time[5:7],
-                     reminder_time[8:10],
-                     a[0],
-                     a[1]
-                 )))
         if meeting.cover_image != "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg":
             c_i = BASE_URL + "/media/" + str(meeting.cover_image)
         else:
