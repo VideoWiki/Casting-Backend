@@ -1,5 +1,5 @@
 from library.mailchimp import send_mail
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 def event_registration_mail(email, event_name, time):
@@ -64,4 +64,32 @@ def time_subtractor2(time):
     subtracted_time = datetime.strptime(s2, format) - datetime.strptime(s1, format)
     print(subtracted_time)
     return subtracted_time
+
+def time_convertor(time):
+    tim = time
+    ds = tim[:33]
+    datetime_object = datetime.strptime(ds, '%a %b %d %Y %H:%M:%S %Z%z').strftime("%Y-%m-%d %H:%M:%S")
+    a = tim.split(' ')
+    b = a[5]
+    c = b[3:]
+    year = datetime_object[:4]
+    mon = datetime_object[5:7]
+    day = datetime_object[8:10]
+    if c[0] == "+":
+        d = c[1:]
+        hour = datetime_object[11:13]
+        min = datetime_object[14:16]
+        original_time = datetime(year=int(year), month=int(mon), day=int(day)) + timedelta(hours=int(hour),
+                                                                                           minutes=int(min))
+        f_time = original_time - timedelta(hours=int(d[:2]), minutes=int(d[2:]))
+    if c[0] == "-":
+        d = c[1:]
+        hour = datetime_object[11:13]
+        min = datetime_object[14:16]
+        original_time = datetime(year=int(year), month=int(mon), day=int(day)) + timedelta(hours=int(hour),
+                                                                                           minutes=int(min))
+        f_time = original_time + timedelta(hours=int(d[:2]), minutes=int(d[2:]))
+    return f_time
+
+
 
