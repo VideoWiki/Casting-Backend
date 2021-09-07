@@ -72,6 +72,7 @@ class Meeting(models.Model):
     bbb_resolution = models.CharField(max_length=20, default="1280x720")
     bbb_stream_url_vw = models.URLField(blank=True, null=True)
     bbb_stream_url_youtube = models.URLField(blank=True, null=True)
+    raw_time = models.CharField(max_length=100, blank=True, null=True)
 
 
     @classmethod

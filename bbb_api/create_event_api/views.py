@@ -7,7 +7,7 @@ from library.helper import private_meeting_id_generator, \
     user_info_name
 from rest_framework import status
 from api.global_variable import BASE_URL
-
+from ..create_event_email_sender import time_convertor
 
 class create_event(APIView):
     def post(self, request):
@@ -158,7 +158,9 @@ class create_event(APIView):
                              "message": "no time provided"},
                             status=status.HTTP_400_BAD_REQUEST
                             )
-        meeting.schedule_time = schedule_time
+        meeting.raw_time = schedule_time
+        converted_time = time_convertor(schedule_time)
+        meeting.schedule_time = converted_time
         meeting.moderators = request.data['invitee_details']
         meeting.primary_color = request.data['primary_color']
         meeting.secondary_color = request.data['secondary_color']
