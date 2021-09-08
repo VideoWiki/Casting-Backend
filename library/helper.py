@@ -18,7 +18,7 @@ def private_meeting_id_generator():
 
 def public_meeting_id_generator():
     chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
-    public_meeting_id = get_random_string(3, chars) + '-' + get_random_string(3, chars) + '-' + get_random_string(3, chars)
+    public_meeting_id = get_random_string(4, chars) + '-' + get_random_string(4, chars) + '-' + get_random_string(4, chars) + '-' + get_random_string(4, chars)
     return public_meeting_id
 
 
