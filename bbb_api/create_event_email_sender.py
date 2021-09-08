@@ -43,18 +43,23 @@ def attendee_mail(invitee_name, email, event_name, time, meeting_url, attendee_p
 
     ]
     subject = "Invitation"
-    text = "Dear {}, You have been invited to join a cast -'{}'. The cast will begin at {} UTC. Your cast url is {} and password is -{}. " \
+    text = "Dear {}, You have been invited to join a cast '{}'. The cast will begin at {} UTC. Your cast url is {} and password is {}. " \
            "Please do not miss it.".format(invitee_name, event_name, time, meeting_url, attendee_password)
     status_res = send_mail(email, name, subject, global_merge_vars, text)
     status = status_res
     return status
 
-def time_subtractor(time):
+def time_subtractor(time_string):
+    h = time_string.hour
+    if len(str(h))==1:
+        h = "0{}".format(str(h))
+    m = time_string.minute
+    if len(str(m)) == 1:
+        m = "0{}".format(str(m))
     s1 = '00:10:00'
-    s2 = '{}:{}:00'.format(time[11:13], time[14:16])
+    s2 = '{}:{}:00'.format(str(h), str(m))
     format = '%H:%M:%S'
     subtracted_time = datetime.strptime(s2, format) - datetime.strptime(s1, format)
-    print(subtracted_time)
     return subtracted_time
 
 def time_subtractor2(time):
@@ -62,7 +67,6 @@ def time_subtractor2(time):
     s2 = '{}:{}:00'.format(time[11:13], time[14:16])
     format = '%H:%M:%S'
     subtracted_time = datetime.strptime(s2, format) - datetime.strptime(s1, format)
-    print(subtracted_time)
     return subtracted_time
 
 def time_convertor(time):
@@ -81,14 +85,14 @@ def time_convertor(time):
         min = datetime_object[14:16]
         original_time = datetime(year=int(year), month=int(mon), day=int(day)) + timedelta(hours=int(hour),
                                                                                            minutes=int(min))
-        f_time = original_time - timedelta(hours=int(d[:2]), minutes=int(d[2:]))
+        f_time = original_time - timedelta(hours=int(d[:2]), minutes=int(d[2:])) - timedelta(hours=int(d[:2]), minutes=int(d[2:]))
     if c[0] == "-":
         d = c[1:]
         hour = datetime_object[11:13]
         min = datetime_object[14:16]
         original_time = datetime(year=int(year), month=int(mon), day=int(day)) + timedelta(hours=int(hour),
                                                                                            minutes=int(min))
-        f_time = original_time + timedelta(hours=int(d[:2]), minutes=int(d[2:]))
+        f_time = original_time + timedelta(hours=int(d[:2]), minutes=int(d[2:])) + timedelta(hours=int(d[:2]), minutes=int(d[2:]))
     return f_time
 
 
