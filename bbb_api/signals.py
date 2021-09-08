@@ -73,9 +73,9 @@ def reminder(sender, instance, created, **kwargs):
                  schedule_type=Schedule.ONCE,
                  name=remind_schedular,
                  next_run=('{}-{}-{} {}:{}:00'.format(
-                     reminder_time[0:4],
-                     reminder_time[5:7],
-                     reminder_time[8:10],
+                     reminder_time.year,
+                     reminder_time.month,
+                     reminder_time.day,
                      a[0],
                      a[1]
                  )))
