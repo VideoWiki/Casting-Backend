@@ -80,10 +80,10 @@ class join_meeting(APIView):
                                               meeting_obj.moderator_password,
                                               avatar_url)
                     if meeting_obj.is_streaming == True:
-                        if meeting_obj.bbb_stream_url_vw != "":
-                            s_url = str(meeting_obj.bbb_stream_url_vw)
+                        if meeting_obj.bbb_stream_url_youtube != "":
+                            s_url = str(meeting_obj.bbb_stream_url_youtube)
                         else:
-                            s_url = meeting_obj.bbb_stream_url_youtube
+                            s_url = meeting_obj.bbb_stream_url_vw
                         url_status = "https://api.stream.video.wiki/api/cast/live/status"
                         payload = {'meeting_id': str(private_meeting_id)}
                         files = []
