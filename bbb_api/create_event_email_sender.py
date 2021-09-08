@@ -2,7 +2,7 @@ from library.mailchimp import send_mail
 from datetime import datetime, timedelta
 
 
-def event_registration_mail(email, event_name, time):
+def event_registration_mail(email, event_name, time, stream_url):
     name = email.split('@')[0]
     global_merge_vars = [
         {
@@ -12,13 +12,16 @@ def event_registration_mail(email, event_name, time):
 
     ]
     subject = "your event has been registered"
-    text = "your event {} has been registered at {} UTC.".format(event_name, time)
+    if stream_url != "":
+        text = "your cast {} has been registered at {} UTC. the stream url for the cast is {}".format(event_name, time, stream_url)
+    else:
+        text = "your event {} has been registered at {}.".format(event_name, time)
     status_res = send_mail(email, name, subject, global_merge_vars, text)
     status = status_res
     return status
 
 
-def event_reminder_mail(email, event_name, time):
+def event_reminder_mail(email, event_name):
     name = email.split('@')[0]
     global_merge_vars = [
         {
@@ -28,12 +31,12 @@ def event_reminder_mail(email, event_name, time):
 
     ]
     subject = "Reminder email for your event"
-    text = "your event {} will start at {}. Please do not miss it.".format(event_name, time)
+    text = "your event {} is going to start in 10 minutes. Please do not miss it.".format(event_name)
     status_res = send_mail(email, name, subject, global_merge_vars, text)
     status = status_res
     return status
 
-def attendee_mail(invitee_name, email, event_name, time, meeting_url, attendee_password):
+def attendee_mail(invitee_name, email, event_name, time, meeting_url, attendee_password, stream_url):
     name = email.split('@')[0]
     global_merge_vars = [
         {
@@ -43,7 +46,11 @@ def attendee_mail(invitee_name, email, event_name, time, meeting_url, attendee_p
 
     ]
     subject = "Invitation"
-    text = "Dear {}, You have been invited to join a cast '{}'. The cast will begin at {} UTC. Your cast url is {} and password is {}. " \
+    if stream_url != "":
+        text = "Dear {}, You have been invited to join a cast '{}'. The cast will begin at {} UTC. Your cast url is {} and password is {}. " \
+           "Your stream url is {}. Please do not miss it.".format(invitee_name, event_name, time, meeting_url, attendee_password, stream_url)
+    else:
+        text = "Dear {}, You have been invited to join a cast '{}'. The cast will begin at {} UTC. Your cast url is {} and password is {}. " \
            "Please do not miss it.".format(invitee_name, event_name, time, meeting_url, attendee_password)
     status_res = send_mail(email, name, subject, global_merge_vars, text)
     status = status_res

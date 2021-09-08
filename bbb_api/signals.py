@@ -14,7 +14,12 @@ def post_save_prediction(sender, instance, created, **kwargs):
         creator_email = instance.event_creator_email
         name = instance.event_name
         schedule_time = instance.schedule_time
-        event_registration_mail(str(creator_email), str(name), str(schedule_time))
+        vw_stream = instance.bbb_stream_url_vw
+        if vw_stream == None:
+            stream_url = ""
+        else:
+            stream_url = "https://play.stream.video.wiki/live/{}".format(instance.public_meeting_id)
+        event_registration_mail(str(creator_email), str(name), str(schedule_time), stream_url)
 
 
 @receiver(post_save, sender=Meeting)
@@ -30,13 +35,19 @@ def emailer(sender, instance, created, **kwargs):
                 meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(instance.public_meeting_id)
                 a_password = instance.attendee_password
                 m_password = instance.moderator_password
+                vw_stream = instance.bbb_stream_url_vw
+                if vw_stream == None:
+                    stream_url = ""
+                else:
+                    stream_url = "https://play.stream.video.wiki/live/{}".format(instance.public_meeting_id)
                 if item["type"] == "speaker":
                     send_mail_invite = attendee_mail(item["name"],
                                                      item["email"],
                                                      instance.event_name,
                                                      instance.schedule_time,
                                                      meeting_url,
-                                                     m_password
+                                                     m_password,
+                                                     stream_url
                                                      )
 
                 else:
@@ -45,7 +56,8 @@ def emailer(sender, instance, created, **kwargs):
                                                      instance.event_name,
                                                      instance.schedule_time,
                                                      meeting_url,
-                                                     a_password
+                                                     a_password,
+                                                     stream_url
                                                      )
 
 
@@ -69,7 +81,7 @@ def reminder(sender, instance, created, **kwargs):
         if len(subtracted_time_final[0:2]) == 1:
             subtracted_time_final[0:2] = "0" + str(subtracted_time_final[0:2])
         schedule('bbb_api.create_event_api.helper.email_sender',
-                 e_list, instance.event_name, instance.raw_time,
+                 e_list, instance.event_name,
                  schedule_type=Schedule.ONCE,
                  name=remind_schedular,
                  next_run=('{}-{}-{} {}:{}:00'.format(
