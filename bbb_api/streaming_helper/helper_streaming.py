@@ -9,7 +9,6 @@ def stream_status():
     my_event_list = []
     scheduled_event_list = []
     events = Meeting.objects.filter(schedule_time__gt=django.utils.timezone.now()).all()
-    print(events,"pp")
     for i in events:
         event = i.private_meeting_id
         scheduled_event_list.append(event)
@@ -17,9 +16,7 @@ def stream_status():
         private_meeting_id = i.private_meeting_id
         name = i.event_name
         event = Meeting.is_meeting_running(private_meeting_id=private_meeting_id)
-        print(event, "rnrnrn")
         scheduled_event_list.append(name)
-    print(scheduled_event_list, "11")
     expired_list = []
     for event in meetings:
         if event.event_name in scheduled_event_list:
@@ -27,20 +24,17 @@ def stream_status():
         else:
             event_expired = True
             event_running = Meeting.is_meeting_running(private_meeting_id=event.private_meeting_id)
-            print(event_running, event.private_meeting_id)
             if event_running == "false":
                 today = event.schedule_time.date()
                 if current_date == today:
                     expired_list.append(event.private_meeting_id)
 
     end_list = []
-    print(expired_list)
     for i in expired_list:
         obj = Meeting.objects.get(private_meeting_id=i).is_streaming
         if obj == True:
             end_list.append(i)
-    for i in expired_list:
-        print(i)
+    for i in end_list:
         url = "https://api.stream.video.wiki/api/cast/live/status"
 
         payload = {'meeting_id': str(i)}
@@ -59,4 +53,4 @@ def stream_status():
             response2 = requests.request("POST", url, headers=headers, data=payload, files=files)
             print(response2.text)
 
-    return "True"
+

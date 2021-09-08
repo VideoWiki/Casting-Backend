@@ -105,7 +105,6 @@ class join_meeting(APIView):
                             "BBB_STREAM_URL": s_url,
                             "BBB_SHOW_CHAT": "false",
                             "BBB_USER_NAME": "Live",
-                            # "BBB_ATTENDEE_PASSWORD": str(meeting_obj.attendee_password),
                             "BBB_MODERATOR_PASSWORD": str(meeting_obj.moderator_password),
                             "BBB_CHAT_MESSAGE": "Welcome to the stream"
                         }

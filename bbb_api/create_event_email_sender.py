@@ -28,7 +28,7 @@ def event_reminder_mail(email, event_name, time):
 
     ]
     subject = "Reminder email for your event"
-    text = "your event {} will start at {} UTC. Please do not miss it.".format(event_name, time)
+    text = "your event {} will start at {}. Please do not miss it.".format(event_name, time)
     status_res = send_mail(email, name, subject, global_merge_vars, text)
     status = status_res
     return status

@@ -69,7 +69,7 @@ def reminder(sender, instance, created, **kwargs):
         if len(subtracted_time_final[0:2]) == 1:
             subtracted_time_final[0:2] = "0" + str(subtracted_time_final[0:2])
         schedule('bbb_api.create_event_api.helper.email_sender',
-                 e_list, instance.event_name, instance.schedule_time,
+                 e_list, instance.event_name, instance.raw_time,
                  schedule_type=Schedule.ONCE,
                  name=remind_schedular,
                  next_run=('{}-{}-{} {}:{}:00'.format(
