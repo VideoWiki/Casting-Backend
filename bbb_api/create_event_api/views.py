@@ -78,6 +78,7 @@ class create_event(APIView):
             meeting.banner_text = banner_text
         # meeting.banner_color = request.data['banner_color']
         logo = request.data['logo']
+        print(logo,"logogogog")
         if logo == "":
             logo = "https://s3.us-east-2.amazonaws.com/video.wiki/media/default_logo/casting_logo.jpg"
             meeting.logo = logo
@@ -167,6 +168,7 @@ class create_event(APIView):
         meeting.back_image = request.data['back_image']
         meeting.event_tag = request.data['event_tag']
         cover_image = request.data["cover_image"]
+        print(cover_image,"cvcvv")
         if cover_image != "":
             meeting.cover_image = cover_image
         else:
