@@ -6,7 +6,6 @@ import time
 from rest_framework import status
 class meetings(APIView):
     def get(self, request):
-        print("here")
         meetings = Meeting.get_meetings()
         if len(meetings) == 0:
             return Response({'status': False,
@@ -18,7 +17,6 @@ class meetings(APIView):
         l = []
         for i in meetings:
             name = i['name']
-            print(name)
             running = i['running']
             participant_count = i['info']['participant_count']
             start_time = i['info']['start_time']

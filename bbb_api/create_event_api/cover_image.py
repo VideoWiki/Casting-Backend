@@ -44,5 +44,4 @@ def logo_func(path):
     )
     logo_path = BASE_DIR + "/" + file.temp_file.url[1:]
     logo_url = os.path.join(BASE_URL,file.temp_file.url[1:])
-    print(logo_path)
     return logo_url

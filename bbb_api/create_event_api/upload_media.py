@@ -25,7 +25,6 @@ class FileUploadView(APIView):
                   aws_access_key_id=AWS_ACCESS_KEY_ID,
                   aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
       BUCKET = AWS_STORAGE_BUCKET_NAME
-      print(BUCKET)
       destination = "media/cover_images/{}".format(name)
       mimetype = file_path_mime(path)
       s3.Bucket(BUCKET).upload_file(path, destination, ExtraArgs={

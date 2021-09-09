@@ -7,7 +7,6 @@ from rest_framework import status
 class meeting_type_checker(APIView):
     def get(self, request):
         session_key = request.GET.get('session_key')
-        print(session_key)
         try:
             get_model = Meeting.objects.get(public_meeting_id=session_key)
             type = get_model.meeting_type

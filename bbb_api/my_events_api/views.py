@@ -22,7 +22,6 @@ class get_my_events(APIView):
             event = Meeting.is_meeting_running(private_meeting_id=private_meeting_id)
             scheduled_event_list.append(name)
         for event in user_meetings:
-            print(scheduled_event_list,"list")
             event_name = event.event_name
             event_password = event.moderator_password
             event_date = event.schedule_time.date()
