@@ -167,7 +167,7 @@ class create_event(APIView):
         if time_now > converted_time:
             return Response({
                 "status": False,
-                "message": "can not create cast in past"
+                "message": "invalid schedule time"
             })
         meeting.schedule_time = converted_time
         meeting.moderators = request.data['invitee_details']

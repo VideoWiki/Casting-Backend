@@ -47,19 +47,19 @@ def attendee_mail(invitee_name, email, event_name, time, meeting_url, attendee_p
     ]
     subject = "Invitation"
     if stream_url != "":
-        text = "Dear {}, " \
-               "You have been invited to join a cast '{}'. " \
-               "The cast will begin at {} UTC. " \
-               "Your cast url is {}. " \
-               "Your stream url is {}. " \
-               "Please provide your name and following password: {} " \
+        text = "Dear {}, /n" \
+               "You have been invited to join a cast '{}'. /n" \
+               "The cast will begin at {} UTC. /n" \
+               "Your cast url is {}. /n" \
+               "Your stream url is {}. /n" \
+               "Please provide your name and following password: {} /n" \
                "Don't miss it.".format(invitee_name, event_name, time, meeting_url, stream_url, attendee_password)
     else:
-        text = "Dear {}, " \
-               "You have been invited to join a cast '{}'. " \
-               "The cast will begin at {} UTC. " \
-               "Your cast url is {}. " \
-               "Please provide your name and following password: {}" \
+        text = "Dear {}, /n" \
+               "You have been invited to join a cast '{}'. /n" \
+               "The cast will begin at {} UTC. /n" \
+               "Your cast url is {}. /n" \
+               "Please provide your name and following password: {} /n" \
                "Don't miss it!".format(invitee_name, event_name, time, meeting_url, attendee_password)
     status_res = send_mail(email, name, subject, global_merge_vars, text)
     status = status_res
