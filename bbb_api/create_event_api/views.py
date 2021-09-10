@@ -162,6 +162,8 @@ class create_event(APIView):
         meeting.raw_time = schedule_time
         converted_time = time_convertor(schedule_time)
         time_now = datetime.datetime.now()
+        print(time_now, converted_time)
+        print(time_now > converted_time, "ctn")
         if time_now > converted_time:
             return Response({
                 "status": False,
