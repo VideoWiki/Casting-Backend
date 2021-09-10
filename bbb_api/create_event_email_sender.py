@@ -47,13 +47,17 @@ def attendee_mail(invitee_name, email, event_name, time, meeting_url, attendee_p
     ]
     subject = "Invitation"
     if stream_url != "":
-        text = "Dear {}, <br> You have been invited to join a cast '{}'. <br>The cast will begin at {} UTC. <br>Your cast url is {}. <br>Your stream url is {}. <br>Please provide your name and following password: {}. <br>Don't miss it.".format(invitee_name, event_name, time, meeting_url, stream_url, attendee_password)
+        text = "Dear {}, " \
+               " You have been invited to join a cast '{}'. " \
+               "The cast will begin at {} UTC. <br>Your cast url is {}. " \
+               "Your stream url is {}. <br>Please provide your name and following password: {}. " \
+               "Don't miss it.".format(invitee_name, event_name, time, meeting_url, stream_url, attendee_password)
     else:
-        text = "<p> Dear {}, </p>" \
-               "<p>You have been invited to join a cast '{}'. </p>" \
-               "<p>The cast will begin at {} UTC. <br>Your cast url is {}. </p>" \
-               "<p>Please provide your name and following password: {}. </p>" \
-               "<p>Don't miss it!</p>".format(invitee_name, event_name, time, meeting_url, attendee_password)
+        text = "Dear {}, " \
+               "You have been invited to join a cast '{}'. " \
+               "The cast will begin at {} UTC. <br>Your cast url is {}. " \
+               "Please provide your name and following password: {}. " \
+               "Don't miss it!".format(invitee_name, event_name, time, meeting_url, attendee_password)
     status_res = send_mail(email, name, subject, global_merge_vars, text)
     status = status_res
     return status
