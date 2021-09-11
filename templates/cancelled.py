@@ -14,7 +14,7 @@ def email_format(user_name, event_name, creator_name):
     Your event <b>{}</b> was cancelled by <b>{}</b>. Once the presenter reschedules it, you'll be receiving a new link.
     <br>
     <br>
-    All the ,
+    All the best,
     <br>
     VideoWiki team
     </body>

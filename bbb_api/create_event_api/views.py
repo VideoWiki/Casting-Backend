@@ -81,7 +81,7 @@ class create_event(APIView):
             meeting.banner_text = banner_text
         # meeting.banner_color = request.data['banner_color']
         # logo = request.data['logo']
-        logo = "https://s3.us-east-2.amazonaws.com/video.wiki/media/default_logo/casting_logo.jpg"
+        logo = "https://class.video.wiki/images/VideoWiki_Logo.svg"
         if logo == "":
             # logo = "https://s3.us-east-2.amazonaws.com/video.wiki/media/default_logo/casting_logo.jpg"
             meeting.logo = logo
