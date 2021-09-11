@@ -178,7 +178,7 @@ class create_event(APIView):
         meeting.back_image = request.data['back_image']
         meeting.event_tag = request.data['event_tag']
         cover_image = request.data["cover_image"]
-        meeting.cover_image = "https://api.cast.video.wiki/static/alt_final.png"
+        meeting.cover_image = "https://api.cast.video.wiki/static/alt.png"
         # if cover_image != "":
         #     meeting.cover_image = cover_image
         # else:
