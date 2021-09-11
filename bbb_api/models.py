@@ -262,4 +262,3 @@ def path_getter(path):
 
 
 
-

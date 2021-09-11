@@ -1,66 +1,21 @@
 from library.mailchimp import send_mail
 from datetime import datetime, timedelta
+from cast_invitee_details.helper import send_invite_mail1, send_invite_mail2
+from bbb_api.create_event_api.helper import send_create1, send_create2
 
 
-def event_registration_mail(email, event_name, time, stream_url):
-    name = email.split('@')[0]
-    global_merge_vars = [
-        {
-            'name': 'NAME',
-            'content': name
-        }
-
-    ]
-    subject = "your event has been registered"
+def event_registration_mail(email, user_name, event_name, time, stream_url):
     if stream_url != "":
-        text = "your cast {} has been registered at {} UTC. the stream url for the cast is {}".format(event_name, time, stream_url)
+        send_create1(email, user_name, event_name, time, stream_url)
     else:
-        text = "your event {} has been registered at {}.".format(event_name, time)
-    status_res = send_mail(email, name, subject, global_merge_vars, text)
-    status = status_res
-    return status
+        send_create2(email, user_name, event_name, time)
 
 
-def event_reminder_mail(email, event_name):
-    name = email.split('@')[0]
-    global_merge_vars = [
-        {
-            'name': 'NAME',
-            'content': name
-        }
-
-    ]
-    subject = "Reminder email for your event"
-    text = "your event {} is going to start in 10 minutes. Please do not miss it.".format(event_name)
-    status_res = send_mail(email, name, subject, global_merge_vars, text)
-    status = status_res
-    return status
-
-def attendee_mail(invitee_name, email, event_name, time, meeting_url, attendee_password, stream_url):
-    name = email.split('@')[0]
-    global_merge_vars = [
-        {
-            'name': 'NAME',
-            'content': name
-        }
-
-    ]
-    subject = "Invitation"
+def attendee_mail(user_name, email, event_name, event_time, event_url, event_password, stream_url):
     if stream_url != "":
-        text = "Dear {}, " \
-               " You have been invited to join a cast '{}'. " \
-               "The cast will begin at {} UTC. <br>Your cast url is {}. " \
-               "Your stream url is {}. <br>Please provide your name and following password: {}. " \
-               "Don't miss it.".format(invitee_name, event_name, time, meeting_url, stream_url, attendee_password)
+        send_invite_mail2(to_email=email, user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password, stream_url=stream_url)
     else:
-        text = "Dear {}, " \
-               "You have been invited to join a cast '{}'. " \
-               "The cast will begin at {} UTC. <br>Your cast url is {}. " \
-               "Please provide your name and following password: {}. " \
-               "Don't miss it!".format(invitee_name, event_name, time, meeting_url, attendee_password)
-    status_res = send_mail(email, name, subject, global_merge_vars, text)
-    status = status_res
-    return status
+        send_invite_mail1(to_email=email, user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password)
 
 def time_subtractor(time_string):
     h = time_string.hour

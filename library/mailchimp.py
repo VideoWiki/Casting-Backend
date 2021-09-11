@@ -6,7 +6,7 @@ def send_mail( to_email, name,subject, global_merge_vars, text):
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
-            'from_email': 'puneet@boarded.in',
+            'from_email': 'support@videowiki.pt',
             'from_name': 'Video.Wiki',
             'global_merge_vars': global_merge_vars,
             # need reply mail
@@ -26,4 +26,4 @@ def send_mail( to_email, name,subject, global_merge_vars, text):
         status = result[0]["status"]
         return status
     except mandrill.Error as e:
-        print("An exception occurred: {}".format(e.text))
+        print("An exception occurred: {}".format(e))

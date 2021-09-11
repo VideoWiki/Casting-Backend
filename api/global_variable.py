@@ -1,7 +1,7 @@
 import os
 development = True
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_URL = "http://api.cast.video.wiki"
+# BASE_URL = "http://api.cast.video.wiki"
 if development == False:
     Q_C = {'orm': 'default', 'sync': True}
     BASE_URL = 'http://localhost:8000/'

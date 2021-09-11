@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'storages',
     'bbb_api',
+    'cast_invitee_details',
     'custom_background',
     'library'
 ]

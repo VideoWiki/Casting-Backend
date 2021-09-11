@@ -8,7 +8,10 @@ from library.helper import private_meeting_id_generator, \
 from rest_framework import status
 from api.global_variable import BASE_URL
 from ..create_event_email_sender import time_convertor
+from .helper import invite_mail
 import datetime
+
+
 class create_event(APIView):
     def post(self, request):
         meeting = Meeting()
@@ -77,13 +80,13 @@ class create_event(APIView):
         else:
             meeting.banner_text = banner_text
         # meeting.banner_color = request.data['banner_color']
-        logo = request.data['logo']
-        meeting.logo = "https://s3.us-east-2.amazonaws.com/video.wiki/media/default_logo/casting_logo.jpg"
-        # if logo == "":
-        #     logo = "https://s3.us-east-2.amazonaws.com/video.wiki/media/default_logo/casting_logo.jpg"
-        #     meeting.logo = logo
-        # else:
-        #     meeting.logo = logo
+        # logo = request.data['logo']
+        logo = "https://s3.us-east-2.amazonaws.com/video.wiki/media/default_logo/casting_logo.jpg"
+        if logo == "":
+            # logo = "https://s3.us-east-2.amazonaws.com/video.wiki/media/default_logo/casting_logo.jpg"
+            meeting.logo = logo
+        else:
+            meeting.logo = logo
         end_when_no_moderator = request.data['end_when_no_moderator']
         if end_when_no_moderator =="":
             end_when_no_moderator = True
@@ -170,7 +173,7 @@ class create_event(APIView):
                 "message": "invalid schedule time"
             })
         meeting.schedule_time = converted_time
-        meeting.moderators = request.data['invitee_details']
+        moderators = request.data['invitee_details']
         meeting.primary_color = request.data['primary_color']
         meeting.secondary_color = request.data['secondary_color']
         meeting.back_image = request.data['back_image']
@@ -217,6 +220,7 @@ class create_event(APIView):
         user_email = user_info_email(token)
         meeting.event_creator_email = user_email
         meeting.save()
+        invite_mail(moderators, name)
         if meeting.cover_image != "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg":
             c_i = BASE_URL + "/media/" + str(meeting.cover_image)
         else:
