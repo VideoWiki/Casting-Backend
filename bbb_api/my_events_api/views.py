@@ -32,7 +32,7 @@ class get_my_events(APIView):
             public_meeting_id = event.public_meeting_id
             event_id = event.id
             short_description = event.short_description
-            if event.cover_image != "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg":
+            if event.cover_image != "https://api.cast.video.wiki/static/alt.png":
                 c_i = BASE_URL + "/media/" + str(event.cover_image)
             else:
                 c_i = event.cover_image
