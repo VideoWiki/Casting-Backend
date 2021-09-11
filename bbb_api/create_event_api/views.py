@@ -171,7 +171,8 @@ class create_event(APIView):
             return Response({
                 "status": False,
                 "message": "invalid schedule time"
-            })
+            },
+                status=status.HTTP_400_BAD_REQUEST)
         meeting.schedule_time = converted_time
         moderators = request.data['invitee_details']
         meeting.primary_color = request.data['primary_color']
