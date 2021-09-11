@@ -3,7 +3,7 @@ import mandrill
 from templates.invite_1 import email_invite1
 from templates.invite_2 import email_invite2
 
-def send_invite_mail1( to_email, name, user_name, event_name, event_time, event_url, event_password):
+def send_invite_mail1( to_email, user_name, event_name, event_time, event_url, event_password):
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
@@ -19,7 +19,7 @@ def send_invite_mail1( to_email, name, user_name, event_name, event_time, event_
             'tags': ['password-resets'],
             'text': 'Example text content',
             'to': [{'email': to_email,
-                    'name': name,
+                    'name': user_name,
                     'type': 'to'}],
         }
         result = mandrill_client.messages.send(message = message)
