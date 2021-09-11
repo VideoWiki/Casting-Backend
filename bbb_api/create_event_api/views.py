@@ -220,7 +220,7 @@ class create_event(APIView):
         meeting.event_creator_email = user_email
         meeting.save()
         invite_mail(moderators, name)
-        if meeting.cover_image != "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg":
+        if meeting.cover_image != "https://api.cast.video.wiki/static/alt.png":
             c_i = BASE_URL + "/media/" + str(meeting.cover_image)
         else:
             c_i = meeting.cover_image
