@@ -18,8 +18,9 @@ class scheduled_meetings(APIView):
             event_id = i.id
             event_creator_name = i.event_creator_name
             event_creator_id = i.user_id
-            logo = BASE_URL + "/media/" + str(i.logo)
-            if i.cover_image != "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg":
+            # logo = BASE_URL + "/media/" + str(i.logo)
+            logo = i.logo
+            if i.cover_image != "https://api.cast.video.wiki/static/alt.png":
                 c_i = BASE_URL + "/media/" + str(i.cover_image)
             else:
                 c_i = i.cover_image
