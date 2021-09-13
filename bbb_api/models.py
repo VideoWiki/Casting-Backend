@@ -208,7 +208,7 @@ class Meeting(models.Model):
             ('meetingID', meeting_id),
             ('password', password),
             ('fullName', name),
-            ('avatarURL', avatar_url),
+            # ('avatarURL', avatar_url),
         ))
         hashed = cls.api_call(query, call)
         url = BBB_API_URL + 'api/' +call + '?' + hashed

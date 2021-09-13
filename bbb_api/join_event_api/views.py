@@ -14,8 +14,8 @@ class join_meeting(APIView):
         public_meeting_id = request.data['public_meeting_id']
         password = request.data['password']
         # room_type = request.data['room_type']
-        # avatar_url = request.data['avatar_url']
-        avatar_url = ""
+        avatar_url = request.data['avatar_url']
+        # avatar_url = ""
         meeting_obj = Meeting.objects.get(public_meeting_id=public_meeting_id)
         meeting_type = meeting_obj.meeting_type
         private_meeting_id = meeting_obj.private_meeting_id
