@@ -90,11 +90,12 @@ def send_remind_mail2( to_email, user_name, event_name, event_time, event_url, e
         print("An exception occurred: {}".format(e))
 
 
-def send_create1( to_email, user_name, event_name, event_time, event_url):
+def send_create1( to_email, user_name, event_name, event_time, event_url, meeting_url, moderator_password, attendee_password):
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
-            'html': email_create(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url),
+            'html': email_create(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url,
+                                 meeting_url=meeting_url, moderator_password=moderator_password, attendee_password=attendee_password),
             'from_email': 'support@videowiki.pt',
             'from_name': 'Video.Wiki',
             'global_merge_vars': [],
@@ -116,11 +117,12 @@ def send_create1( to_email, user_name, event_name, event_time, event_url):
     except mandrill.Error as e:
         print("An exception occurred: {}".format(e))
 
-def send_create2( to_email, user_name, event_name, event_time):
+def send_create2( to_email, user_name, event_name, event_time, meeting_url, moderator_password, attendee_password):
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
-            'html': email_create2(user_name=user_name, event_name=event_name, event_time=event_time),
+            'html': email_create2(user_name=user_name, event_name=event_name, event_time=event_time,
+                                  meeting_url=meeting_url, moderator_password=moderator_password, attendee_password=attendee_password),
             'from_email': 'support@videowiki.pt',
             'from_name': 'Video.Wiki',
             'global_merge_vars': [],

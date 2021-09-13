@@ -1,4 +1,4 @@
-def email_create2(user_name, event_name, event_time):
+def email_create2(user_name, event_name, event_time, meeting_url, moderator_password, attendee_password):
     template_part1 = """\
 <html lang="en">
     <head>
@@ -13,6 +13,10 @@ def email_create2(user_name, event_name, event_time):
     <br>
     Your cast <b>{}</b> has been created for <b>{}</b>.
     <br>
+    Here is the link for cast: {}
+    <br>
+    Password for moderator: <b>{}</b> and attendee: <b>{}</b>
+    <br>
     <br>
     All the best,
     <br>
@@ -21,5 +25,5 @@ def email_create2(user_name, event_name, event_time):
     </html>
 
 
-    """.format(user_name, event_name, event_time)
+    """.format(user_name, event_name, event_time, meeting_url, moderator_password, attendee_password)
     return template_part1

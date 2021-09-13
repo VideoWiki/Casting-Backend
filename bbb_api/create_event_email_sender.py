@@ -4,11 +4,11 @@ from cast_invitee_details.helper import send_invite_mail1, send_invite_mail2
 from bbb_api.create_event_api.helper import send_create1, send_create2
 
 
-def event_registration_mail(email, user_name, event_name, time, stream_url):
+def event_registration_mail(email, user_name, event_name, time, stream_url, meeting_url, moderator_password, attendee_password):
     if stream_url != "":
-        send_create1(email, user_name, event_name, time, stream_url)
+        send_create1(email, user_name, event_name, time, stream_url, meeting_url, moderator_password, attendee_password)
     else:
-        send_create2(email, user_name, event_name, time)
+        send_create2(email, user_name, event_name, time, meeting_url, moderator_password, attendee_password)
 
 
 def attendee_mail(user_name, email, event_name, event_time, event_url, event_password, stream_url):

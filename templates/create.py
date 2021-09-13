@@ -1,4 +1,4 @@
-def email_create(user_name, event_name, event_time, event_url):
+def email_create(user_name, event_name, event_time, event_url, meeting_url, moderator_password, attendee_password):
     template_part1 = """\
 <html lang="en">
     <head>
@@ -15,6 +15,10 @@ def email_create(user_name, event_name, event_time, event_url):
     <br>
     Here is the link for stream: {} 
     <br>
+    Here is the link for cast: {}
+    <br>
+    Password for moderator: <b>{}</b> and attendee: <b>{}</b>
+    <br>
     <br>
     All the best,
     <br>
@@ -23,5 +27,5 @@ def email_create(user_name, event_name, event_time, event_url):
     </html>
 
 
-    """.format(user_name, event_name, event_time, event_url)
+    """.format(user_name, event_name, event_time, event_url, meeting_url, moderator_password, attendee_password)
     return template_part1
