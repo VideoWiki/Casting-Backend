@@ -89,7 +89,7 @@ class create_event(APIView):
             meeting.logo = logo
         end_when_no_moderator = request.data['end_when_no_moderator']
         if end_when_no_moderator =="":
-            end_when_no_moderator = True
+            end_when_no_moderator = False
             meeting.end_when_no_moderator = end_when_no_moderator
         else:
             meeting.end_when_no_moderator = end_when_no_moderator
@@ -101,19 +101,19 @@ class create_event(APIView):
             meeting.guest_policy = guest_policy
         allow_moderator_to_unmute_user = request.data['allow_moderator_to_unmute_user']
         if allow_moderator_to_unmute_user == "":
-            allow_moderator_to_unmute_user = True
+            allow_moderator_to_unmute_user = False
             meeting.allow_moderator_to_unmute_user = allow_moderator_to_unmute_user
         else:
             meeting.allow_moderator_to_unmute_user = allow_moderator_to_unmute_user
         webcam_only_for_moderator = request.data['webcam_only_for_moderator']
         if webcam_only_for_moderator == "":
-            webcam_only_for_moderator = True
+            webcam_only_for_moderator = False
             meeting.webcam_only_for_moderator = webcam_only_for_moderator
         else:
             meeting.webcam_only_for_moderator = webcam_only_for_moderator
         auto_start_recording = request.data['auto_start_recording']
         if auto_start_recording == "":
-            auto_start_recording = True
+            auto_start_recording = False
             meeting.auto_start_recording = auto_start_recording
         else:
             meeting.auto_start_recording = auto_start_recording
@@ -125,34 +125,34 @@ class create_event(APIView):
             meeting.allow_start_stop_recording = allow_start_stop_recording
         disable_cam = request.data['disable_cam']
         if disable_cam == "":
-            disable_cam = True
+            disable_cam = False
             meeting.disable_cam = disable_cam
         else:
             meeting.disable_cam = disable_cam
         disable_mic = request.data['disable_mic']
         if disable_mic == "":
-            disable_mic = True
+            disable_mic = False
             meeting.disable_mic = disable_mic
         else:
             meeting.disable_mic = disable_mic
-        meeting.disable_note = True
-        meeting.disable_public_chat = True
-        meeting.disable_private_chat = True
+        meeting.disable_note = False
+        meeting.disable_public_chat = False
+        meeting.disable_private_chat = False
         lock_layout = request.data['lock_layout']
         if lock_layout == "":
-            lock_layout = True
+            lock_layout = False
             meeting.lock_layout = lock_layout
         else:
             meeting.lock_layout = lock_layout
         lock_on_join = request.data['lock_on_join']
         if lock_on_join == "":
-            lock_on_join = True
+            lock_on_join = False
             meeting.lock_on_join = lock_on_join
         else:
             meeting.lock_on_join = lock_on_join
         hide_users = request.data['hide_users']
         if hide_users == "":
-            hide_users = True
+            hide_users = False
             meeting.hide_users = hide_users
         else:
             meeting.hide_users = hide_users
