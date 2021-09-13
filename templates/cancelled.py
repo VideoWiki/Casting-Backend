@@ -8,7 +8,7 @@ def email_format(user_name, event_name, creator_name):
         <title>Cancelled</title>
     </head>
     <body>
-        Dear {},
+        Dear {} ,
     <br>
     <br>
     Your event <b>{}</b> was cancelled by <b>{}</b>. Once the presenter reschedules it, you'll be receiving a new link.
