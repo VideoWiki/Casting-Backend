@@ -9,6 +9,12 @@ from templates.create2 import email_create2
 
 def email_sender(name):
     cast_obj = Meeting.objects.get(event_name=name)
+    dt = cast_obj.schedule_time
+    date = dt.date()
+    hour = dt.hour
+    min = dt.minute
+    schedule_time = str(date) + " at " + str(hour) + ":" + str(min) + " GMT"
+    print(schedule_time)
     obj = CastInviteeDetails.objects.filter(cast=cast_obj)
     meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(cast_obj.public_meeting_id)
     for i in obj:

@@ -13,17 +13,23 @@ def post_save_emailer(sender, instance, created, **kwargs):
         a_password = instance.cast.attendee_password
         m_password = instance.cast.moderator_password
         vw_stream = instance.cast.bbb_stream_url_vw
+        dt = instance.cast.schedule_time
+        date = dt.date()
+        hour = dt.hour
+        min = dt.minute
+        schedule_time = str(date) + " at " + str(hour) + ":" + str(min) + " GMT"
+        print(instance.role, "ppp")
         if vw_stream == None:
             stream_url = ""
         else:
             stream_url = "https://play.stream.video.wiki/live/{}".format(instance.cast.public_meeting_id)
-        if instance.role == "speaker":
+        if instance.role == "attendee":
             send_mail_invite = attendee_mail(instance.name,
                                              instance.email,
                                              instance.cast.event_name,
-                                             instance.cast.schedule_time,
+                                             schedule_time,
                                              meeting_url,
-                                             m_password,
+                                             a_password,
                                              stream_url
                                              )
 
@@ -31,8 +37,8 @@ def post_save_emailer(sender, instance, created, **kwargs):
             send_mail_invite = attendee_mail(instance.name,
                                              instance.email,
                                              instance.cast.event_name,
-                                             instance.cast.schedule_time,
+                                             schedule_time,
                                              meeting_url,
-                                             a_password,
+                                             m_password,
                                              stream_url
                                              )

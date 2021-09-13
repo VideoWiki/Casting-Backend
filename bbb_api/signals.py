@@ -12,13 +12,18 @@ def post_save_prediction(sender, instance, created, **kwargs):
     if created:
         creator_email = instance.event_creator_email
         name = instance.event_name
-        schedule_time = instance.schedule_time
+        date = instance.schedule_time.date()
+        hour = instance.schedule_time.hour
+        min = instance.schedule_time.minute
+        print(date, hour, min, "222222")
+        # print(date + hour + min)
+        schedule_time = str(date) +" at "+ str(hour) + ":"+ str(min) + " GMT"
         vw_stream = instance.bbb_stream_url_vw
         user_name = instance.event_creator_name
         if vw_stream == None:
             stream_url = ""
         else:
-            stream_url = "https://play.stream.video.wiki/live/{}".format(instance.public_meeting_id)
+            stream_url = "https://play.stream.video.wiki/live/{}.m3u8".format(instance.public_meeting_id)
         event_registration_mail(str(creator_email), str(user_name),str(name), str(schedule_time), stream_url)
 
 

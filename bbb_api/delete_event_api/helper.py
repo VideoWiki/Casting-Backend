@@ -30,11 +30,11 @@ def event_cancelled_mail(email, user_name, event_name, creator_name):
 
     ]
     subject = "your event has been cancelled"
-    text = "Dear {}" \
-           "Your event {} was cancelled by {}. Once the presenter reschedules it, you'll be receiving a new link." \
-           "All the best," \
+    text = "Dear {}, " \
+           "Your event {} was cancelled by {}. Once the presenter reschedules it, you'll be receiving a new link. " \
+           "All the best, " \
            "VideoWiki team".format(user_name, event_name, creator_name)
-    status_res = send_mail(email, name, subject, global_merge_vars, text)
+    status_res = send_cancelled_mail(email, name, subject, user_name, event_name, creator_name)
     status = status_res
     return status
 
