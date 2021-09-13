@@ -41,8 +41,8 @@ else:
             }
         }
     }
-    BASE_URL = "https://dev.api.cast.video.wiki"
-    CLIENT_DOMAIN_URL = "https://dev.stream.videowiki.pt"
+    BASE_URL = "https://api.cast.video.wiki"
+    CLIENT_DOMAIN_URL = "https://cast.video.wiki"
 
 
     DATABASE = {
