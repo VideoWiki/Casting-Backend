@@ -140,7 +140,7 @@ class create_event(APIView):
         meeting.disable_private_chat = False
         lock_layout = request.data['lock_layout']
         if lock_layout == "":
-            lock_layout = False
+            lock_layout = True
             meeting.lock_layout = lock_layout
         else:
             meeting.lock_layout = lock_layout
