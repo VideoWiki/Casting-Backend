@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from bbb_api.models import Meeting
 from bbb_api.create_event_email_sender import event_registration_mail, time_subtractor
 from django_q.tasks import schedule
+from api.global_variable import CLIENT_DOMAIN_URL
 from django_q.models import Schedule
 
 
@@ -15,16 +16,16 @@ def post_save_prediction(sender, instance, created, **kwargs):
         date = instance.schedule_time.date()
         hour = instance.schedule_time.hour
         min = instance.schedule_time.minute
-        print(date, hour, min, "222222")
-        # print(date + hour + min)
         schedule_time = str(date) +" at "+ str(hour) + ":"+ str(min) + " GMT"
         vw_stream = instance.bbb_stream_url_vw
         user_name = instance.event_creator_name
+        meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(instance.public_meeting_id)
         if vw_stream == None:
             stream_url = ""
         else:
             stream_url = "https://play.stream.video.wiki/live/{}.m3u8".format(instance.public_meeting_id)
-        event_registration_mail(str(creator_email), str(user_name),str(name), str(schedule_time), stream_url)
+        event_registration_mail(str(creator_email), str(user_name),str(name), str(schedule_time),
+                                stream_url, meeting_url, instance.moderator_password, instance.attendee_password)
 
 
 

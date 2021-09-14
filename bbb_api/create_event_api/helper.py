@@ -14,7 +14,6 @@ def email_sender(name):
     hour = dt.hour
     min = dt.minute
     schedule_time = str(date) + " at " + str(hour) + ":" + str(min) + " GMT"
-    print(schedule_time)
     obj = CastInviteeDetails.objects.filter(cast=cast_obj)
     meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(cast_obj.public_meeting_id)
     for i in obj:
@@ -25,7 +24,7 @@ def email_sender(name):
             password = cast_obj.attendee_password
         else:
             password = cast_obj.moderator_password
-        send_remind_mail1(email, user_name=user_name, event_name=cast_obj.event_name, event_time=cast_obj.schedule_time, event_url=meeting_url, event_password=password)
+        send_remind_mail1(email, user_name=user_name, event_name=cast_obj.event_name, event_time=schedule_time, event_url=meeting_url, event_password=password)
     return "sent"
 
 
