@@ -69,11 +69,11 @@ class join_meeting(APIView):
             except:
                 pass
             if curr_user_id == meeting_user_id:
-                sch_time = meeting_obj.schedule_time.time()
                 duration = meeting_obj.duration
-                reach_time = time_adder(sch_time, duration)
-                current = datetime.utcnow().time()
-                status = time_in_range(sch_time, reach_time, current)
+                subtracted_time = sub_time(meeting_obj.schedule_time)
+                added_time = add_time(meeting_obj.schedule_time, duration)
+                current = datetime.utcnow()
+                status = time_in_range(subtracted_time, added_time, current)
                 if status == True:
                     event_scheduler(private_meeting_id)
                     result = Meeting.join_url(private_meeting_id,
@@ -85,6 +85,10 @@ class join_meeting(APIView):
                             s_url = str(meeting_obj.bbb_stream_url_youtube)
                         else:
                             s_url = meeting_obj.bbb_stream_url_vw
+                        if s_url == "":
+                            return Response({'status': True,
+                                             'url': result}
+                                            )
                         url_status = "https://api.stream.video.wiki/api/cast/live/status"
                         payload = {'meeting_id': str(private_meeting_id)}
                         files = []
@@ -123,6 +127,16 @@ class join_meeting(APIView):
                                     status=HTTP_400_BAD_REQUEST
                                     )
             elif password == attendee_password:
+                current = datetime.utcnow()
+                ori_time = og_time(meeting_obj.schedule_time)
+                added_time = add_time(meeting_obj.schedule_time,meeting_obj.duration)
+                status = time_in_range(ori_time, added_time, current)
+                if status == False:
+                    message = "the event you are trying to join has either ended or yet to begin"
+                    return Response({'status': False,
+                                     'message': message},
+                                    status=HTTP_400_BAD_REQUEST
+                                    )
                 try:
                     status = Meeting.is_meeting_running(private_meeting_id)
                     if status == "false":
@@ -173,15 +187,26 @@ def event_scheduler(private_meeting_id):
     return 'created'
 
 
-def time_adder(b, duration):
-    s2 = '{}:{}:{}'.format(b.hour, b.minute, b.second)
-    format = '%H:%M:%S'
-    durarion_add = datetime.strptime(s2, format)  + timedelta(minutes=duration)
-    duration_added = durarion_add.time()
-    added_time = datetime.strptime(str(duration_added), format)  + timedelta(minutes=30)
-    return added_time.time()
-
-
 def time_in_range(start, end, current):
 
     return start <= current <= end
+
+def sub_time(b):
+    print(b)
+    original_time = datetime(year=int(b.year), month=int(b.month), day=int(b.day)) + timedelta(hours=int(b.hour),
+                                                                                       minutes=int(b.minute))
+    durarion_sub = original_time - timedelta(minutes=30)
+    return durarion_sub
+
+def add_time(b, duration):
+    original_time = datetime(year=int(b.year), month=int(b.month), day=int(b.day)) + timedelta(hours=int(b.hour),
+                                                                                               minutes=int(b.minute))
+    durarion_sub = original_time + timedelta(minutes=duration) + timedelta(minutes=30)
+    return durarion_sub
+
+def og_time(b):
+    original_time = datetime(year=int(b.year), month=int(b.month), day=int(b.day)) + timedelta(hours=int(b.hour),
+                                                                                               minutes=int(b.minute))
+    return original_time
+
+
