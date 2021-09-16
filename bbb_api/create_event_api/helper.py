@@ -6,6 +6,7 @@ from templates.reminder2 import reminder2
 from templates.reminder1 import reminder1
 from templates.create import email_create
 from templates.create2 import email_create2
+import json
 
 def email_sender(name):
     cast_obj = Meeting.objects.get(event_name=name)
@@ -29,8 +30,14 @@ def email_sender(name):
 
 
 def invite_mail(moderators, meeting_name):
+    m_list = []
+    temp = moderators[2:-2]
+    p = temp.split('}, {')
+    for x in p:
+        z = '{' + x + '}'
+        m_list.append(json.loads(z))
     obj = Meeting.objects.get(event_name=meeting_name)
-    for i in moderators:
+    for i in m_list:
         CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"], role=i["type"])
 
 def send_remind_mail1( to_email, user_name, event_name, event_time, event_url, event_password):

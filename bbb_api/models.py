@@ -157,7 +157,7 @@ class Meeting(models.Model):
     def start(self):
         call = 'create'
         voicebridge = 70000 + random.randint(0, 9999)
-        query = urlencode((
+        tuple_1 = (
             ('name', self.event_name),
             ('meetingID', self.private_meeting_id),
             ('attendeePW', self.attendee_password),
@@ -192,10 +192,15 @@ class Meeting(models.Model):
             ('meta_secondary-color', self.secondary_color),
             ('meta_back-image', self.back_image),
             ('meta_gl-listed', False)
-
-
-
-        ))
+        )
+        tuple_2 = ('bannerText', self.banner_text)
+        if self.banner_text == "":
+            f_tuple = tuple_1
+        else:
+            tuple_1_list = list(tuple_1)
+            tuple_1_list.append(tuple_2)
+            f_tuple = tuple(tuple_1_list)
+        query = urlencode(f_tuple)
         hashed = self.api_call(query, call)
         url = BBB_API_URL + 'api/' + call + '?' + hashed
         result = parse(urlopen(url).read())
