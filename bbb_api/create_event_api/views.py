@@ -178,14 +178,17 @@ class create_event(APIView):
             cover_image = "https://api.cast.video.wiki/static/alt.png"
             meeting.cover_image = cover_image
         is_streaming = request.data["is_streaming"]
-        if is_streaming == "":
+        bool_is_streaming = bool(is_streaming)
+        if bool_is_streaming == "":
             meeting.is_streaming = False
-        meeting.is_streaming = is_streaming
-        if is_streaming == True:
+        else:
+            meeting.is_streaming = bool_is_streaming
+        if bool_is_streaming == True:
             bbb_resolution = "1280x720"
             meeting.bbb_resolution = bbb_resolution
             vw_stream_url = request.data["vw_stream_url"]
-            if vw_stream_url == True:
+            c_bool = bool(vw_stream_url)
+            if c_bool == True:
                 url = "rtmp://play.stream.video.wiki/stream/{}".format(meeting.public_meeting_id)
                 meeting.bbb_stream_url_vw = url
             youtube_stream_url = request.data["youtube_stream_url"]
