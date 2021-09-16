@@ -74,11 +74,7 @@ class create_event(APIView):
         else:
             meeting.mute_on_start = mute_on_start
         banner_text = request.data['banner_text']
-        if banner_text == "":
-            banner_text = "Welcome to the Cast"
-            meeting.banner_text = banner_text
-        else:
-            meeting.banner_text = banner_text
+        meeting.banner_text = banner_text
         logo = request.data['logo']
         if logo == "":
             logo = "https://class.video.wiki/images/VideoWiki_Logo.svg"
