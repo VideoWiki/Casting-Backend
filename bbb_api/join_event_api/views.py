@@ -192,7 +192,6 @@ def time_in_range(start, end, current):
     return start <= current <= end
 
 def sub_time(b):
-    print(b)
     original_time = datetime(year=int(b.year), month=int(b.month), day=int(b.day)) + timedelta(hours=int(b.hour),
                                                                                        minutes=int(b.minute))
     durarion_sub = original_time - timedelta(minutes=30)

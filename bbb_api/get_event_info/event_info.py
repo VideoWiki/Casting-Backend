@@ -18,7 +18,7 @@ class meeting_info(APIView):
             short_description = event_object.short_description
             event_day = event_object.schedule_time.date()
             event_time = event_object.schedule_time.time()
-            if event_object.cover_image != "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg":
+            if event_object.cover_image != "https://api.cast.video.wiki/static/alt.png":
                 c_i = BASE_URL + "/media/" + str(event_object.cover_image)
             else:
                 c_i = event_object.cover_image

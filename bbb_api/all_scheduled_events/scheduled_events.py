@@ -19,7 +19,11 @@ class scheduled_meetings(APIView):
             event_creator_name = i.event_creator_name
             event_creator_id = i.user_id
             # logo = BASE_URL + "/media/" + str(i.logo)
-            logo = i.logo
+            logo_obj = i.logo
+            if logo_obj == "https://class.video.wiki/images/VideoWiki_Logo.svg":
+                logo = logo_obj
+            else:
+                logo = BASE_URL + logo_obj.url
             if i.cover_image != "https://api.cast.video.wiki/static/alt.png":
                 c_i = BASE_URL + "/media/" + str(i.cover_image)
             else:

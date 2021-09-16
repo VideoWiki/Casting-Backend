@@ -170,7 +170,7 @@ class Meeting(models.Model):
             ('logoutURL', self.logout_url),
             ('muteOnStart', self.mute_on_start),
             ('bannerText', self.banner_text),
-            ('logo', self.logo),
+            ('logo', str(path_getter(self.logo))),
             ('endWhenNoModerator', self.end_when_no_moderator),
             ('guestPolicy', self.guest_policy),
             ('allowModsToUnmuteUsers', self.allow_moderator_to_unmute_user),
@@ -253,7 +253,10 @@ class TemporaryFiles(models.Model):
 
 
 def path_getter(path):
-    url = BASE_URL + path.url
+    if path == "https://class.video.wiki/images/VideoWiki_Logo.svg":
+        url = path
+    else:
+        url = BASE_URL + path.url
     return url
 
 

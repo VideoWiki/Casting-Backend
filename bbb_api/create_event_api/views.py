@@ -79,11 +79,9 @@ class create_event(APIView):
             meeting.banner_text = banner_text
         else:
             meeting.banner_text = banner_text
-        # meeting.banner_color = request.data['banner_color']
-        # logo = request.data['logo']
-        logo = "https://class.video.wiki/images/VideoWiki_Logo.svg"
+        logo = request.data['logo']
         if logo == "":
-            # logo = "https://s3.us-east-2.amazonaws.com/video.wiki/media/default_logo/casting_logo.jpg"
+            logo = "https://class.video.wiki/images/VideoWiki_Logo.svg"
             meeting.logo = logo
         else:
             meeting.logo = logo
@@ -178,12 +176,11 @@ class create_event(APIView):
         meeting.back_image = request.data['back_image']
         meeting.event_tag = request.data['event_tag']
         cover_image = request.data["cover_image"]
-        meeting.cover_image = "https://api.cast.video.wiki/static/alt.png"
-        # if cover_image != "":
-        #     meeting.cover_image = cover_image
-        # else:
-        #     cover_image = "http://s3.us-east-2.amazonaws.com/video.wiki/media/custom_background/lqluca-micheli-ruWkmt3nU58-unsplash.jpg"
-        #     meeting.cover_image = cover_image
+        if cover_image != "":
+            meeting.cover_image = cover_image
+        else:
+            cover_image = "https://api.cast.video.wiki/static/alt.png"
+            meeting.cover_image = cover_image
         is_streaming = request.data["is_streaming"]
         if is_streaming == "":
             meeting.is_streaming = False
@@ -206,7 +203,6 @@ class create_event(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         meeting.user_id = user_id
-        # meeting.save()
         user_name = user_info_name(token)
         if user_id == -1:
             return Response({
