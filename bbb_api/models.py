@@ -203,7 +203,9 @@ class Meeting(models.Model):
         query = urlencode(f_tuple)
         hashed = self.api_call(query, call)
         url = BBB_API_URL + 'api/' + call + '?' + hashed
+        print(url, "url")
         result = parse(urlopen(url).read())
+        print(result)
         return result
 
     @classmethod
