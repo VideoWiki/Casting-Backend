@@ -59,15 +59,18 @@ class join_meeting(APIView):
                                 )
 
         else: # meeting is private. password will come
+            print("1")
             attendee_password = meeting_obj.attendee_password
             mod_password = meeting_obj.moderator_password
             meeting_user_id = meeting_obj.user_id
             curr_user_id = -1
+            print("2")
             try:
                 token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
                 curr_user_id = user_info(token)
             except:
                 pass
+            print("3")
             if curr_user_id == meeting_user_id:
                 duration = meeting_obj.duration
                 subtracted_time = sub_time(meeting_obj.schedule_time)
@@ -75,7 +78,9 @@ class join_meeting(APIView):
                 current = datetime.utcnow()
                 status = time_in_range(subtracted_time, added_time, current)
                 if status == True:
+                    print("4")
                     event_scheduler(private_meeting_id)
+                    print("5")
                     result = Meeting.join_url(private_meeting_id,
                                               name,
                                               meeting_obj.moderator_password,
