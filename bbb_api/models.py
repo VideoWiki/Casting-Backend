@@ -216,7 +216,6 @@ class Meeting(models.Model):
         ))
         hashed = cls.api_call(query, call)
         url = BBB_API_URL + 'api/' +call + '?' + hashed
-        print(url)
         return url
 
     @classmethod
