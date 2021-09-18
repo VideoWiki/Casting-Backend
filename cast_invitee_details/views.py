@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from .models import CastInviteeDetails
 from rest_framework.views import APIView
 from bbb_api.models import Meeting
@@ -8,7 +7,7 @@ from rest_framework.response import Response
 class add_invitees(APIView):
     def post(self, request):
         cast_id = request.data["cast_id"]
-        obj = Meeting.objects.get(id=cast_id)
+        obj = Meeting.objects.get(public_meeting_id=cast_id)
         if id != None:
             CastInviteeDetails.cast_id = cast_id
             invitee_list = request.data['invitee_list']

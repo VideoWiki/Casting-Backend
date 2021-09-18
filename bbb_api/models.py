@@ -169,7 +169,6 @@ class Meeting(models.Model):
             ('duration', self.duration),
             ('logoutURL', self.logout_url),
             ('muteOnStart', self.mute_on_start),
-            ('bannerText', self.banner_text),
             ('logo', str(path_getter(self.logo))),
             ('endWhenNoModerator', self.end_when_no_moderator),
             ('guestPolicy', self.guest_policy),
@@ -203,9 +202,7 @@ class Meeting(models.Model):
         query = urlencode(f_tuple)
         hashed = self.api_call(query, call)
         url = BBB_API_URL + 'api/' + call + '?' + hashed
-        print(url, "url")
         result = parse(urlopen(url).read())
-        print(result)
         return result
 
     @classmethod
