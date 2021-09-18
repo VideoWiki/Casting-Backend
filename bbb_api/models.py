@@ -61,7 +61,6 @@ class Meeting(models.Model):
     lock_on_join = models.BooleanField(default=True, null=True)
     hide_users = models.BooleanField(default=False, null=True)
     schedule_time = models.DateTimeField(blank=False, default=django.utils.timezone.now, null=True)
-    moderators = models.EmailField(blank=True, null=True)
     primary_color = models.CharField(blank=True, max_length=20, null=True)
     secondary_color = models.CharField(blank=True, max_length=20, null=True)
     back_image = models.URLField(blank=True, null=True)
