@@ -81,7 +81,7 @@ class join_meeting(APIView):
                                               meeting_obj.moderator_password,
                                               avatar_url)
                     if meeting_obj.is_streaming == True:
-                        if meeting_obj.bbb_stream_url_youtube != None:
+                        if meeting_obj.bbb_stream_url_youtube != None and meeting_obj.bbb_stream_url_youtube != "":
                             s_url = str(meeting_obj.bbb_stream_url_youtube)
                         else:
                             s_url = str(meeting_obj.bbb_stream_url_vw)

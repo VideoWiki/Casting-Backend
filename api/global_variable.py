@@ -66,6 +66,8 @@ AWS_BASE_URL = 'https://s3.us-east-2.amazonaws.com/video.wiki/media/cover_images
 BASE_URL_AWS = "http://s3.us-east-2.amazonaws.com/video.wiki/media/"
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-BBB_API_URL = 'https://dev.stream.video.wiki/bigbluebutton/'
+# BBB_API_URL = 'https://dev.stream.video.wiki/bigbluebutton/'
+BBB_API_URL = 'https://live.cast.video.wiki/bigbluebutton/'
 
-SALT = 'vOIxIbVyXS6xI4qiX94QO1kxoT42ITp58bJb3W1yDKI'
+# SALT = 'vOIxIbVyXS6xI4qiX94QO1kxoT42ITp58bJb3W1yDKI'
+SALT = 'Gm0Fl8eL80QiuU054thUnys5DOmgxyG5p2sotcTM'

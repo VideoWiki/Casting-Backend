@@ -20,7 +20,7 @@ Your cast url is {}.
 <br>
 Please join, provide your name and the following password: <strong>{}</strong>
 <br>
-Your stream url is {}.m3u8
+Your stream url is {}
 <br>
 
 Don't miss it!

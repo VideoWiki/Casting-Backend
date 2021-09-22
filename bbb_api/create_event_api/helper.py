@@ -32,10 +32,11 @@ def email_sender(name):
 def invite_mail(moderators, meeting_name):
     m_list = []
     temp = moderators[2:-2]
-    p = temp.split('}, {')
+    p = temp.split('},{')
     for x in p:
         z = '{' + x + '}'
-        m_list.append(json.loads(z))
+        j = json.loads(z)
+        m_list.append(j)
     obj = Meeting.objects.get(event_name=meeting_name)
     for i in m_list:
         CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"], role=i["type"])

@@ -22,7 +22,7 @@ def post_save_emailer(sender, instance, created, **kwargs):
         if vw_stream == None:
             stream_url = ""
         else:
-            stream_url = "https://play.stream.video.wiki/live/{}".format(instance.cast.public_meeting_id)
+            stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL,instance.cast.public_meeting_id)
         if instance.role == "attendee":
             send_mail_invite = attendee_mail(instance.name,
                                              instance.email,

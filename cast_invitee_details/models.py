@@ -7,5 +7,7 @@ class CastInviteeDetails(models.Model):
     name = models.CharField(max_length=20, blank=True, null= True)
     email = models.EmailField(max_length=50, blank= True, null= True)
     role = models.CharField(max_length= 10, blank=True, null=True)
+    otp = models.CharField(max_length=9, blank=True, null=True)
+    count = models.IntegerField(default=0, help_text='Number of opt_sent')
 
 
