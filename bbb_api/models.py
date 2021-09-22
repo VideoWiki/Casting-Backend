@@ -192,7 +192,7 @@ class Meeting(models.Model):
             ('meta_gl-listed', False)
         )
         tuple_2 = ('bannerText', self.banner_text)
-        if self.banner_text == "":
+        if self.banner_text == None:
             f_tuple = tuple_1
         else:
             tuple_1_list = list(tuple_1)

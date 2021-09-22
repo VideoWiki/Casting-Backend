@@ -13,7 +13,9 @@ class join_meeting(APIView):
         name = request.data['name']
         public_meeting_id = request.data['public_meeting_id']
         password = request.data['password']
+        # room_type = request.data['room_type']
         avatar_url = request.data['avatar_url']
+        # avatar_url = ""
         meeting_obj = Meeting.objects.get(public_meeting_id=public_meeting_id)
         meeting_type = meeting_obj.meeting_type
         private_meeting_id = meeting_obj.private_meeting_id
@@ -79,10 +81,10 @@ class join_meeting(APIView):
                                               meeting_obj.moderator_password,
                                               avatar_url)
                     if meeting_obj.is_streaming == True:
-                        if meeting_obj.bbb_stream_url_youtube != "":
+                        if meeting_obj.bbb_stream_url_youtube != None:
                             s_url = str(meeting_obj.bbb_stream_url_youtube)
                         else:
-                            s_url = meeting_obj.bbb_stream_url_vw
+                            s_url = str(meeting_obj.bbb_stream_url_vw)
                         if s_url == "":
                             return Response({'status': True,
                                              'url': result}
