@@ -84,10 +84,10 @@ class join_meeting(APIView):
                                               avatar_url)
                     if meeting_obj.is_streaming == True:
                         if meeting_obj.bbb_stream_url_youtube != None and meeting_obj.bbb_stream_url_youtube != "":
-                            s_url = str(meeting_obj.bbb_stream_url_youtube)
+                            s_url = meeting_obj.bbb_stream_url_youtube
                         else:
-                            s_url = str(meeting_obj.bbb_stream_url_vw)
-                        if s_url == "":
+                            s_url = meeting_obj.bbb_stream_url_vw
+                        if s_url == None:
                             return Response({'status': True,
                                              'url': result}
                                             )
@@ -109,7 +109,7 @@ class join_meeting(APIView):
                             "BBB_RESOLUTION": str(meeting_obj.bbb_resolution),
                             "BBB_START_MEETING": "false",
                             "BBB_MEETING_ID": str(meeting_obj.private_meeting_id),
-                            "BBB_STREAM_URL": s_url,
+                            "BBB_STREAM_URL": str(s_url),
                             "BBB_SHOW_CHAT": "false",
                             "BBB_USER_NAME": "Live",
                             "BBB_MODERATOR_PASSWORD": str(meeting_obj.moderator_password),
