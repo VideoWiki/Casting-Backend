@@ -70,6 +70,8 @@ class join_meeting(APIView):
                 pass
             if curr_user_id == meeting_user_id:
                 duration = meeting_obj.duration
+                if duration == 0:
+                    duration = 1440
                 subtracted_time = sub_time(meeting_obj.schedule_time)
                 added_time = add_time(meeting_obj.schedule_time, duration)
                 current = datetime.utcnow()
@@ -127,16 +129,6 @@ class join_meeting(APIView):
                                     status=HTTP_400_BAD_REQUEST
                                     )
             elif password == attendee_password:
-                current = datetime.utcnow()
-                ori_time = og_time(meeting_obj.schedule_time)
-                added_time = add_time(meeting_obj.schedule_time,meeting_obj.duration)
-                status = time_in_range(ori_time, added_time, current)
-                if status == False:
-                    message = "the event you are trying to join has either ended or yet to begin"
-                    return Response({'status': False,
-                                     'message': message},
-                                    status=HTTP_400_BAD_REQUEST
-                                    )
                 try:
                     status = Meeting.is_meeting_running(private_meeting_id)
                     if status == "false":
