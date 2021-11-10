@@ -30,6 +30,7 @@ class join_meeting(APIView):
                 pass
 
             if curr_user_id == meeting_user_id:
+                event_scheduler(private_meeting_id)
                 result = Meeting.join_url(private_meeting_id,
                                           name,
                                           meeting_obj.moderator_password,
