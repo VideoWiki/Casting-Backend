@@ -41,6 +41,12 @@ class join_meeting(APIView):
                                 )
 
             if password == meeting_obj.moderator_password:
+                status = Meeting.is_meeting_running(private_meeting_id)
+                if status == "false":
+                    return Response({
+                        "status": False,
+                        "message": "the event you are trying to join has either ended or yet to begin"
+                    },status=HTTP_400_BAD_REQUEST)
                 result = Meeting.join_url(private_meeting_id,
                                           name,
                                           meeting_obj.moderator_password,
@@ -50,6 +56,13 @@ class join_meeting(APIView):
                                  'url': result})
 
             else:  # attendee
+                status = Meeting.is_meeting_running(private_meeting_id)
+                print(status)
+                if status == "false":
+                    return Response({
+                        "status": False,
+                        "message": "the event you are trying to join has either ended or yet to begin"
+                    },status=HTTP_400_BAD_REQUEST)
                 result = Meeting.join_url(private_meeting_id,
                                           name,
                                           meeting_obj.attendee_password,
