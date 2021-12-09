@@ -105,11 +105,13 @@ class join_meeting(APIView):
                             return Response({'status': True,
                                              'url': result}
                                             )
+                        print(s_url ,"1")
                         url_status = "https://api.stream.video.wiki/api/cast/live/status"
                         payload = {'meeting_id': str(private_meeting_id)}
                         files = []
                         headers = {}
                         response1 = requests.request("POST", url_status, headers=headers, data=payload, files=files)
+                        print(response1)
                         sp = response1.text.split(":")
                         sp2 = sp[1].split(",")
                         if sp2[0] == 'true':
@@ -134,6 +136,7 @@ class join_meeting(APIView):
                             'Content-Type': 'application/json'
                         }
                         r = requests.post(url, data=json.dumps(stream_dict), headers= headers)
+                        print(r.text,"11")
                     return Response({'status': True,
                                      'url': result}
                                     )

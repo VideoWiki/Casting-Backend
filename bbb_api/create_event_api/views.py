@@ -1,3 +1,4 @@
+import pytz
 from rest_framework.views import APIView
 from ..models import Meeting
 from rest_framework.response import Response
@@ -6,11 +7,11 @@ from library.helper import private_meeting_id_generator, \
     user_info_email, generate_random_key, \
     user_info_name
 from rest_framework import status
-from api.global_variable import BASE_URL
-from ..create_event_email_sender import time_convertor
+from api.global_variable import BASE_URL, BASE_DIR
+from ..create_event_email_sender import time_convertor, tc
 from .helper import invite_mail
 import datetime
-
+from .start_now_func import start_cast_now
 
 class create_event(APIView):
     def post(self, request):
@@ -150,20 +151,32 @@ class create_event(APIView):
             meeting.hide_users = hide_users
         else:
             meeting.hide_users = hide_users
+        start_now = request.data['start_now']
         schedule_time = request.data['schedule_time']
         if schedule_time == "":
-            return Response({"status": False,
-                             "message": "no time provided"},
-                            status=status.HTTP_400_BAD_REQUEST
-                            )
-        meeting.raw_time = schedule_time
-        converted_time = time_convertor(schedule_time)
-        time_now = datetime.datetime.now()
-        if time_now > converted_time:
+            start_now = "True"
+        timezone = request.data['timezone']
+        timezone_adder(tz=timezone)
+        print(type(schedule_time), type(timezone))
+        if start_now == "True":
+            start_now = True
+        elif timezone=="":
             return Response({
                 "status": False,
-                "message": "invalid schedule time"},status=status.HTTP_400_BAD_REQUEST)
-        meeting.schedule_time = converted_time
+                "message": "no timezone selected"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        if start_now == True:
+            schedule_time = datetime.datetime.now().astimezone(pytz.utc)
+
+        meeting.raw_time = schedule_time
+        if start_now != True:
+            ct = tc(schedule_time,timezone)
+            time_now = datetime.datetime.now().astimezone(pytz.utc)
+            if time_now > ct:
+                return Response({
+                    "status": False,
+                    "message": "invalid schedule time"},status=status.HTTP_400_BAD_REQUEST)
+            meeting.schedule_time = ct
         moderators = request.data['invitee_details']
         meeting.primary_color = request.data['primary_color']
         meeting.secondary_color = request.data['secondary_color']
@@ -213,15 +226,31 @@ class create_event(APIView):
         user_email = user_info_email(token)
         meeting.event_creator_email = user_email
         meeting.save()
-        invite_mail(moderators, name)
+        status_mail = invite_mail(moderators, name)
+        if start_now == True:
+            url = start_cast_now(public_meeting_id=meeting.public_meeting_id, name=meeting.event_creator_name)
+            msg = "cast started successfully"
+        else:
+            url = None
+            msg = 'meeting scheduled successfully'
+
         if meeting.cover_image != "https://api.cast.video.wiki/static/alt.png":
             c_i = BASE_URL + "/media/" + str(meeting.cover_image)
         else:
             c_i = meeting.cover_image
-        msg = 'meeting scheduled successfully'
+
         return Response({'status': True, 'event_name': meeting.event_name,
                          'meeting_id': meeting.public_meeting_id,
                          'tag': meeting.event_tag,
                          'cover_image': str(c_i),
-                         'message': msg}
+                         'message': msg,
+                         'url': url}
                         )
+
+
+def timezone_adder(tz):
+    dir = BASE_DIR + "/timezone_calc/timezone.txt"
+    with open(dir, "a") as f:
+        f.write("\n" + tz)
+    f.close()
+

@@ -8,6 +8,7 @@ from templates.create import email_create
 from templates.create2 import email_create2
 import json
 
+
 def email_sender(name):
     cast_obj = Meeting.objects.get(event_name=name)
     dt = cast_obj.schedule_time
