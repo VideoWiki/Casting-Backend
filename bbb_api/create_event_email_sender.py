@@ -2,6 +2,7 @@ from library.mailchimp import send_mail
 from datetime import datetime, timedelta
 from cast_invitee_details.helper import send_invite_mail1, send_invite_mail2
 from bbb_api.create_event_api.helper import send_create1, send_create2
+import pytz
 
 
 def event_registration_mail(email, user_name, event_name, time, stream_url, meeting_url, moderator_password, attendee_password):
@@ -62,6 +63,14 @@ def time_convertor(time):
                                                                                            minutes=int(min))
         f_time = original_time + timedelta(hours=int(d[:2]), minutes=int(d[2:])) + timedelta(hours=int(d[:2]), minutes=int(d[2:]))
     return f_time
+
+
+def tc(time, tz1):
+    local = pytz.timezone(tz1)
+    naive = datetime.strptime(time, "%Y-%m-%d %H:%M:%S")
+    local_dt = local.localize(naive, is_dst=None)
+    utc_dt = local_dt.astimezone(pytz.utc)
+    return utc_dt
 
 
 
