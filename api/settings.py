@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'bbb_api',
     'cast_invitee_details',
     'custom_background',
-    'library'
+    'library',
+    'timezone_calc'
 ]
 
 MIDDLEWARE = [

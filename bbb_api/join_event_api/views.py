@@ -136,7 +136,6 @@ class join_meeting(APIView):
                             'Content-Type': 'application/json'
                         }
                         r = requests.post(url, data=json.dumps(stream_dict), headers= headers)
-                        print(r.text,"11")
                     return Response({'status': True,
                                      'url': result}
                                     )
