@@ -17,6 +17,7 @@ Asia/Calcutta
 Asia/Kolkata
 
 Asia/Kolkata
+<<<<<<< HEAD
 
 Asia/Kolkata
 GMT
@@ -43,10 +44,13 @@ Asia/Kolkata
 Asia/Kolkata
 Asia/Kolkata
 Europe/Lisbon
+=======
+>>>>>>> b10b64e78749163fe0332fd3481c43c003090145
 Asia/Kolkata
 Asia/Kolkata
 Asia/Kolkata
 Asia/Kolkata
+<<<<<<< HEAD
 Asia/Kolkata
 Asia/Kolkata
 
@@ -60,4 +64,6 @@ Asia/Kolkata
 Asia/Kolkata
 Asia/Kolkata
 
+=======
+>>>>>>> b10b64e78749163fe0332fd3481c43c003090145
 Asia/Kolkata
