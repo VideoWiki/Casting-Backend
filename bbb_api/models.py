@@ -72,6 +72,8 @@ class Meeting(models.Model):
     bbb_stream_url_vw = models.CharField(blank=True, null=True, max_length=100)
     bbb_stream_url_youtube = models.CharField(blank=True, null=True, max_length=100)
     raw_time = models.CharField(max_length=100, blank=True, null=True)
+    give_nft = models.BooleanField(default=False, null=True)
+    send_otp = models.BooleanField(default=False, null=True)
 
 
     @classmethod

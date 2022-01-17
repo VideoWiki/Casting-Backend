@@ -10,17 +10,18 @@ from django.core.exceptions import ObjectDoesNotExist
 from library.helper import user_info
 # Create your views here.
 
+
 class add_invitees(APIView):
     def post(self, request):
         cast_id = request.data["cast_id"]
         obj = Meeting.objects.get(public_meeting_id=cast_id)
-        if id != None:
+        if cast_id != None:
             CastInviteeDetails.cast_id = cast_id
             invitee_list = request.data['invitee_list']
             for i in invitee_list:
                 CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"], role=i["type"])
             return Response({"status": True})
-        return Response({"status": False})
+        return Response({"status": False}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class fetch_details(APIView):
@@ -117,61 +118,6 @@ class delete_invitee(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-class validate_email_Send_otp(APIView):
-    permission_classes = (AllowAny, )
-    def get(self, request, *args, **kwargs):
-        email = request.GET.get('email')
-        cast_id = request.GET.get('cast_id')
-        if email:
-            email  = str(email)
-            try:
-                meet_obj = Meeting.objects.get(public_meeting_id = cast_id)
-            except ObjectDoesNotExist:
-                message = "cast id does not exist"
-                return Response({"status": False,
-                                 "message": message}, status=status.HTTP_400_BAD_REQUEST)
-            cast_obj = CastInviteeDetails.objects.filter(cast=meet_obj)
-            email_o = cast_obj.filter(email=str(email)).all()
-            if email_o.count() != 0:
-                for i in email_o:
-                    e_role = i.role
-                    if e_role == "viewer":
-                            key = send_otp(email)
-                            if key:
-                                old = email_o.filter(email__iexact=email)
-                                if old.exists():
-                                    old = old.first()
-                                    count = old.count
-                                    old.count = count + 1
-                                    old.otp = key
-                                    old.save()
-                                    status_code = status.HTTP_200_OK
-                                    mail_status = send_otp_details(email, key)
-                                    return Response({
-                                        'status': True,
-                                        'detail': 'otp sent successfully.',
-                                        'mail': mail_status
-                                    }, status_code)
-                    else:
-                        message = "user permission error"
-                        return Response({"status": False,
-                                         "message": message}, status=status.HTTP_400_BAD_REQUEST)
-            elif email_o.count() == 0:
-                status_code = status.HTTP_400_BAD_REQUEST
-                return Response({
-                    'status': False,
-                    'detail': 'invalid email'
-                }, status_code)
-
-        else:
-            status_code = status.HTTP_400_BAD_REQUEST
-            return Response({
-                'status' : False,
-                'detail' : 'please provide email'
-                }, status_code)
-
-
 def send_otp(email):
     if email:
         key = get_random_string(6, '0123456789')
@@ -180,46 +126,7 @@ def send_otp(email):
         return False
 
 
-class validate_otp(APIView):
-    permission_classes = (AllowAny, )
-    def get(self, request, *args, **kwargs):
-        email = request.GET.get('email' , False)
-        otp_sent = request.GET.get('otp', False)
-        cast_id = request.GET.get('cast_id')
-        meet_obj = Meeting.objects.get(public_meeting_id=cast_id)
-        cast_obj = CastInviteeDetails.objects.filter(cast=meet_obj)
-        email_o = cast_obj.filter(email=str(email)).all()
-        if email and otp_sent:
-            old = email_o.filter(email__iexact = email)
-            if old.exists():
-                old = old.first()
-                otp = old.otp
-                if str(otp_sent) == str(otp):
-                    old.validated = True
-                    old.save()
-                    response = "validated"
-                    status_code = status.HTTP_200_OK
-                    return Response({"status": True,
-                                     "message":response}, status_code)
 
-                else:
-                    status_code = status.HTTP_400_BAD_REQUEST
-                    return Response({
-                        'status' : False,
-                        'detail' : 'otp incorrect.'
-                        }, status_code)
-            else:
-                status_code = status.HTTP_400_BAD_REQUEST
-                return Response({
-                    'status' : False,
-                    'detail' : 'invalid email'
-                    }, status_code)
-        else:
-            status_code = status.HTTP_400_BAD_REQUEST
-            return Response({
-                'status' : False,
-                'detail' : 'email and otp is required'
-                }, status_code)
 
 
 

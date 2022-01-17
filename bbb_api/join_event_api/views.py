@@ -7,18 +7,23 @@ from library.helper import user_info
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from datetime import datetime, timedelta
 import requests
+from cast_invitee_details.models import CastInviteeDetails
+from django.core.exceptions import ObjectDoesNotExist
+
 
 class join_meeting(APIView):
     def post(self, request):
         name = request.data['name']
         public_meeting_id = request.data['public_meeting_id']
-        password = request.data['password']
-        # room_type = request.data['room_type']
         avatar_url = request.data['avatar_url']
-        # avatar_url = ""
-        meeting_obj = Meeting.objects.get(public_meeting_id=public_meeting_id)
+        email = request.data["email"]
+
+        meeting_obj = Meeting.objects.get(public_meeting_id=str(public_meeting_id))
         meeting_type = meeting_obj.meeting_type
         private_meeting_id = meeting_obj.private_meeting_id
+        send_otp = meeting_obj.send_otp
+        invitee_obj = CastInviteeDetails.objects.filter(cast=meeting_obj)
+
         if meeting_type == 'public':
 
             meeting_user_id = meeting_obj.user_id
@@ -39,8 +44,26 @@ class join_meeting(APIView):
                 return Response({'status': True,
                                  'url': result}
                                 )
-
-            if password == meeting_obj.moderator_password:
+            if email!= "":
+                if send_otp == True:
+                    try:
+                        is_verified = invitee_obj.get(email=email).verified
+                    except ObjectDoesNotExist:
+                        return Response({
+                            "message": "invalid user"
+                        }, status=HTTP_400_BAD_REQUEST)
+                    if is_verified == 'True':
+                        pass
+                    else:
+                        return Response({
+                            "message": "invalid user"
+                        }, status=HTTP_400_BAD_REQUEST)
+                else:
+                    pass
+                role = invitee_obj.get(email=email).role
+            else:
+                role = "attendee"
+            if role == 'moderator':
                 status = Meeting.is_meeting_running(private_meeting_id)
                 if status == "false":
                     return Response({
@@ -55,9 +78,8 @@ class join_meeting(APIView):
                 return Response({'status': True,
                                  'url': result})
 
-            else:  # attendee
+            elif role == "attendee":  # attendee
                 status = Meeting.is_meeting_running(private_meeting_id)
-                print(status)
                 if status == "false":
                     return Response({
                         "status": False,
@@ -81,7 +103,24 @@ class join_meeting(APIView):
                 token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
                 curr_user_id = user_info(token)
             except:
+                if send_otp == True:
+                    try:
+                        is_verified = invitee_obj.get(email=email).verified
+                    except ObjectDoesNotExist:
+                        return Response({
+                            "message": "invalid user"
+                        }, status=HTTP_400_BAD_REQUEST)
+                    if is_verified == 'True':
+                        pass
+                    else:
+                        return Response({
+                            "message": "invalid user"
+                        }, status=HTTP_400_BAD_REQUEST)
+                else:
+                    pass
+                role = invitee_obj.get(email=email).role
                 pass
+
             if curr_user_id == meeting_user_id:
                 duration = meeting_obj.duration
                 if duration == 0:
@@ -105,13 +144,11 @@ class join_meeting(APIView):
                             return Response({'status': True,
                                              'url': result}
                                             )
-                        print(s_url ,"1")
                         url_status = "https://api.stream.video.wiki/api/cast/live/status"
                         payload = {'meeting_id': str(private_meeting_id)}
                         files = []
                         headers = {}
                         response1 = requests.request("POST", url_status, headers=headers, data=payload, files=files)
-                        print(response1)
                         sp = response1.text.split(":")
                         sp2 = sp[1].split(",")
                         if sp2[0] == 'true':
@@ -144,14 +181,15 @@ class join_meeting(APIView):
                                      "message": "please check the scheduled cast start time"},
                                     status=HTTP_400_BAD_REQUEST
                                     )
-            elif password == attendee_password:
+
+            elif role == "attendee":  # attendee
                 try:
                     status = Meeting.is_meeting_running(private_meeting_id)
                     if status == "false":
                         raise "the event you are trying to join has either ended or yet to begin"
                     result = Meeting.join_url(private_meeting_id,
                                               name,
-                                              password,
+                                              attendee_password,
                                               avatar_url
                                               )
                     return Response({'status': True,
@@ -163,14 +201,14 @@ class join_meeting(APIView):
                                       'message': message},
                                      status=HTTP_400_BAD_REQUEST
                                      )
-            elif password == mod_password:
+            elif role == 'moderator':
                 try:
                     status = Meeting.is_meeting_running(private_meeting_id)
                     if status == "false":
                         raise "the event you are trying to join has either ended or yet to begin"
                     result = Meeting.join_url(private_meeting_id,
                                               name,
-                                              password,
+                                              mod_password,
                                               avatar_url
                                               )
                     return Response({'status': True,

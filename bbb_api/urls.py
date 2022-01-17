@@ -11,6 +11,10 @@ from .event_type_checker.event_type_checker import meeting_type_checker
 from .my_events_api.views import get_my_events
 from bbb_api.create_event_api.upload_media import FileUploadView
 from .event_recording.event_recording import event_recording
+from bbb_api.update_cast.update_cast import update_cast
+from bbb_api.update_cast.get_details import get_details
+# from bbb_api.streaming_helper.helper_streaming import stream_helper
+from bbb_api.my_recordings_api.event_recording import CastRecording
 
 
 urlpatterns = [
@@ -20,13 +24,14 @@ urlpatterns = [
     path('event/meeting/delete/', delete_meeting.as_view()),
     path('event/meeting/running/', event_status.as_view()),
     path('event/meeting/info/', meeting_info.as_view()),
-    # path('event/recordings/', get_recordings.as_view()),
     path('event/user/recordings/', user_recordings.as_view()),
     path('event/scheduled/events/', scheduled_meetings.as_view()),
     path('event/meeting/type/', meeting_type_checker.as_view()),
     path('event/user/events/', get_my_events.as_view()),
     path('event/user/upload/media/', FileUploadView.as_view()),
-    path('event/meeting/recording/', event_recording.as_view())
+    path('event/meeting/update/', update_cast.as_view()),
+    path('event/meeting/get/details/', get_details.as_view()),
+    path('event/meeting/recording/', CastRecording.as_view())
 ]
 
 

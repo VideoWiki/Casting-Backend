@@ -12,6 +12,7 @@ from ..create_event_email_sender import time_convertor, tc
 from .helper import invite_mail
 import datetime
 from .start_now_func import start_cast_now
+from cast_invitee_details.models import CastInviteeDetails
 
 class create_event(APIView):
     def post(self, request):
@@ -205,6 +206,18 @@ class create_event(APIView):
                 meeting.bbb_stream_url_vw = None
             youtube_stream_url = request.data["youtube_stream_url"]
             meeting.bbb_stream_url_youtube = youtube_stream_url
+        give_nft = request.data["give_nft"]
+        if give_nft == 'True':
+            bool_give_nft = True
+        else:
+            bool_give_nft = False
+        meeting.give_nft = bool_give_nft
+        send_otp = request.data["send_otp"]
+        if send_otp == 'True':
+            bool_send_otp = True
+        else:
+            bool_send_otp = False
+        meeting.send_otp = bool_send_otp
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
         user_id = user_info(str(token))
         if user_id == -1:
@@ -226,6 +239,7 @@ class create_event(APIView):
         user_email = user_info_email(token)
         meeting.event_creator_email = user_email
         meeting.save()
+        CastInviteeDetails.objects.create(cast=Meeting.objects.get(public_meeting_id= meeting.public_meeting_id), email=user_email, name=user_name, verified=True, role="moderator")
         status_mail = invite_mail(moderators, name)
         if start_now == True:
             url = start_cast_now(public_meeting_id=meeting.public_meeting_id, name=meeting.event_creator_name)
