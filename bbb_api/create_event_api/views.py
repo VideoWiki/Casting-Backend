@@ -239,7 +239,6 @@ class create_event(APIView):
         user_email = user_info_email(token)
         meeting.event_creator_email = user_email
         meeting.save()
-        CastInviteeDetails.objects.create(cast=Meeting.objects.get(public_meeting_id= meeting.public_meeting_id), email=user_email, name=user_name, verified=True, role="moderator")
         status_mail = invite_mail(moderators, name)
         if start_now == True:
             url = start_cast_now(public_meeting_id=meeting.public_meeting_id, name=meeting.event_creator_name)

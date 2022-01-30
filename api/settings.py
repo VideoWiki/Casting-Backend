@@ -38,11 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_q',
     'corsheaders',
-    'storages',
     'bbb_api',
     'cast_invitee_details',
     'custom_background',
     'library',
+    'class_details',
     'timezone_calc'
 ]
 

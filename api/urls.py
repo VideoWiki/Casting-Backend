@@ -6,5 +6,5 @@ urlpatterns = [
     path('api/', include('bbb_api.urls')),
     path('api/', include('cast_invitee_details.urls')),
     path('api/', include('custom_background.urls')),
-
+    path('api/', include('class_details.urls')),
 ]
