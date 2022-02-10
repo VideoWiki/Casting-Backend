@@ -6,6 +6,8 @@ from templates.reminder2 import reminder2
 from templates.reminder1 import reminder1
 from templates.create import email_create
 from templates.create2 import email_create2
+from templates.create3 import email_create3
+from templates.create4 import email_create4
 import json
 
 
@@ -40,7 +42,11 @@ def invite_mail(moderators, meeting_name):
         m_list.append(j)
     obj = Meeting.objects.get(event_name=meeting_name)
     for i in m_list:
-        CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"], role=i["type"])
+        if i["give_nft"] == "True":
+            bool_nft_enable = True
+        else:
+            bool_nft_enable = False
+        CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"], role=i["type"], nft_enable=bool_nft_enable)
 
 def send_remind_mail1( to_email, user_name, event_name, event_time, event_url, event_password):
     try:
@@ -152,3 +158,61 @@ def send_create2( to_email, user_name, event_name, event_time, meeting_url, mode
     except mandrill.Error as e:
         print("An exception occurred: {}".format(e))
 
+
+def send_create3( to_email, user_name, event_name, event_time, nft_drop_url, meeting_url, moderator_password, attendee_password):
+    try:
+        mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
+        message = {
+            'html': email_create3(user_name=user_name, event_name=event_name, event_time=event_time, nft_drop_url=nft_drop_url,
+                                 meeting_url=meeting_url, moderator_password=moderator_password, attendee_password=attendee_password),
+            'from_email': 'support@videowiki.pt',
+            'from_name': 'Video.Wiki',
+            'global_merge_vars': [],
+            # need reply mail
+            'headers': {'Reply-To': 'support@videowiki.pt'},
+            'merge': True,
+            'merge_language': 'mailchimp',
+            'subject': "Cast Registered",
+            'tags': ['password-resets'],
+            'text': 'Example text content',
+            'to': [{'email': to_email,
+                    'name': user_name,
+                    'type': 'to'}],
+        }
+        result = mandrill_client.messages.send(message = message)
+        print(result)
+        status = result[0]["status"]
+        return status
+    except mandrill.Error as e:
+        print("An exception occurred: {}".format(e))
+
+
+def send_create4( to_email, user_name, event_name, event_time, stream_url, nft_drop_url, meeting_url, moderator_password, attendee_password):
+    try:
+        mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
+        message = {
+            'html': email_create4(user_name=user_name, event_name=event_name,
+                                  event_time=event_time, event_url=stream_url,
+                                  nft_drop_url=nft_drop_url, meeting_url=meeting_url,
+                                  moderator_password=moderator_password,
+                                  attendee_password=attendee_password),
+            'from_email': 'support@videowiki.pt',
+            'from_name': 'Video.Wiki',
+            'global_merge_vars': [],
+            # need reply mail
+            'headers': {'Reply-To': 'support@videowiki.pt'},
+            'merge': True,
+            'merge_language': 'mailchimp',
+            'subject': "Cast Registered",
+            'tags': ['password-resets'],
+            'text': 'Example text content',
+            'to': [{'email': to_email,
+                    'name': user_name,
+                    'type': 'to'}],
+        }
+        result = mandrill_client.messages.send(message = message)
+        print(result)
+        status = result[0]["status"]
+        return status
+    except mandrill.Error as e:
+        print("An exception occurred: {}".format(e))

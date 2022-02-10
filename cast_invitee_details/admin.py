@@ -4,7 +4,7 @@ from .models import CastInviteeDetails, CastJoineeDetails
 
 @admin.register(CastInviteeDetails)
 class CastAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'email')
+    list_display = ('id', 'name', 'email', 'nft_enable')
 
 
 @admin.register(CastJoineeDetails)

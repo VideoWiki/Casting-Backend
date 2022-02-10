@@ -118,7 +118,12 @@ class join_meeting(APIView):
                         }, status=HTTP_400_BAD_REQUEST)
                 else:
                     pass
-                role = invitee_obj.get(email=email).role
+                try:
+                    role = invitee_obj.get(email=email).role
+                except ObjectDoesNotExist:
+                    return Response({
+                        "message": "invalid user"
+                    }, status=HTTP_400_BAD_REQUEST)
                 pass
 
             if curr_user_id == meeting_user_id:

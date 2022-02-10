@@ -12,7 +12,9 @@ from ..create_event_email_sender import time_convertor, tc
 from .helper import invite_mail
 import datetime
 from .start_now_func import start_cast_now
-from cast_invitee_details.models import CastInviteeDetails
+from ..models import NftDetails
+import json
+
 
 class create_event(APIView):
     def post(self, request):
@@ -208,16 +210,20 @@ class create_event(APIView):
             meeting.bbb_stream_url_youtube = youtube_stream_url
         give_nft = request.data["give_nft"]
         if give_nft == 'True':
-            bool_give_nft = True
+            meeting.bool_give_nft = True
         else:
-            bool_give_nft = False
-        meeting.give_nft = bool_give_nft
+            meeting.bool_give_nft = False
         send_otp = request.data["send_otp"]
         if send_otp == 'True':
             bool_send_otp = True
         else:
             bool_send_otp = False
         meeting.send_otp = bool_send_otp
+        audience_airdrop = request.data['audienceAirdrop']
+        if audience_airdrop == 'True':
+            meeting.audience_airdrop = True
+        else:
+            meeting.audience_airdrop = False
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
         user_id = user_info(str(token))
         if user_id == -1:
@@ -227,19 +233,54 @@ class create_event(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         meeting.user_id = user_id
-        user_name = user_info_name(token)
-        if user_id == -1:
-            return Response({
-                'status': True,
-                'message': 'User validation error'},
-                status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user_name = user_info_name(token)
+        except:
+            user_name = ""
         meeting.event_creator_name = user_name
         remind_schedular = meeting.public_meeting_id
         meeting.schedular_name_reminder = remind_schedular
-        user_email = user_info_email(token)
+        try:
+            user_email = user_info_email(token)
+        except:
+            user_email = ""
         meeting.event_creator_email = user_email
         meeting.save()
-        status_mail = invite_mail(moderators, name)
+
+        if meeting.audience_airdrop == True:
+            mint_func_name = request.data['mint_function_name']
+            contract_address = request.data['contract_address']
+            aib = request.data['aib']
+            parameter = request.data['parameter']
+            network = request.data['network']
+            nft_image = request.data['nft_image']
+            nft_description = request.data['nft_description']
+            try:
+                parser_o = json.loads(aib)
+                if parameter != "":
+                    parameter_parser = json.loads(parameter)
+                else:
+                    parameter_parser = ""
+                NftDetails.objects.create(
+                    cast=meeting,
+                    mint_function_name=mint_func_name,
+                    contract_address=contract_address,
+                    aib=parser_o,
+                    parameter=parameter_parser,
+                    network=network,
+                    image=nft_image,
+                    description=nft_description
+                )
+            except json.JSONDecodeError:
+                Meeting.objects.filter(public_meeting_id=meeting.public_meeting_id).delete()
+                return Response({
+                    "message": "json error in ABI/Parameter",
+                    "status": False
+                }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            pass
+
+        invite_mail(moderators, name)
         if start_now == True:
             url = start_cast_now(public_meeting_id=meeting.public_meeting_id, name=meeting.event_creator_name)
             msg = "cast started successfully"

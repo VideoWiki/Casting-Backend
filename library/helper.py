@@ -54,4 +54,3 @@ def user_info_name(token):
     except ValidationError as v:
         return -1
 
-

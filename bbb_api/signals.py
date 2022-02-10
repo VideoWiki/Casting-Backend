@@ -20,12 +20,17 @@ def post_save_prediction(sender, instance, created, **kwargs):
         vw_stream = instance.bbb_stream_url_vw
         user_name = instance.event_creator_name
         meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(instance.public_meeting_id)
+        audience_airdrop = instance.audience_airdrop
+        if audience_airdrop == True:
+            nft_drop_url = CLIENT_DOMAIN_URL + "/nftdrop/?cast_id={}".format(instance.public_meeting_id)
+        else:
+            nft_drop_url = ""
         if vw_stream == None:
             stream_url = ""
         else:
             stream_url = "https://play.stream.video.wiki/live/{}.m3u8".format(instance.public_meeting_id)
         event_registration_mail(str(creator_email), str(user_name),str(name), str(schedule_time),
-                                stream_url, meeting_url, instance.moderator_password, instance.attendee_password)
+                                stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password)
     else:
         creator_email = instance.event_creator_email
         name = instance.event_name
@@ -36,12 +41,17 @@ def post_save_prediction(sender, instance, created, **kwargs):
         vw_stream = instance.bbb_stream_url_vw
         user_name = instance.event_creator_name
         meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(instance.public_meeting_id)
+        audience_airdrop = instance.audience_airdrop
+        if audience_airdrop == True:
+            nft_drop_url = CLIENT_DOMAIN_URL + "/nftdrop/?cast_id={}".format(instance.public_meeting_id)
+        else:
+            nft_drop_url = ""
         if vw_stream == None:
             stream_url = ""
         else:
             stream_url = "https://play.stream.video.wiki/live/{}.m3u8".format(instance.public_meeting_id)
         event_registration_mail(str(creator_email), str(user_name), str(name), str(schedule_time),
-                                stream_url, meeting_url, instance.moderator_password, instance.attendee_password)
+                                stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password)
 
 
 # @receiver(post_save, sender=Meeting)

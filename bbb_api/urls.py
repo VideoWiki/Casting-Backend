@@ -10,12 +10,10 @@ from .all_scheduled_events.scheduled_events import scheduled_meetings
 from .event_type_checker.event_type_checker import meeting_type_checker
 from .my_events_api.views import get_my_events
 from bbb_api.create_event_api.upload_media import FileUploadView
-from .event_recording.event_recording import event_recording
 from bbb_api.update_cast.update_cast import update_cast
 from bbb_api.update_cast.get_details import get_details
-# from bbb_api.streaming_helper.helper_streaming import stream_helper
 from bbb_api.my_recordings_api.event_recording import CastRecording
-
+from bbb_api.fetch_nft_details.NftDetails import FetchNftDetails
 
 urlpatterns = [
     path('event/meeting/create/', create_event.as_view()),
@@ -31,7 +29,8 @@ urlpatterns = [
     path('event/user/upload/media/', FileUploadView.as_view()),
     path('event/meeting/update/', update_cast.as_view()),
     path('event/meeting/get/details/', get_details.as_view()),
-    path('event/meeting/recording/', CastRecording.as_view())
+    path('event/meeting/recording/', CastRecording.as_view()),
+    path('event/fetch/nft/details/', FetchNftDetails.as_view())
 ]
 
 

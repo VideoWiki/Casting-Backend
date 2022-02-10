@@ -7,6 +7,10 @@ from .add_wallet_address.addMetamaskAddress import AddUser
 from .email_checker.email_checker import CheckEmail
 from .otp.send_otp import SendOtp
 from .otp.validate_otp import ValidateOtp
+from .csv_downloader.csv_downloader import CsvDownloader
+from .update_invitee_details.update_invitee_details import UptadeInviteeDetails
+from .send_wallet_address.FetchWalletAdress import FetchWalletAdress
+
 
 urlpatterns = [
     path('event/meeting/add/invitees/', add_invitees.as_view()),
@@ -18,8 +22,9 @@ urlpatterns = [
     path('event/joinee/details/', FetchJoineeDetails.as_view()),
     path('event/add/wallet/address/', AddUser.as_view()),
     path('event/check/email/', CheckEmail.as_view()),
-
-
+    path('event/users/details/download/', CsvDownloader.as_view()),
+    path('event/invitee/details/update/', UptadeInviteeDetails.as_view()),
+    path('event/send/wallet/adress/', FetchWalletAdress.as_view()),
 
 ]
 

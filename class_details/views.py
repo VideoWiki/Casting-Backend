@@ -24,6 +24,8 @@ class SaveClassDetails(APIView):
             class_obj = ClassDetails.objects.filter(class_id=clss_id)
         except:
             pass
+        if session == "NEW":
+            ClassDetails.objects.filter(class_id=clss_id).delete()
 
         try:
             if class_obj.exists():

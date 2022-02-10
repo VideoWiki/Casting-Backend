@@ -1,13 +1,17 @@
 from library.mailchimp import send_mail
 from datetime import datetime, timedelta
 from cast_invitee_details.helper import send_invite_mail1, send_invite_mail2
-from bbb_api.create_event_api.helper import send_create1, send_create2
+from bbb_api.create_event_api.helper import send_create1, send_create2, send_create3, send_create4
 import pytz
 
 
-def event_registration_mail(email, user_name, event_name, time, stream_url, meeting_url, moderator_password, attendee_password):
-    if stream_url != "":
+def event_registration_mail(email, user_name, event_name, time, stream_url, meeting_url, nft_drop_url, moderator_password, attendee_password):
+    if stream_url != "" and nft_drop_url == "":
         send_create1(email, user_name, event_name, time, stream_url, meeting_url, moderator_password, attendee_password)
+    elif stream_url == "" and nft_drop_url != "":
+        send_create3(email, user_name, event_name, time, nft_drop_url, meeting_url, moderator_password, attendee_password)
+    elif stream_url != "" and nft_drop_url != "":
+        send_create4(email, user_name, event_name, time, stream_url, nft_drop_url, meeting_url, moderator_password, attendee_password)
     else:
         send_create2(email, user_name, event_name, time, meeting_url, moderator_password, attendee_password)
 

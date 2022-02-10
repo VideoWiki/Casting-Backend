@@ -51,15 +51,15 @@ class Meeting(models.Model):
     webcam_only_for_moderator = models.BooleanField(default=False, blank=True, null=True)
     auto_start_recording = models.BooleanField(default=False, blank=True, null=True)
     allow_start_stop_recording = models.BooleanField(default=True, blank=True, null=True)
-    disable_cam = models.BooleanField(default=False, null=True)
-    disable_mic = models.BooleanField(default=False, null=True)
-    disable_private_chat = models.BooleanField(default=False, null=True)
-    disable_public_chat = models.BooleanField(default=False, null=True)
-    disable_note = models.BooleanField(default=False, null=True)
+    disable_cam = models.BooleanField(default=False, null=True, blank=True)
+    disable_mic = models.BooleanField(default=False, null=True, blank=True)
+    disable_private_chat = models.BooleanField(default=False, null=True, blank=True)
+    disable_public_chat = models.BooleanField(default=False, null=True, blank=True)
+    disable_note = models.BooleanField(default=False, null=True, blank=True)
     logout_url = models.URLField(blank=True, null=True)
-    lock_layout = models.BooleanField(default=False, null=True)
-    lock_on_join = models.BooleanField(default=True, null=True)
-    hide_users = models.BooleanField(default=False, null=True)
+    lock_layout = models.BooleanField(default=False, null=True, blank=True)
+    lock_on_join = models.BooleanField(default=True, null=True, blank=True)
+    hide_users = models.BooleanField(default=False, null=True, blank=True)
     schedule_time = models.DateTimeField(blank=False, default=django.utils.timezone.now, null=True)
     primary_color = models.CharField(blank=True, max_length=20, null=True)
     secondary_color = models.CharField(blank=True, max_length=20, null=True)
@@ -67,13 +67,14 @@ class Meeting(models.Model):
     event_tag = models.CharField(blank=True, max_length=25, null=True)
     schedular_name_reminder = models.CharField(max_length=50)
     cover_image = models.ImageField(blank=True, upload_to='cover_images', null=True)
-    is_streaming = models.BooleanField(default=False, null=True)
-    bbb_resolution = models.CharField(max_length=20, default="1280x720")
+    is_streaming = models.BooleanField(default=False, null=True, blank=True)
+    bbb_resolution = models.CharField(max_length=20, default="1280x720", blank=True, null=True)
     bbb_stream_url_vw = models.CharField(blank=True, null=True, max_length=100)
     bbb_stream_url_youtube = models.CharField(blank=True, null=True, max_length=100)
     raw_time = models.CharField(max_length=100, blank=True, null=True)
-    give_nft = models.BooleanField(default=False, null=True)
-    send_otp = models.BooleanField(default=False, null=True)
+    give_nft = models.BooleanField(default=False, null=True, blank=True)
+    send_otp = models.BooleanField(default=False, null=True, blank=True)
+    audience_airdrop = models.BooleanField(default=False, blank=True, null=True)
 
 
     @classmethod
@@ -262,6 +263,19 @@ def path_getter(path):
     else:
         url = BASE_URL + path.url
     return url
+
+
+class NftDetails(models.Model):
+    cast = models.ForeignKey(Meeting, on_delete=models.CASCADE, null=True, blank=True)
+    mint_function_name = models.TextField(null=True, blank=True)
+    contract_address = models.TextField(null=True, blank=True)
+    parameter = models.JSONField(null=True, blank=True)
+    aib = models.JSONField(blank=True, null=True)
+    network = models.TextField(blank=True, null=True)
+    image = models.ImageField(blank=True, upload_to='nft_images', null=True)
+    description = models.TextField(blank=True, null=True)
+
+
 
 
 

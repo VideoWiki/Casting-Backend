@@ -13,7 +13,7 @@ class CastInviteeDetails(models.Model):
     verified = models.CharField(max_length=10, blank=True, null=True)
     metamask_address = models.CharField(max_length=100, blank=True, null=True)
     metamask_verified = models.CharField(max_length=10, blank=True, null=True)
-
+    nft_enable = models.BooleanField(default=False)
 
 
 class CastJoineeDetails(models.Model):

@@ -15,13 +15,29 @@ class add_invitees(APIView):
     def post(self, request):
         cast_id = request.data["cast_id"]
         obj = Meeting.objects.get(public_meeting_id=cast_id)
-        if cast_id != None:
-            CastInviteeDetails.cast_id = cast_id
-            invitee_list = request.data['invitee_list']
-            for i in invitee_list:
-                CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"], role=i["type"])
-            return Response({"status": True})
-        return Response({"status": False}, status=status.HTTP_400_BAD_REQUEST)
+        user_id = obj.user_id
+        curr_user_id = -1
+        try:
+            token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
+            curr_user_id = user_info(token)
+        except:
+            pass
+        if curr_user_id == user_id:
+            if cast_id != None:
+                CastInviteeDetails.cast_id = cast_id
+                invitee_list = request.data['invitee_list']
+                for i in invitee_list:
+                    if i["give_nft"] == "True":
+                        bool_nft_enable = True
+                    else:
+                        bool_nft_enable = False
+                    CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"], role=i["type"], nft_enable=bool_nft_enable)
+                return Response({"status": True})
+        else:
+            return Response({
+                "status": False,
+                "message": "unauthorised user"
+            })
 
 
 class fetch_details(APIView):
@@ -46,13 +62,19 @@ class fetch_details(APIView):
             inv_list = []
             if cast_invite_object.count() != 0:
                 for i in cast_invite_object:
+                    id = i.id
                     name = i.name
                     role = i.role
                     email = i.email
+                    otp_verified = i.verified,
+                    wallet_address = i.metamask_address
                     d = {
+                        "id": id,
                         "name": name,
                         "role": role,
-                        "email": email
+                        "email": email,
+                        "otp_verified": otp_verified,
+                        "wallet_address": wallet_address
                     }
                     inv_list.append(d)
                 return Response({
@@ -74,9 +96,9 @@ class fetch_details(APIView):
 
 
 class delete_invitee(APIView):
-    def get(self, request):
-        cast_id = request.GET.get('cast_id')
-        email = request.GET.get('email')
+    def delete(self, request):
+        cast_id = request.data['cast_id']
+        email = request.data['email']
         try:
             cast_object = Meeting.objects.get(public_meeting_id=cast_id)
         except ObjectDoesNotExist:
