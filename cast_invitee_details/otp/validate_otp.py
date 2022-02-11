@@ -13,6 +13,7 @@ class ValidateOtp(APIView):
         email = request.GET.get('email' , False)
         otp_sent = request.GET.get('otp', False)
         cast_id = request.GET.get('cast_id')
+        email = email.lower()
 
         meet_obj = Meeting.objects.get(public_meeting_id=cast_id)
         cast_obj = CastInviteeDetails.objects.filter(cast=meet_obj)

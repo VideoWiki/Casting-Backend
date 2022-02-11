@@ -17,6 +17,8 @@ class join_meeting(APIView):
         public_meeting_id = request.data['public_meeting_id']
         avatar_url = request.data['avatar_url']
         email = request.data["email"]
+        if email != "":
+            email = email.lower()
 
         meeting_obj = Meeting.objects.get(public_meeting_id=str(public_meeting_id))
         meeting_type = meeting_obj.meeting_type
@@ -119,7 +121,10 @@ class join_meeting(APIView):
                 else:
                     pass
                 try:
-                    role = invitee_obj.get(email=email).role
+                    if send_otp != True:
+                        role = 'attendee'
+                    else:
+                        role = invitee_obj.get(email=email).role
                 except ObjectDoesNotExist:
                     return Response({
                         "message": "invalid user"

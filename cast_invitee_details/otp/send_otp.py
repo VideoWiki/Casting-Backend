@@ -15,7 +15,7 @@ class SendOtp(APIView):
     def get(self, request, *args, **kwargs):
         email = request.GET.get('email')
         cast_id = request.GET.get('cast_id')
-
+        email = email.lower()
         if cast_id == "" or email=="":
             return Response({
                 "message": "invalid data"

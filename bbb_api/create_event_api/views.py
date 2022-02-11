@@ -210,9 +210,9 @@ class create_event(APIView):
             meeting.bbb_stream_url_youtube = youtube_stream_url
         give_nft = request.data["give_nft"]
         if give_nft == 'True':
-            meeting.bool_give_nft = True
+            meeting.give_nft = True
         else:
-            meeting.bool_give_nft = False
+            meeting.give_nft = False
         send_otp = request.data["send_otp"]
         if send_otp == 'True':
             bool_send_otp = True

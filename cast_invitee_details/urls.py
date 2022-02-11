@@ -10,7 +10,7 @@ from .otp.validate_otp import ValidateOtp
 from .csv_downloader.csv_downloader import CsvDownloader
 from .update_invitee_details.update_invitee_details import UptadeInviteeDetails
 from .send_wallet_address.FetchWalletAdress import FetchWalletAdress
-
+from .nft_drop_mail.nftDropMail import NftDropMail
 
 urlpatterns = [
     path('event/meeting/add/invitees/', add_invitees.as_view()),
@@ -25,6 +25,7 @@ urlpatterns = [
     path('event/users/details/download/', CsvDownloader.as_view()),
     path('event/invitee/details/update/', UptadeInviteeDetails.as_view()),
     path('event/send/wallet/adress/', FetchWalletAdress.as_view()),
+    path('event/send/nft/drop/mail/', NftDropMail.as_view())
 
 ]
 

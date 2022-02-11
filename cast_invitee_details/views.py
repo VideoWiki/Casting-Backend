@@ -67,14 +67,16 @@ class fetch_details(APIView):
                     role = i.role
                     email = i.email
                     otp_verified = i.verified,
-                    wallet_address = i.metamask_address
+                    wallet_address = i.metamask_address,
+                    nft_enable = i.nft_enable
                     d = {
                         "id": id,
                         "name": name,
                         "role": role,
                         "email": email,
                         "otp_verified": otp_verified,
-                        "wallet_address": wallet_address
+                        "wallet_address": wallet_address,
+                        "nft_enable": nft_enable
                     }
                     inv_list.append(d)
                 return Response({
