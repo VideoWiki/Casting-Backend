@@ -31,7 +31,7 @@ class add_invitees(APIView):
                         bool_nft_enable = True
                     else:
                         bool_nft_enable = False
-                    CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"], role=i["type"], nft_enable=bool_nft_enable)
+                    CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"].lower(), role=i["type"], nft_enable=bool_nft_enable)
                 return Response({"status": True})
         else:
             return Response({

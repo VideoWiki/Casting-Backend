@@ -46,7 +46,7 @@ def invite_mail(moderators, meeting_name):
             bool_nft_enable = True
         else:
             bool_nft_enable = False
-        CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"], role=i["type"], nft_enable=bool_nft_enable)
+        CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"].lower(), role=i["type"], nft_enable=bool_nft_enable)
 
 def send_remind_mail1( to_email, user_name, event_name, event_time, event_url, event_password):
     try:
