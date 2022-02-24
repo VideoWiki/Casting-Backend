@@ -8,6 +8,7 @@ from django.utils.crypto import get_random_string
 from .helper import send_otp_details
 from django.core.exceptions import ObjectDoesNotExist
 from library.helper import user_info
+from django.core.signing import Signer
 # Create your views here.
 
 
@@ -17,6 +18,7 @@ class add_invitees(APIView):
         obj = Meeting.objects.get(public_meeting_id=cast_id)
         user_id = obj.user_id
         curr_user_id = -1
+        added_invitees_list = []
         try:
             token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
             curr_user_id = user_info(token)
@@ -31,8 +33,32 @@ class add_invitees(APIView):
                         bool_nft_enable = True
                     else:
                         bool_nft_enable = False
-                    CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"].lower(), role=i["type"], nft_enable=bool_nft_enable)
-                return Response({"status": True})
+                    CastInviteeDetails.objects.create(cast=obj,
+                                                      name=i["name"],
+                                                      email=i["email"].lower(),
+                                                      role=i["type"],
+                                                      nft_enable=bool_nft_enable,
+                                                      invited= True,
+                                                      mint='not started'
+                                                      )
+                    if CastInviteeDetails.objects.filter(cast=obj, email=i["email"].lower()).exists():
+                        inv_obj = CastInviteeDetails.objects.filter(cast=obj, email=i["email"].lower()).get()
+                        d = {
+                            "id": inv_obj.id,
+                            "name": inv_obj.name,
+                            "role": inv_obj.role,
+                            "email": inv_obj.email,
+                            "otp_verified": inv_obj.verified,
+                            "wallet_address": inv_obj.metamask_address,
+                            "nft_enable": inv_obj.nft_enable
+                        }
+                        added_invitees_list.append(d)
+                    else:
+                        pass
+                return Response({
+                    "status": True,
+                    "data": added_invitees_list
+                })
         else:
             return Response({
                 "status": False,
@@ -57,6 +83,7 @@ class fetch_details(APIView):
             curr_user_id = user_info(token)
         except:
             pass
+        res = ""
         if curr_user_id == user_id:
             cast_invite_object = CastInviteeDetails.objects.filter(cast=cast_object)
             inv_list = []
@@ -67,16 +94,31 @@ class fetch_details(APIView):
                     role = i.role
                     email = i.email
                     otp_verified = i.verified,
-                    wallet_address = i.metamask_address,
+                    wallet_address = str(i.metamask_address),
+                    if wallet_address[0] != "None":
+                        test_list = [0, 1, 2, 3, 38, 39, 40, 41]
+                        repl_char = '*'
+                        signer = Signer()
+                        unhashed_wallet_add = signer.unsign(wallet_address[0])
+                        temp = list(unhashed_wallet_add)
+                        res = [repl_char if not idx in test_list else ele for idx, ele in enumerate(temp)]
+                        res = ''.join(res)
+                    else:
+                        if wallet_address[0] == "None":
+                            res = ""
                     nft_enable = i.nft_enable
+                    mint_status = i.mint
+                    joined = i.joined
                     d = {
                         "id": id,
                         "name": name,
                         "role": role,
                         "email": email,
                         "otp_verified": otp_verified,
-                        "wallet_address": wallet_address,
-                        "nft_enable": nft_enable
+                        "wallet_address": res,
+                        "nft_enable": nft_enable,
+                        "mint_status": mint_status,
+                        "joined": joined
                     }
                     inv_list.append(d)
                 return Response({

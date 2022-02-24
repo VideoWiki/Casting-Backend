@@ -6,6 +6,7 @@ from ..models import CastInviteeDetails
 from library.helper import user_info
 from django.core.exceptions import ObjectDoesNotExist
 
+
 class FetchWalletAdress(APIView):
     def get(self, request):
         public_cast_id = request.GET.get("cast_id")
@@ -32,7 +33,7 @@ class FetchWalletAdress(APIView):
         if curr_user_id == meeting_user_id:
             cast_invitee_obj = CastInviteeDetails.objects.filter(cast=meeting_obj)
             if cast_invitee_obj.exists():
-                all_nft_enabled_obj = cast_invitee_obj.filter(nft_enable=True).all()
+                all_nft_enabled_obj = cast_invitee_obj.filter(nft_enable=True).all().exclude(metamask_address=None)
                 wallet_address_list = [i.metamask_address for i in all_nft_enabled_obj]
 
         else:

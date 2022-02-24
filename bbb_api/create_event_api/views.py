@@ -50,6 +50,7 @@ class create_event(APIView):
             meeting.moderator_password = mod_password
 
         meeting.max_participant = request.data['max_participant']
+        meeting.moderator_only_text = request.data['moderator_only_text']
         meeting.welcome = request.data['welcome_text']
         meeting.description = request.data['description']
         meeting.short_description = request.data['short_description']
@@ -219,11 +220,21 @@ class create_event(APIView):
         else:
             bool_send_otp = False
         meeting.send_otp = bool_send_otp
+        password_auth = request.data['password_auth']
+        if password_auth == 'True':
+            meeting.password_auth = True
+        else:
+            meeting.password_auth = False
         audience_airdrop = request.data['audienceAirdrop']
         if audience_airdrop == 'True':
             meeting.audience_airdrop = True
         else:
             meeting.audience_airdrop = False
+        public_otp = request.data['public_otp']
+        if public_otp == 'True':
+            meeting.public_otp = True
+        else:
+            meeting.public_otp = False
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
         user_id = user_info(str(token))
         if user_id == -1:

@@ -9,6 +9,7 @@ class CheckEmail(APIView):
     def get(self, request):
         email = request.GET.get("email")
         public_meeting_id = request.GET.get("cast_id")
+        email = email.lower()
 
         if public_meeting_id == "" or email=="":
             return Response({
@@ -21,14 +22,7 @@ class CheckEmail(APIView):
             return Response({
                 "message": "invalid data"
             }, status=status.HTTP_400_BAD_REQUEST)
-
-        email_obj = CastInviteeDetails.objects.filter(cast=cast_obj)
-        list_email = []
-
-        for i in email_obj:
-            list_email.append(i.email)
-
-        if email in list_email:
+        if CastInviteeDetails.objects.filter(cast=cast_obj, email=email).exists():
             status_bool = False
             duplicate_email = True
             status_code = status.HTTP_400_BAD_REQUEST

@@ -20,6 +20,8 @@ class meeting_info(APIView):
             event_time = event_object.schedule_time.time()
             send_otp = event_object.send_otp
             give_nft = event_object.give_nft
+            password_auth = event_object.password_auth
+            public_otp = event_object.public_otp
             if event_object.cover_image != "https://api.cast.video.wiki/static/alt.png":
                 c_i = BASE_URL + "/media/" + str(event_object.cover_image)
             else:
@@ -33,6 +35,8 @@ class meeting_info(APIView):
                                                               "time": event_time,
                                                               "send_otp": send_otp,
                                                               "give_nft": give_nft,
+                                                              "password_auth": password_auth,
+                                                              "public_otp": public_otp,
                                                               "cover_image": str(c_i)
                                                               }
                              }

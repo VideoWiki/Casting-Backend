@@ -7,8 +7,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from library.helper import user_info
 from uuid import uuid4
 import csv
-from api.global_variable import BASE_DIR
-
+from api.global_variable import BASE_DIR, BASE_URL
+import os
 
 class CsvDownloader(APIView):
     def get(self, request):
@@ -20,7 +20,6 @@ class CsvDownloader(APIView):
                 "status": False,
                 "message": "cast does not exists"
             }, status=status.HTTP_400_BAD_REQUEST)
-        print(cast_object ,"ll")
         user_id = cast_object.user_id
         curr_user_id = -1
         try:
@@ -37,8 +36,6 @@ class CsvDownloader(APIView):
                     role = i.role
                     email = i.email
                     otp_verified = i.verified,
-
-                    wallet_address = i.metamask_address
                     otp_slice = str(otp_verified)[slice(2,-3)]
                     if otp_slice == 'True':
                         pass
@@ -48,23 +45,24 @@ class CsvDownloader(APIView):
                         "name": name,
                         "role": role,
                         "email": email,
-                        "otp_verified": otp_slice,
-                        "wallet_address": wallet_address
+                        "otp_verified": otp_slice
                     }
                     inv_list.append(d)
             random_name = str(uuid4())
-            dir = BASE_DIR + "/cast_invitee_details/csv_downloader/csv_files/{}_invitee_list.csv".format(cast_object.event_name)
-            print(dir)
+            cast_name = cast_object.event_name
+            cast_name_without_ws = cast_name.replace(" ", "")
+            path = "/media/csv_downloader/csv_files/{}_{}_invitee_list.csv".format(cast_name_without_ws, random_name)
+            dir = BASE_DIR + path
             with open(dir, 'w', encoding='UTF8') as f:
-                fieldnames = ['name', 'role', 'email', 'verified', 'wallet_address']
+                fieldnames = ['name', 'role', 'email', 'verified']
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 for i in inv_list:
                     print(i['otp_verified'])
-                    writer.writerow({'name': i['name'], 'role': i['role'], 'email': i['email'], 'verified': i['otp_verified'], 'wallet_address': i['wallet_address']})
+                    writer.writerow({'name': i['name'], 'role': i['role'], 'email': i['email'], 'verified': i['otp_verified']})
             f.close()
             return Response(
                 {
-                    "path": dir
+                    "path": BASE_URL + path
                 }
             )

@@ -28,7 +28,12 @@ def email_sender(name):
             password = cast_obj.attendee_password
         else:
             password = cast_obj.moderator_password
-        send_remind_mail1(email, user_name=user_name, event_name=cast_obj.event_name, event_time=schedule_time, event_url=meeting_url, event_password=password)
+        send_remind_mail1(email,
+                          user_name=user_name,
+                          event_name=cast_obj.event_name,
+                          event_time=schedule_time,
+                          event_url=meeting_url,
+                          event_password=password)
     return "sent"
 
 
@@ -46,13 +51,24 @@ def invite_mail(moderators, meeting_name):
             bool_nft_enable = True
         else:
             bool_nft_enable = False
-        CastInviteeDetails.objects.create(cast=obj, name=i["name"], email=i["email"].lower(), role=i["type"], nft_enable=bool_nft_enable)
+        CastInviteeDetails.objects.create(cast=obj,
+                                          name=i["name"],
+                                          email=i["email"].lower(),
+                                          role=i["type"],
+                                          nft_enable=bool_nft_enable,
+                                          invited= True,
+                                          mint='not started'
+                                          )
 
 def send_remind_mail1( to_email, user_name, event_name, event_time, event_url, event_password):
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
-            'html': reminder1(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password),
+            'html': reminder1(user_name=user_name,
+                              event_name=event_name,
+                              event_time=event_time,
+                              event_url=event_url,
+                              event_password=event_password),
             'from_email': 'support@videowiki.pt',
             'from_name': 'Video.Wiki',
             'global_merge_vars': [],
@@ -80,7 +96,11 @@ def send_remind_mail2( to_email, user_name, event_name, event_time, event_url, e
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
-            'html': reminder2(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password),
+            'html': reminder2(user_name=user_name,
+                              event_name=event_name,
+                              event_time=event_time,
+                              event_url=event_url,
+                              event_password=event_password),
             'from_email': 'support@videowiki.pt',
             'from_name': 'Video.Wiki',
             'global_merge_vars': [],
@@ -108,8 +128,13 @@ def send_create1( to_email, user_name, event_name, event_time, event_url, meetin
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
-            'html': email_create(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url,
-                                 meeting_url=meeting_url, moderator_password=moderator_password, attendee_password=attendee_password),
+            'html': email_create(user_name=user_name,
+                                 event_name=event_name,
+                                 event_time=event_time,
+                                 event_url=event_url,
+                                 meeting_url=meeting_url,
+                                 moderator_password=moderator_password,
+                                 attendee_password=attendee_password),
             'from_email': 'support@videowiki.pt',
             'from_name': 'Video.Wiki',
             'global_merge_vars': [],
@@ -135,8 +160,12 @@ def send_create2( to_email, user_name, event_name, event_time, meeting_url, mode
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
-            'html': email_create2(user_name=user_name, event_name=event_name, event_time=event_time,
-                                  meeting_url=meeting_url, moderator_password=moderator_password, attendee_password=attendee_password),
+            'html': email_create2(user_name=user_name,
+                                  event_name=event_name,
+                                  event_time=event_time,
+                                  meeting_url=meeting_url,
+                                  moderator_password=moderator_password,
+                                  attendee_password=attendee_password),
             'from_email': 'support@videowiki.pt',
             'from_name': 'Video.Wiki',
             'global_merge_vars': [],
@@ -163,8 +192,13 @@ def send_create3( to_email, user_name, event_name, event_time, nft_drop_url, mee
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
-            'html': email_create3(user_name=user_name, event_name=event_name, event_time=event_time, nft_drop_url=nft_drop_url,
-                                 meeting_url=meeting_url, moderator_password=moderator_password, attendee_password=attendee_password),
+            'html': email_create3(user_name=user_name,
+                                  event_name=event_name,
+                                  event_time=event_time,
+                                  nft_drop_url=nft_drop_url,
+                                 meeting_url=meeting_url,
+                                  moderator_password=moderator_password,
+                                  attendee_password=attendee_password),
             'from_email': 'support@videowiki.pt',
             'from_name': 'Video.Wiki',
             'global_merge_vars': [],

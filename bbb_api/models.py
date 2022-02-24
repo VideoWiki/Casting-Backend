@@ -33,9 +33,10 @@ class Meeting(models.Model):
     meeting_type = models.CharField(max_length=10, blank=True, null=True, default='private')
     attendee_password = models.CharField(max_length=50)
     moderator_password = models.CharField(max_length=50)
-    welcome = models.CharField(max_length=400, default='welcome', blank=True, null=True)
-    description = models.CharField(max_length=300, blank=True, null=True)
-    short_description = models.CharField(max_length=150, blank=True, null=True)
+    moderator_only_text = models.TextField(blank=True, null=True)
+    welcome = models.TextField(default='welcome', blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    short_description = models.TextField(blank=True, null=True)
     max_participant = models.IntegerField(blank=True, null=True, default=0, validators=[
         MaxValueValidator(1000),
         MinValueValidator(0)
@@ -75,6 +76,8 @@ class Meeting(models.Model):
     give_nft = models.BooleanField(default=False, null=True, blank=True)
     send_otp = models.BooleanField(default=False, null=True, blank=True)
     audience_airdrop = models.BooleanField(default=False, blank=True, null=True)
+    password_auth = models.BooleanField(default=False, blank=True, null=True)
+    public_otp = models.BooleanField(default=False, blank=True, null=True)
 
 
     @classmethod
@@ -165,6 +168,7 @@ class Meeting(models.Model):
             ('attendeePW', self.attendee_password),
             ('moderatorPW', self.moderator_password),
             ('voiceBridge', voicebridge),
+            ('moderatorOnlyMessage', self.moderator_only_text),
             ('welcome', self.welcome),
             ('maxParticipants', self.max_participant),
             ('record', self.record),

@@ -16,6 +16,7 @@ class ValidateOtp(APIView):
         email = email.lower()
 
         meet_obj = Meeting.objects.get(public_meeting_id=cast_id)
+        pub_otp = meet_obj.public_otp
         cast_obj = CastInviteeDetails.objects.filter(cast=meet_obj)
 
         if email and otp_sent:
@@ -28,10 +29,20 @@ class ValidateOtp(APIView):
                     old.save()
                     response = "validated"
                     status_code = status.HTTP_200_OK
+                    if old.invited == False:
+                        if pub_otp == True:
+                            pass
+                        else:
+                            old.joined = True
+                        old.save()
+                    else:
+                        pass
                     return Response({"status": True,
                                      "message": response}, status_code)
                 else:
                     status_code = status.HTTP_400_BAD_REQUEST
+                    if cast_obj.filter(email=email, invited=False).exists():
+                        cast_obj.filter(email=email).delete()
                 return Response({
                     'status': False,
                     'detail': 'otp incorrect.'

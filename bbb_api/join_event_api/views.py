@@ -1,5 +1,4 @@
 import json
-
 from rest_framework.views import APIView
 from ..models import Meeting
 from rest_framework.response import Response
@@ -17,6 +16,7 @@ class join_meeting(APIView):
         public_meeting_id = request.data['public_meeting_id']
         avatar_url = request.data['avatar_url']
         email = request.data["email"]
+        password = request.data['password']
         if email != "":
             email = email.lower()
 
@@ -193,6 +193,14 @@ class join_meeting(APIView):
                                     )
 
             elif role == "attendee":  # attendee
+                if meeting_obj.password_auth == True:
+                    if password == attendee_password:
+                        pass
+                    else:
+                        return Response({'status': False,
+                                         'message': "invalid password"},
+                                        status=HTTP_400_BAD_REQUEST
+                                        )
                 try:
                     status = Meeting.is_meeting_running(private_meeting_id)
                     if status == "false":
@@ -202,6 +210,11 @@ class join_meeting(APIView):
                                               attendee_password,
                                               avatar_url
                                               )
+                    if email != "":
+                        if CastInviteeDetails.objects.filter(cast=meeting_obj, email=email).exists():
+                            joinee_obj = CastInviteeDetails.objects.get(cast=meeting_obj, email=email)
+                            joinee_obj.joined = True
+                            joinee_obj.save()
                     return Response({'status': True,
                                      'url': result}
                                     )
@@ -212,6 +225,14 @@ class join_meeting(APIView):
                                      status=HTTP_400_BAD_REQUEST
                                      )
             elif role == 'moderator':
+                if meeting_obj.password_auth == True:
+                    if password == mod_password:
+                        pass
+                    else:
+                        return Response({'status': False,
+                                         'message': "invalid password"},
+                                        status=HTTP_400_BAD_REQUEST
+                                        )
                 try:
                     status = Meeting.is_meeting_running(private_meeting_id)
                     if status == "false":
@@ -221,6 +242,11 @@ class join_meeting(APIView):
                                               mod_password,
                                               avatar_url
                                               )
+                    if email != "":
+                        if CastInviteeDetails.objects.filter(cast=meeting_obj, email=email).exists():
+                            joinee_obj = CastInviteeDetails.objects.get(cast=meeting_obj, email=email)
+                            joinee_obj.joined = True
+                            joinee_obj.save()
                     return Response({'status': True,
                                      'url': result}
                                     )

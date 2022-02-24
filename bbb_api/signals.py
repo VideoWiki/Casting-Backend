@@ -28,7 +28,7 @@ def post_save_prediction(sender, instance, created, **kwargs):
         if vw_stream == None:
             stream_url = ""
         else:
-            stream_url = "https://play.stream.video.wiki/live/{}.m3u8".format(instance.public_meeting_id)
+            stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL, instance.public_meeting_id)
         event_registration_mail(str(creator_email), str(user_name),str(name), str(schedule_time),
                                 stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password)
     else:
@@ -49,7 +49,7 @@ def post_save_prediction(sender, instance, created, **kwargs):
         if vw_stream == None:
             stream_url = ""
         else:
-            stream_url = "https://play.stream.video.wiki/live/{}.m3u8".format(instance.public_meeting_id)
+            stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL, instance.public_meeting_id)
         event_registration_mail(str(creator_email), str(user_name), str(name), str(schedule_time),
                                 stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password)
 
