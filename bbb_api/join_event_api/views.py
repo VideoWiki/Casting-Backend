@@ -24,6 +24,7 @@ class join_meeting(APIView):
         meeting_type = meeting_obj.meeting_type
         private_meeting_id = meeting_obj.private_meeting_id
         send_otp = meeting_obj.send_otp
+        pub_otp = meeting_obj.public_otp
         invitee_obj = CastInviteeDetails.objects.filter(cast=meeting_obj)
 
         if meeting_type == 'public':
@@ -105,7 +106,7 @@ class join_meeting(APIView):
                 token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
                 curr_user_id = user_info(token)
             except:
-                if send_otp == True:
+                if send_otp == True or pub_otp == True:
                     try:
                         is_verified = invitee_obj.get(email=email).verified
                     except ObjectDoesNotExist:
@@ -121,8 +122,14 @@ class join_meeting(APIView):
                 else:
                     pass
                 try:
-                    if send_otp != True:
-                        role = 'attendee'
+                    if send_otp != True and pub_otp != True:
+                        if password != "":
+                            if password == mod_password:
+                                role = 'moderator'
+                            if password == attendee_password:
+                                role = 'attendee'
+                        else:
+                            role = 'attendee'
                     else:
                         role = invitee_obj.get(email=email).role
                 except ObjectDoesNotExist:
@@ -130,7 +137,6 @@ class join_meeting(APIView):
                         "message": "invalid user"
                     }, status=HTTP_400_BAD_REQUEST)
                 pass
-
             if curr_user_id == meeting_user_id:
                 duration = meeting_obj.duration
                 if duration == 0:
