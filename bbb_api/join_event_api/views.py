@@ -29,7 +29,7 @@ class join_meeting(APIView):
         pub_otp = meeting_obj.public_otp
         invitee_obj = CastInviteeDetails.objects.filter(cast=meeting_obj)
         join_count = meeting_obj.join_count
-        if join_count < 4:
+        if join_count < 200:
             pass
         else:
             stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL, public_meeting_id)
