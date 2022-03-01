@@ -2,7 +2,6 @@ from django.urls import path
 from .views import add_invitees, \
     fetch_details, \
     delete_invitee
-from cast_invitee_details.joinee_details.joineedetails import JoineeDetails, FetchJoineeDetails
 from .add_wallet_address.addMetamaskAddress import AddUser
 from .email_checker.email_checker import CheckEmail
 from .otp.send_otp import SendOtp
@@ -15,7 +14,10 @@ from .public_add_joinee.PublicAddJoinee import PublicAddJoinee
 from .verify_wallet_address.VerifyWalletAddress import VerifyWalletAddress
 from .update_mint_data.UpdateMintData import UpdateMintData
 from .verify_wallet_address.send_hashd_id import SendHashedId
-
+from .public_wallet.add_wallet import PublicWalletAdd
+from .public_wallet.verify_wallet import PublicWalletVerify
+from .public_wallet.mint_nft_update import PublicMintUpdate
+from .public_wallet.send_hashed_data import SendHashedIdPublic
 
 urlpatterns = [
     path('event/meeting/add/invitees/', add_invitees.as_view()),
@@ -23,8 +25,6 @@ urlpatterns = [
     path('event/validate/otp/', ValidateOtp.as_view()),
     path('event/invitee/details/', fetch_details.as_view()),
     path('event/invitee/delete/', delete_invitee.as_view()),
-    path('event/joinee/add/', JoineeDetails.as_view()),
-    path('event/joinee/details/', FetchJoineeDetails.as_view()),
     path('event/add/wallet/address/', AddUser.as_view()),
     path('event/check/email/', CheckEmail.as_view()),
     path('event/users/details/download/', CsvDownloader.as_view()),
@@ -35,6 +35,11 @@ urlpatterns = [
     path('event/verify/public/address/', VerifyWalletAddress.as_view()),
     path('event/update/mint/data/', UpdateMintData.as_view()),
     path('event/send/hashed/id/', SendHashedId.as_view()),
+    path('event/add/public/wallet/', PublicWalletAdd.as_view()),
+    path('event/verify/public/wallet/', PublicWalletVerify.as_view()),
+    path('event/mint/update/public/wallet/', PublicMintUpdate.as_view()),
+    path('event/send/hashed/id/public/', SendHashedIdPublic.as_view()),
+
 ]
 
 

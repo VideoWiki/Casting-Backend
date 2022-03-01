@@ -27,6 +27,13 @@ class VerifyWalletAddress(APIView):
                 }, status= status.HTTP_400_BAD_REQUEST)
             else:
                 pass
+            if saved_pub_add.mint_count >= 1:
+                return Response({
+                    "status": False,
+                    "message": "NFT already claimed"
+                }, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                pass
             saved_pub_add.metamask_verified = True
             saved_pub_add.save()
             return Response({

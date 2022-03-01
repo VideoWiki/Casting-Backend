@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 import requests
 from cast_invitee_details.models import CastInviteeDetails
 from django.core.exceptions import ObjectDoesNotExist
+from api.global_variable import CLIENT_DOMAIN_URL
+import ast
 
 
 class join_meeting(APIView):
@@ -26,7 +28,16 @@ class join_meeting(APIView):
         send_otp = meeting_obj.send_otp
         pub_otp = meeting_obj.public_otp
         invitee_obj = CastInviteeDetails.objects.filter(cast=meeting_obj)
-
+        join_count = meeting_obj.join_count
+        if join_count < 4:
+            pass
+        else:
+            stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL, public_meeting_id)
+            return Response({
+                "status": True,
+                "url": stream_url,
+                "message": "server cap reached. user re-directed to stream"
+            })
         if meeting_type == 'public':
 
             meeting_user_id = meeting_obj.user_id
@@ -126,8 +137,12 @@ class join_meeting(APIView):
                         if password != "":
                             if password == mod_password:
                                 role = 'moderator'
-                            if password == attendee_password:
+                            elif password == attendee_password:
                                 role = 'attendee'
+                            else:
+                                return Response({
+                                    "message": "invalid password"
+                                }, status=HTTP_400_BAD_REQUEST)
                         else:
                             role = 'attendee'
                     else:
@@ -151,15 +166,12 @@ class join_meeting(APIView):
                                               name,
                                               meeting_obj.moderator_password,
                                               avatar_url)
+                    meeting_obj.join_count = meeting_obj.join_count + 1
+                    meeting_obj.save(update_fields=['join_count'])
                     if meeting_obj.is_streaming == True:
-                        if meeting_obj.bbb_stream_url_youtube != None and meeting_obj.bbb_stream_url_youtube != "":
-                            s_url = meeting_obj.bbb_stream_url_youtube
-                        else:
-                            s_url = meeting_obj.bbb_stream_url_vw
-                        if s_url == None:
-                            return Response({'status': True,
-                                             'url': result}
-                                            )
+                        stream_urls_list = ast.literal_eval(meeting_obj.bbb_stream_url_vw)
+                        stream_str = ","
+                        new_stream_str = stream_str.join(stream_urls_list)
                         url_status = "https://api.stream.video.wiki/api/cast/live/status"
                         payload = {'meeting_id': str(private_meeting_id)}
                         files = []
@@ -178,7 +190,7 @@ class join_meeting(APIView):
                             "BBB_RESOLUTION": str(meeting_obj.bbb_resolution),
                             "BBB_START_MEETING": "false",
                             "BBB_MEETING_ID": str(meeting_obj.private_meeting_id),
-                            "BBB_STREAM_URL": str(s_url),
+                            "BBB_STREAM_URL": new_stream_str,
                             "BBB_SHOW_CHAT": "false",
                             "BBB_USER_NAME": "Live",
                             "BBB_MODERATOR_PASSWORD": str(meeting_obj.moderator_password),
@@ -216,6 +228,8 @@ class join_meeting(APIView):
                                               attendee_password,
                                               avatar_url
                                               )
+                    meeting_obj.join_count = meeting_obj.join_count + 1
+                    meeting_obj.save(update_fields=['join_count'])
                     if email != "":
                         if CastInviteeDetails.objects.filter(cast=meeting_obj, email=email).exists():
                             joinee_obj = CastInviteeDetails.objects.get(cast=meeting_obj, email=email)
@@ -248,6 +262,8 @@ class join_meeting(APIView):
                                               mod_password,
                                               avatar_url
                                               )
+                    meeting_obj.join_count = meeting_obj.join_count + 1
+                    meeting_obj.save(update_fields=['join_count'])
                     if email != "":
                         if CastInviteeDetails.objects.filter(cast=meeting_obj, email=email).exists():
                             joinee_obj = CastInviteeDetails.objects.get(cast=meeting_obj, email=email)

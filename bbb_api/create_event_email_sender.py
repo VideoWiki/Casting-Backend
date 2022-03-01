@@ -1,9 +1,9 @@
 from library.mailchimp import send_mail
 from datetime import datetime, timedelta
-from cast_invitee_details.helper import send_invite_mail1, send_invite_mail2
+from cast_invitee_details.helper import send_invite_mail1, send_invite_mail2, send_invite_mail3
 from bbb_api.create_event_api.helper import send_create1, send_create2, send_create3, send_create4
 import pytz
-
+from templates.invite_viewer import email_invite3
 
 def event_registration_mail(email, user_name, event_name, time, stream_url, meeting_url, nft_drop_url, moderator_password, attendee_password):
     if stream_url != "" and nft_drop_url == "":
@@ -16,9 +16,12 @@ def event_registration_mail(email, user_name, event_name, time, stream_url, meet
         send_create2(email, user_name, event_name, time, meeting_url, moderator_password, attendee_password)
 
 
-def attendee_mail(user_name, email, event_name, event_time, event_url, event_password, stream_url):
+def attendee_mail(user_name, email, event_name, event_time, event_url, event_password, stream_url, role):
     if stream_url != "":
-        send_invite_mail2(to_email=email, user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password, stream_url=stream_url)
+        if role == "viewer":
+            send_invite_mail3(to_email=email, user_name=user_name, event_name=event_name, event_time=event_time, stream_url=stream_url)
+        if not role == "viewer":
+            send_invite_mail2(to_email=email, user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password, stream_url=stream_url)
     else:
         send_invite_mail1(to_email=email, user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password)
 

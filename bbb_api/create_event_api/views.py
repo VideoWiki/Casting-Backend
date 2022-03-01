@@ -14,7 +14,7 @@ import datetime
 from .start_now_func import start_cast_now
 from ..models import NftDetails
 import json
-
+import ast
 
 class create_event(APIView):
     def post(self, request):
@@ -161,7 +161,6 @@ class create_event(APIView):
             start_now = "True"
         timezone = request.data['timezone']
         timezone_adder(tz=timezone)
-        print(type(schedule_time), type(timezone))
         if start_now == "True":
             start_now = True
         elif timezone=="":
@@ -198,17 +197,19 @@ class create_event(APIView):
         else:
             bool_is_streaming = False
         meeting.is_streaming = bool_is_streaming
+        stream_urls_list = []
         if bool_is_streaming == True:
             bbb_resolution = "1280x720"
             meeting.bbb_resolution = bbb_resolution
-            vw_stream_url = request.data["vw_stream_url"]
-            if vw_stream_url == 'True':
+            stream_urls = request.data["vw_stream_url"]
+            converted_stream_urls = ast.literal_eval(stream_urls)
+            if converted_stream_urls[0]["vw_stream"] == 'True':
                 url = "rtmp://play.stream.video.wiki/stream/{}".format(meeting.public_meeting_id)
-                meeting.bbb_stream_url_vw = url
-            else:
-                meeting.bbb_stream_url_vw = None
-            youtube_stream_url = request.data["youtube_stream_url"]
-            meeting.bbb_stream_url_youtube = youtube_stream_url
+                stream_urls_list.append(url)
+            if len(converted_stream_urls[1]["urls"]) > 0:
+                for i in converted_stream_urls[1]["urls"]:
+                    stream_urls_list.append(i)
+            meeting.bbb_stream_url_vw = stream_urls_list
         give_nft = request.data["give_nft"]
         if give_nft == 'True':
             meeting.give_nft = True
@@ -235,6 +236,16 @@ class create_event(APIView):
             meeting.public_otp = True
         else:
             meeting.public_otp = False
+        public_stream_input = request.data["public_stream"]
+        if public_stream_input == 'True':
+            meeting.public_stream = True
+        else:
+            meeting.public_stream = False
+        public_nft_flow = request.data["public_nft_flow"]
+        if public_nft_flow == 'True':
+            meeting.public_nft_flow = True
+        else:
+            meeting.public_nft_flow = False
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
         user_id = user_info(str(token))
         if user_id == -1:

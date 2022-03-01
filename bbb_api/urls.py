@@ -14,6 +14,10 @@ from bbb_api.update_cast.update_cast import update_cast
 from bbb_api.update_cast.get_details import get_details
 from bbb_api.my_recordings_api.event_recording import CastRecording
 from bbb_api.fetch_nft_details.NftDetails import FetchNftDetails
+from bbb_api.activate_public_nft.activate_public_nft import NftActivatePublic
+from bbb_api.stream.start import start_stream
+from bbb_api.stream.end import end_stream
+
 
 urlpatterns = [
     path('event/meeting/create/', create_event.as_view()),
@@ -30,7 +34,11 @@ urlpatterns = [
     path('event/meeting/update/', update_cast.as_view()),
     path('event/meeting/get/details/', get_details.as_view()),
     path('event/meeting/recording/', CastRecording.as_view()),
-    path('event/fetch/nft/details/', FetchNftDetails.as_view())
+    path('event/fetch/nft/details/', FetchNftDetails.as_view()),
+    path('event/nft/activate/public/', NftActivatePublic.as_view()),
+    path('event/ls/start/', start_stream.as_view()),
+    path('event/ls/end/', end_stream.as_view()),
+
 ]
 
 

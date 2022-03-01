@@ -30,9 +30,17 @@ class CastInviteeDetails(models.Model):
         unique_together = ('cast', 'metamask_address')
 
 
-class CastJoineeDetails(models.Model):
+class PublicWallet(models.Model):
     cast = models.ForeignKey(Meeting, on_delete=models.CASCADE, null=True, blank=True)
-    name = models.CharField(max_length=20, blank=True, null=True)
-    # avatar = models.ImageField(blank=True, null=True, upload_to= 'avatar_images')
-
-
+    mint_status = (
+        ('not started', 'Not Started'),
+        ('started', 'Started'),
+        ('successful', 'Successful')
+    )
+    metamask_address = models.CharField(max_length=100, blank=True, null=True)
+    metamask_verified = models.CharField(max_length=10, blank=True, null=True)
+    mint = models.CharField(max_length=100, choices=mint_status, blank=True, null=True)
+    mint_count = models.IntegerField(default=0)
+    transaction_id = models.CharField(max_length=300, blank=True, null=True)
+    class Meta:
+        unique_together = ('cast', 'metamask_address')

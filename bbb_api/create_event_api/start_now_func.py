@@ -1,7 +1,7 @@
 from ..models import Meeting
 from bbb_api.join_event_api.views import event_scheduler
 import requests, json
-
+import ast
 
 def start_cast_now(public_meeting_id, name):
     meeting_obj = Meeting.objects.get(public_meeting_id=public_meeting_id)
@@ -24,21 +24,18 @@ def start_cast_now(public_meeting_id, name):
                                   name,
                                   meeting_obj.moderator_password,
                                   avatar_url="")
+        meeting_obj.join_count = meeting_obj.join_count + 1
+        meeting_obj.save(update_fields=['join_count'])
         if meeting_obj.is_streaming == True:
-            if meeting_obj.bbb_stream_url_youtube != None and meeting_obj.bbb_stream_url_youtube != "":
-                s_url = str(meeting_obj.bbb_stream_url_youtube)
-            else:
-                s_url = str(meeting_obj.bbb_stream_url_vw)
-            print(s_url, type(s_url),"surl")
-            if s_url == "" or "None":
-                return result
+            stream_urls_list = ast.literal_eval(meeting_obj.bbb_stream_url_vw)
+            stream_str = ","
+            new_stream_str = stream_str.join(stream_urls_list)
             url_status = "https://api.stream.video.wiki/api/cast/live/status"
             payload = {'meeting_id': str(private_meeting_id)}
             files = []
             headers = {}
             response1 = requests.request("POST", url_status, headers=headers, data=payload, files=files)
             sp = response1.text.split(":")
-            print(sp,"sp")
             sp2 = sp[1].split(",")
             if sp2[0] == 'true':
                 url = "https://api.stream.video.wiki/api/cast/live/end"
@@ -51,7 +48,7 @@ def start_cast_now(public_meeting_id, name):
                 "BBB_RESOLUTION": str(meeting_obj.bbb_resolution),
                 "BBB_START_MEETING": "false",
                 "BBB_MEETING_ID": str(meeting_obj.private_meeting_id),
-                "BBB_STREAM_URL": s_url,
+                "BBB_STREAM_URL": new_stream_str,
                 "BBB_SHOW_CHAT": "false",
                 "BBB_USER_NAME": "Live",
                 "BBB_MODERATOR_PASSWORD": str(meeting_obj.moderator_password),

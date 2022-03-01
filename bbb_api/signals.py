@@ -8,8 +8,7 @@ from django_q.models import Schedule
 
 
 @receiver(post_save, sender=Meeting)
-def post_save_prediction(sender, instance, created, **kwargs):
-
+def post_save_prediction(sender, instance, created, update_fields, **kwargs):
     if created:
         creator_email = instance.event_creator_email
         name = instance.event_name
@@ -31,6 +30,8 @@ def post_save_prediction(sender, instance, created, **kwargs):
             stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL, instance.public_meeting_id)
         event_registration_mail(str(creator_email), str(user_name),str(name), str(schedule_time),
                                 stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password)
+    elif update_fields:
+        pass
     else:
         creator_email = instance.event_creator_email
         name = instance.event_name
@@ -94,7 +95,7 @@ def post_save_prediction(sender, instance, created, **kwargs):
 #
 #
 @receiver(post_save, sender=Meeting)
-def reminder(sender, instance, created, **kwargs):
+def reminder(sender, instance, created, update_fields, **kwargs):
     if created:
         remind_schedular = instance.public_meeting_id
         reminder_time = instance.schedule_time
@@ -116,6 +117,8 @@ def reminder(sender, instance, created, **kwargs):
                      a[0],
                      a[1]
                  )))
+    elif update_fields:
+        pass
     else:
         remind_schedular = instance.public_meeting_id
         try:

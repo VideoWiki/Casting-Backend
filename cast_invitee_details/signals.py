@@ -30,9 +30,19 @@ def post_save_emailer(sender, instance, created, **kwargs):
                                              schedule_time,
                                              meeting_url,
                                              a_password,
-                                             stream_url
+                                             stream_url,
+                                             instance.role
                                              )
-
+        elif instance.role == "viewer":
+            send_mail_invite = attendee_mail(instance.name,
+                                             instance.email,
+                                             instance.cast.event_name,
+                                             schedule_time,
+                                             meeting_url,
+                                             a_password,
+                                             stream_url,
+                                             instance.role
+                                             )
         else:
             send_mail_invite = attendee_mail(instance.name,
                                              instance.email,
@@ -40,5 +50,7 @@ def post_save_emailer(sender, instance, created, **kwargs):
                                              schedule_time,
                                              meeting_url,
                                              m_password,
-                                             stream_url
+                                             stream_url,
+                                             instance.role
                                              )
+

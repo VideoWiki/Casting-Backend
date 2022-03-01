@@ -70,14 +70,17 @@ class Meeting(models.Model):
     cover_image = models.ImageField(blank=True, upload_to='cover_images', null=True)
     is_streaming = models.BooleanField(default=False, null=True, blank=True)
     bbb_resolution = models.CharField(max_length=20, default="1280x720", blank=True, null=True)
-    bbb_stream_url_vw = models.CharField(blank=True, null=True, max_length=100)
-    bbb_stream_url_youtube = models.CharField(blank=True, null=True, max_length=100)
+    bbb_stream_url_vw = models.TextField(blank=True, null=True)
     raw_time = models.CharField(max_length=100, blank=True, null=True)
     give_nft = models.BooleanField(default=False, null=True, blank=True)
     send_otp = models.BooleanField(default=False, null=True, blank=True)
     audience_airdrop = models.BooleanField(default=False, blank=True, null=True)
     password_auth = models.BooleanField(default=False, blank=True, null=True)
     public_otp = models.BooleanField(default=False, blank=True, null=True)
+    public_nft_flow = models.BooleanField(default=False, blank=True, null=True)
+    public_nft_activate = models.BooleanField(default=False, blank=True, null=True)
+    public_stream = models.BooleanField(default=False, blank=True, null=True)
+    join_count = models.IntegerField(default=0, null=True, blank=True)
 
 
     @classmethod

@@ -22,6 +22,9 @@ class meeting_info(APIView):
             give_nft = event_object.give_nft
             password_auth = event_object.password_auth
             public_otp = event_object.public_otp
+            public_stream = event_object.public_stream
+            public_nft_status = event_object.public_nft_activate
+            pub_nft_flow = event_object.public_nft_flow
             if event_object.cover_image != "https://api.cast.video.wiki/static/alt.png":
                 c_i = BASE_URL + "/media/" + str(event_object.cover_image)
             else:
@@ -37,6 +40,9 @@ class meeting_info(APIView):
                                                               "give_nft": give_nft,
                                                               "password_auth": password_auth,
                                                               "public_otp": public_otp,
+                                                              "public_stream": public_stream,
+                                                              "public_nft_status": public_nft_status,
+                                                              "pub_nft_flow": pub_nft_flow,
                                                               "cover_image": str(c_i)
                                                               }
                              }

@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
-from ..models import Meeting
 from rest_framework.response import Response
 from ..models import Meeting
 import time
 from rest_framework import status
+
+
 class meetings(APIView):
     def get(self, request):
         meetings = Meeting.get_meetings()
@@ -24,6 +25,8 @@ class meetings(APIView):
             date = time.strftime("%Y-%m-%d", time.gmtime(sec_time))
             time_hms = time.strftime("%H:%M:%S", time.gmtime(sec_time))
             max_users = i['info']['max_users']
+            if not Meeting.objects.filter(event_name=name).exists():
+                continue
             meet_obj = Meeting.objects.get(event_name=name)
             short_description = meet_obj.short_description
             event_creator_name = meet_obj.event_creator_name
