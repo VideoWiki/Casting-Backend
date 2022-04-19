@@ -12,7 +12,8 @@ class scheduled_meetings(APIView):
         for i in a:
             name = i.event_name
             day = i.schedule_time.date()
-            time = i.schedule_time.time()
+            time = "{}:{}:{}".format(i.schedule_time.time().hour, i.schedule_time.time().minute, i.schedule_time.second)
+            # time = i.schedule_time.time()
             description = i.short_description
             session_key = i.public_meeting_id
             event_id = i.id

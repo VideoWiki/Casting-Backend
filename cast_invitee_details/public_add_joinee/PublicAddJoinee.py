@@ -25,7 +25,11 @@ class PublicAddJoinee(APIView):
                 "status": False,
                 "message": "invalid session_id"
             }, status=status.HTTP_400_BAD_REQUEST)
-
+        mode_viewer = cast_obj.viewer_mode
+        if mode_viewer == True:
+            role = "viewer"
+        elif mode_viewer == False:
+            role = "participant"
         if email !="":
             print("1")
             if not CastInviteeDetails.objects.filter(cast=cast_obj, email=email).exists():
@@ -33,10 +37,10 @@ class PublicAddJoinee(APIView):
                                                   name= name,
                                                   email= email,
                                                   invited= False,
-                                                  role='attendee',
+                                                  role= role,
                                                   mint='not started')
         else:
-            CastInviteeDetails.objects.create(cast=cast_obj, name=name, invited=False, role='attendee', mint='not started')
+            CastInviteeDetails.objects.create(cast=cast_obj, name=name, invited=False, role= role, mint='not started')
 
         return Response({
             "status": True,

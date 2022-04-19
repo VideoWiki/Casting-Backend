@@ -7,6 +7,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST
 import requests
 from django.core.exceptions import ObjectDoesNotExist
 import ast
+from api.global_variable import STREAM_URL
 
 
 class start_stream(APIView):
@@ -33,7 +34,7 @@ class start_stream(APIView):
                 stream_urls_list = ast.literal_eval(meet_obj.bbb_stream_url_vw)
                 stream_str = ","
                 new_stream_str = stream_str.join(stream_urls_list)
-                url_status = "https://api.stream.video.wiki/api/cast/live/status"
+                url_status = "{}status".format(STREAM_URL)
                 payload = {'meeting_id': str(meet_obj.private_meeting_id)}
                 files = []
                 headers = {}
@@ -41,7 +42,7 @@ class start_stream(APIView):
                 sp = response1.text.split(":")
                 sp2 = sp[1].split(",")
                 if sp2[0] == 'true':
-                    url = "https://api.stream.video.wiki/api/cast/live/end"
+                    url = "{}end".format(STREAM_URL)
                     payload = {'meeting_id': '{}'.format(meet_obj.private_meeting_id)}
                     files = []
                     headers = {}
@@ -57,7 +58,7 @@ class start_stream(APIView):
                     "BBB_MODERATOR_PASSWORD": str(meet_obj.moderator_password),
                     "BBB_CHAT_MESSAGE": "Welcome to the stream"
                 }
-                url = "https://api.stream.video.wiki/api/cast/live/start"
+                url = "{}start".format(STREAM_URL)
                 headers = {
                     'Content-Type': 'application/json'
                 }

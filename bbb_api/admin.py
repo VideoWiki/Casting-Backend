@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Meeting, TemporaryFiles, NftDetails
+from .models import Meeting, TemporaryFiles, NftDetails, ViewerDetails
 # Register your models here.
 
 
@@ -16,3 +16,8 @@ class TempAdmin(admin.ModelAdmin):
 @admin.register(NftDetails)
 class TempAdmin(admin.ModelAdmin):
     list_display = ('id','cast', 'mint_function_name', 'contract_address', 'parameter', 'image', 'description')
+
+
+@admin.register(ViewerDetails)
+class ViewerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'cast', 'force_listen_only', 'enable_screen_sharing', 'enable_webcam')

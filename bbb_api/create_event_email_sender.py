@@ -1,9 +1,11 @@
 from library.mailchimp import send_mail
 from datetime import datetime, timedelta
-from cast_invitee_details.helper import send_invite_mail1, send_invite_mail2, send_invite_mail3
+from cast_invitee_details.helper import send_invite_mail1, \
+    send_invite_mail2, send_invite_mail3, \
+    send_invite_mail4, send_invite_mail5
 from bbb_api.create_event_api.helper import send_create1, send_create2, send_create3, send_create4
 import pytz
-from templates.invite_viewer import email_invite3
+
 
 def event_registration_mail(email, user_name, event_name, time, stream_url, meeting_url, nft_drop_url, moderator_password, attendee_password):
     if stream_url != "" and nft_drop_url == "":
@@ -17,13 +19,51 @@ def event_registration_mail(email, user_name, event_name, time, stream_url, meet
 
 
 def attendee_mail(user_name, email, event_name, event_time, event_url, event_password, stream_url, role):
-    if stream_url != "":
-        if role == "viewer":
-            send_invite_mail3(to_email=email, user_name=user_name, event_name=event_name, event_time=event_time, stream_url=stream_url)
-        if not role == "viewer":
-            send_invite_mail2(to_email=email, user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password, stream_url=stream_url)
-    else:
-        send_invite_mail1(to_email=email, user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password)
+    if role == "co-host":
+        if stream_url != "":
+            send_invite_mail2(to_email=email,
+                              user_name= user_name,
+                              event_name= event_name,
+                              event_time= event_time,
+                              event_url= event_url,
+                              stream_url= stream_url,
+                              event_password= event_password
+                              )
+        else:
+            send_invite_mail1(to_email= email,
+                              user_name= user_name,
+                              event_name= event_name,
+                              event_time= event_time,
+                              event_url= event_url,
+                              event_password= event_password
+                              )
+    elif role == "spectator":
+        send_invite_mail3(to_email= email,
+                          user_name= user_name,
+                          event_name= event_name,
+                          event_time= event_time,
+                          stream_url= stream_url
+                          )
+    elif role == "participant":
+        send_invite_mail4(to_email= email,
+                          user_name= user_name,
+                          event_name= event_name,
+                          event_time= event_time,
+                          event_url= event_url,
+                          event_password= event_password
+                          )
+    elif role == "viewer":
+        send_invite_mail5(to_email= email,
+                          user_name= user_name,
+                          event_name= event_name,
+                          event_time= event_time,
+                          event_url= event_url,
+                          event_password= event_password
+                          )
+
+
+
+
 
 def time_subtractor(time_string):
     h = time_string.hour

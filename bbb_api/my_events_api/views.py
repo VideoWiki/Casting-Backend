@@ -17,9 +17,7 @@ class get_my_events(APIView):
             event = i.event_name
             scheduled_event_list.append(event)
         for i in events:
-            private_meeting_id = i.private_meeting_id
             name = i.event_name
-            event = Meeting.is_meeting_running(private_meeting_id=private_meeting_id)
             scheduled_event_list.append(name)
         for event in user_meetings:
             event_name = event.event_name

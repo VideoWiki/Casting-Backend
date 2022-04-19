@@ -3,14 +3,29 @@ from ..models import Meeting
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
-from api.global_variable import BASE_URL
+from api.global_variable import BASE_URL, STREAM_URL
+import django.utils.timezone
+import requests
+
 
 class meeting_info(APIView):
     def get(self, request):
         public_meeting_id = request.GET.get('public_meeting_id')
+        event_object = Meeting.objects.get(public_meeting_id=public_meeting_id)
+        events = Meeting.objects.filter(schedule_time__gt=django.utils.timezone.now())
+        if not event_object in events:
+            private_meeting_id = event_object.private_meeting_id
+            running = Meeting.is_meeting_running(private_meeting_id)
+            if running == 'true':
+                expired = False
+                is_runnig = True
+            else:
+                expired = True
+                is_runnig = False
+        else:
+            expired = False
+            is_runnig = False
         try:
-            event_object = Meeting.objects.get(public_meeting_id= public_meeting_id)
-            # result = Meeting.meeting_info(private_meeting_id_object.private_meeting_id, private_meeting_id_object.moderator_password)
             event_name = event_object.event_name
             event_creator_name = event_object.event_creator_name
             public_meeting_id = event_object.public_meeting_id
@@ -25,10 +40,24 @@ class meeting_info(APIView):
             public_stream = event_object.public_stream
             public_nft_status = event_object.public_nft_activate
             pub_nft_flow = event_object.public_nft_flow
+            streaming_urls = event_object.bbb_stream_url_vw
+            airdrop = event_object.audience_airdrop
+            viewer_mode = event_object.viewer_mode
             if event_object.cover_image != "https://api.cast.video.wiki/static/alt.png":
                 c_i = BASE_URL + "/media/" + str(event_object.cover_image)
             else:
                 c_i = event_object.cover_image
+            url_status = "{}status".format(STREAM_URL)
+            payload = {'meeting_id': str(event_object.private_meeting_id)}
+            files = []
+            headers = {}
+            response1 = requests.request("POST", url_status, headers=headers, data=payload, files=files)
+            sp = response1.text.split(":")
+            sp2 = sp[1].split(",")
+            if sp2[0] == 'true':
+                stream_status = True
+            else:
+                stream_status = False
             return Response({'status': True, 'meeting_info': {"event_name": event_name,
                                                               "event_creator_name": event_creator_name,
                                                               "public_meeting_id": public_meeting_id,
@@ -43,7 +72,13 @@ class meeting_info(APIView):
                                                               "public_stream": public_stream,
                                                               "public_nft_status": public_nft_status,
                                                               "pub_nft_flow": pub_nft_flow,
-                                                              "cover_image": str(c_i)
+                                                              "cover_image": str(c_i),
+                                                              "stream_urls": streaming_urls,
+                                                              "airdrop": airdrop,
+                                                              "expired": expired,
+                                                              "running": is_runnig,
+                                                              "viewer_mode": viewer_mode,
+                                                              "stream_status": stream_status
                                                               }
                              }
                             )

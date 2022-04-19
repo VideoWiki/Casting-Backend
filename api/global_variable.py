@@ -43,6 +43,7 @@ else:
     }
     BASE_URL = "https://api.cast.video.wiki"
     CLIENT_DOMAIN_URL = "https://cast.video.wiki"
+    VW_RTMP_URL = "rtmp://play.stream.video.wiki/stream/"
 
 
     DATABASE = {
@@ -65,6 +66,10 @@ AWS_LOCATION = 'us-east-2'
 AWS_BASE_URL = 'https://s3.us-east-2.amazonaws.com/video.wiki/media/cover_images/'
 BASE_URL_AWS = "http://s3.us-east-2.amazonaws.com/video.wiki/media/"
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+#stream_url
+STREAM_URL = "https://api.stream.video.wiki/api/cast/live/"
+
 
 # BBB_API_URL = 'https://dev.stream.video.wiki/bigbluebutton/'
 BBB_API_URL = 'https://live.event.video.wiki/bigbluebutton/'

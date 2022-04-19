@@ -12,6 +12,7 @@ def post_save_emailer(sender, instance, created, **kwargs):
         meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(instance.cast.public_meeting_id)
         a_password = instance.cast.attendee_password
         m_password = instance.cast.moderator_password
+        v_password = instance.cast.viewer_password
         vw_stream = instance.cast.bbb_stream_url_vw
         dt = instance.cast.schedule_time
         date = dt.date()
@@ -23,7 +24,17 @@ def post_save_emailer(sender, instance, created, **kwargs):
             stream_url = ""
         else:
             stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL,instance.cast.public_meeting_id)
-        if instance.role == "attendee":
+        if instance.role == "participant":
+            send_mail_invite = attendee_mail(instance.name,
+                                             instance.email,
+                                             instance.cast.event_name,
+                                             schedule_time,
+                                             meeting_url,
+                                             a_password,
+                                             stream_url,
+                                             instance.role
+                                             )
+        elif instance.role == "spectator":
             send_mail_invite = attendee_mail(instance.name,
                                              instance.email,
                                              instance.cast.event_name,
@@ -39,7 +50,7 @@ def post_save_emailer(sender, instance, created, **kwargs):
                                              instance.cast.event_name,
                                              schedule_time,
                                              meeting_url,
-                                             a_password,
+                                             v_password,
                                              stream_url,
                                              instance.role
                                              )

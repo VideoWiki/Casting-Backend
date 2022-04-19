@@ -1,3 +1,5 @@
+from api.global_variable import CLIENT_DOMAIN_URL
+
 def email_create4(user_name, event_name, event_time, event_url, meeting_url, nft_drop_url, moderator_password, attendee_password):
     template_part1 = """\
 <html lang="en">
@@ -21,6 +23,8 @@ def email_create4(user_name, event_name, event_time, event_url, meeting_url, nft
     <br>
     Password for moderator: <b>{}</b> and attendee: <b>{}</b>
     <br>
+    Please visit {}/mycasts to initiate the cast.
+    <br>
     <br>
     All the best,
     <br>
@@ -29,5 +33,5 @@ def email_create4(user_name, event_name, event_time, event_url, meeting_url, nft
     </html>
 
 
-    """.format(user_name, event_name, event_time, event_url, meeting_url, nft_drop_url, moderator_password, attendee_password)
+    """.format(user_name, event_name, event_time, event_url, meeting_url, nft_drop_url, moderator_password, attendee_password, CLIENT_DOMAIN_URL)
     return template_part1

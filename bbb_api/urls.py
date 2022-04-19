@@ -1,6 +1,6 @@
 from django.urls import path
 from .create_event_api.views import create_event
-from .join_event_api.views import join_meeting
+# from .join_event_api.views import join_meeting
 from .delete_event_api.views import delete_meeting
 from .all_running_events.running_events import meetings
 from .is_event_running.event_status import event_status
@@ -17,7 +17,7 @@ from bbb_api.fetch_nft_details.NftDetails import FetchNftDetails
 from bbb_api.activate_public_nft.activate_public_nft import NftActivatePublic
 from bbb_api.stream.start import start_stream
 from bbb_api.stream.end import end_stream
-
+from bbb_api.join_event_api.join import join_meeting
 
 urlpatterns = [
     path('event/meeting/create/', create_event.as_view()),
@@ -38,7 +38,7 @@ urlpatterns = [
     path('event/nft/activate/public/', NftActivatePublic.as_view()),
     path('event/ls/start/', start_stream.as_view()),
     path('event/ls/end/', end_stream.as_view()),
-
+    
 ]
 
 

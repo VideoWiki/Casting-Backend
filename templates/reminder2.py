@@ -1,4 +1,4 @@
-def reminder2(user_name, event_name, event_time, event_url, event_password):
+def reminder2(user_name, event_name, event_time, event_url, event_password, stream_url):
     template_1 = """
     <!DOCTYPE html>
 <html lang="en">
@@ -13,16 +13,16 @@ def reminder2(user_name, event_name, event_time, event_url, event_password):
 
 Dear {},<br><br>
 
-Don't forget you have been invited for the event {} for {}. It starts in <strong>10 minutes</strong>. <br>
+Don't forget you have been invited, as a co-host, for the event {} for {}. It starts in <strong>10 minutes</strong>. <br>
 Here is the link to join: {} <br>
 Please provide your name and the following password when entering: <strong>{}</strong> <br><br>
 
-The session will be streamed on VideoWiki and YouTube. Share it with your network!<br><br>
+Your stream url is {}.
 
-All the best,<br>
+See you soon!,<br>
 VideoWiki team
 </body>
 </html>
 
-    """.format(user_name, event_name, event_time, event_url, event_password)
+    """.format(user_name, event_name, event_time, event_url, event_password, stream_url)
     return template_1

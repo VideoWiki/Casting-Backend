@@ -33,6 +33,8 @@ class Meeting(models.Model):
     meeting_type = models.CharField(max_length=10, blank=True, null=True, default='private')
     attendee_password = models.CharField(max_length=50)
     moderator_password = models.CharField(max_length=50)
+    viewer_password = models.CharField(max_length=50)
+    viewer_mode = models.BooleanField(default=False, blank=True, null=True)
     moderator_only_text = models.TextField(blank=True, null=True)
     welcome = models.TextField(default='welcome', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -215,13 +217,33 @@ class Meeting(models.Model):
         return result
 
     @classmethod
-    def join_url(cls, meeting_id, name, password, avatar_url):
+    def join_url(cls, meeting_id, name, password, force_listen_only, enable_screen_sharing, enable_webcam):
         call = 'join'
         query = urlencode((
             ('meetingID', meeting_id),
             ('password', password),
             ('fullName', name),
-            # ('avatarURL', avatar_url),
+            ('userdata-bbb_force_listen_only', force_listen_only),
+            ('bbb_enable_screen_sharing', enable_screen_sharing),
+            ('userdata-bbb_enable_video', enable_webcam),
+            # ('userdata-bbb_display_branding_area','false'),
+            # ('userdata-bbb_auto_share_webcam','true'),
+            # ('userdata-bbb_preferred_camera_profile','low'),
+            # ('userdata-bbb_record_video','false'), #If set to false, the user won’t have her/his video stream recorded
+            # ('userdata-bbb_skip_video_preview','false'),
+            # ('userdata-bbb_skip_video_preview_on_first_join','false'),
+            # ('userdata-bbb_mirror_own_webcam','true'),
+            # ('userdata-bbb_show_participants_on_login','false'),
+            # ('userdata-bbb_show_public_chat_on_login','false'),
+            # ('userdata-bbb_ask_for_feedback_on_logout','false'),
+            # ('userdata-bbb_auto_join_audio','false'),
+            # ('userdata-bbb_client_title','AMAN'),
+            # ('userdata-bbb_listen_only_mode','false'), #How would you like to join the audio? popup
+            # ('userdata-bbb_skip_check_audio','false'),
+            # ('userdata-bbb_skip_check_audio_on_first_join','false'),
+            # ('userdata-bbb_override_default_locale','eu')
+
+
         ))
         hashed = cls.api_call(query, call)
         url = BBB_API_URL + 'api/' +call + '?' + hashed
@@ -281,6 +303,13 @@ class NftDetails(models.Model):
     network = models.TextField(blank=True, null=True)
     image = models.ImageField(blank=True, upload_to='nft_images', null=True)
     description = models.TextField(blank=True, null=True)
+
+
+class ViewerDetails(models.Model):
+    cast = models.ForeignKey(Meeting, on_delete=models.CASCADE, null=True, blank=True)
+    force_listen_only = models.BooleanField(default=True, blank=True, null=True)
+    enable_screen_sharing = models.BooleanField(default=False, blank=True, null=True)
+    enable_webcam = models.BooleanField(default=False, blank=True, null=True)
 
 
 

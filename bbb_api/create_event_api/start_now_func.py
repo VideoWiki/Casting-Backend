@@ -8,26 +8,39 @@ def start_cast_now(public_meeting_id, name):
     private_meeting_id = meeting_obj.private_meeting_id
     meeting_type = meeting_obj.meeting_type
 
-    if meeting_type == 'public':
-        print(private_meeting_id, name, meeting_obj.moderator_password)
-        event_scheduler(private_meeting_id)
-        result = Meeting.join_url(private_meeting_id,
-                                  name,
-                                  meeting_obj.moderator_password, avatar_url="")
-        return result
-    else:
-        duration = meeting_obj.duration
-        if duration == 0:
-            duration = 1440
-        event_scheduler(private_meeting_id)
-        result = Meeting.join_url(private_meeting_id,
-                                  name,
-                                  meeting_obj.moderator_password,
-                                  avatar_url="")
-        meeting_obj.join_count = meeting_obj.join_count + 1
-        meeting_obj.save(update_fields=['join_count'])
-        if meeting_obj.is_streaming == True:
-            stream_urls_list = ast.literal_eval(meeting_obj.bbb_stream_url_vw)
+    # if meeting_type == 'public':
+    #     duration = meeting_obj.duration
+    #     if duration == 0:
+    #         duration = 1440
+    #     event_scheduler(private_meeting_id)
+    #     result = Meeting.join_url(private_meeting_id,
+    #                               name,
+    #                               meeting_obj.moderator_password,
+    #                               force_listen_only=False,
+    #                               enable_screen_sharing=True,
+    #                               enable_webcam=True
+    #                               )
+    #     return result
+    # else:
+    duration = meeting_obj.duration
+    if duration == 0:
+        duration = 1440
+    event_scheduler(private_meeting_id)
+    result = Meeting.join_url(private_meeting_id,
+                              name,
+                              meeting_obj.moderator_password,
+                              force_listen_only=False,
+                              enable_screen_sharing=True,
+                              enable_webcam=True
+                              )
+    meeting_obj.join_count = meeting_obj.join_count + 1
+    meeting_obj.save(update_fields=['join_count'])
+    if meeting_obj.is_streaming == True:
+        stream_urls_list = ast.literal_eval(meeting_obj.bbb_stream_url_vw)
+        print(stream_urls_list, "strl")
+        if len(stream_urls_list) == 0:
+            pass
+        else:
             stream_str = ","
             new_stream_str = stream_str.join(stream_urls_list)
             url_status = "https://api.stream.video.wiki/api/cast/live/status"
@@ -60,6 +73,6 @@ def start_cast_now(public_meeting_id, name):
             }
             r = requests.post(url, data=json.dumps(stream_dict), headers=headers)
             return result
-        return result
+    return result
 
 

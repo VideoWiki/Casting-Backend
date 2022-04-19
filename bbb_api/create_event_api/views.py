@@ -1,18 +1,17 @@
 import pytz
 from rest_framework.views import APIView
-from ..models import Meeting
+from ..models import Meeting, NftDetails, ViewerDetails
 from rest_framework.response import Response
 from library.helper import private_meeting_id_generator, \
     public_meeting_id_generator, user_info, \
     user_info_email, generate_random_key, \
     user_info_name
 from rest_framework import status
-from api.global_variable import BASE_URL, BASE_DIR
+from api.global_variable import BASE_URL, BASE_DIR, VW_RTMP_URL
 from ..create_event_email_sender import time_convertor, tc
 from .helper import invite_mail
 import datetime
 from .start_now_func import start_cast_now
-from ..models import NftDetails
 import json
 import ast
 
@@ -20,14 +19,20 @@ class create_event(APIView):
     def post(self, request):
         meeting = Meeting()
         name = request.data['event_name']
-        if Meeting.objects.filter(event_name__iexact=name):
+        if name == "":
             return Response({
                 "status": False,
-                "message": "event with this name is already present"},
-                status= status.HTTP_400_BAD_REQUEST
-            )
-        else:
-            meeting.event_name = name
+                "message": "cast name can't be empty"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        meeting.event_name = name
+        # if Meeting.objects.filter(event_name__iexact=name):
+        #     return Response({
+        #         "status": False,
+        #         "message": "event with this name is already present"},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
+        # else:
+        #     meeting.event_name = name
         meeting.private_meeting_id = private_meeting_id_generator()
         meeting.public_meeting_id = public_meeting_id_generator()
         meeting.meeting_type = request.data['meeting_type']
@@ -49,6 +54,19 @@ class create_event(APIView):
         else:
             meeting.moderator_password = mod_password
 
+        viewer_password = request.data["viewer_password"]
+        if viewer_password == '':
+            random_password = generate_random_key()
+            meeting.viewer_password = random_password
+        else:
+            meeting.viewer_password = viewer_password
+
+        mode_viewer = request.data["viewer_mode"]
+        if mode_viewer == "True":
+            mode_viewer = True
+            meeting.viewer_mode = True
+        else:
+            meeting.viewer_mode = False
         meeting.max_participant = request.data['max_participant']
         meeting.moderator_only_text = request.data['moderator_only_text']
         meeting.welcome = request.data['welcome_text']
@@ -204,7 +222,7 @@ class create_event(APIView):
             stream_urls = request.data["vw_stream_url"]
             converted_stream_urls = ast.literal_eval(stream_urls)
             if converted_stream_urls[0]["vw_stream"] == 'True':
-                url = "rtmp://play.stream.video.wiki/stream/{}".format(meeting.public_meeting_id)
+                url = "{}{}".format(VW_RTMP_URL,meeting.public_meeting_id)
                 stream_urls_list.append(url)
             if len(converted_stream_urls[1]["urls"]) > 0:
                 for i in converted_stream_urls[1]["urls"]:
@@ -258,7 +276,7 @@ class create_event(APIView):
         try:
             user_name = user_info_name(token)
         except:
-            user_name = ""
+            user_name = meeting.event_name
         meeting.event_creator_name = user_name
         remind_schedular = meeting.public_meeting_id
         meeting.schedular_name_reminder = remind_schedular
@@ -268,7 +286,14 @@ class create_event(APIView):
             user_email = ""
         meeting.event_creator_email = user_email
         meeting.save()
-
+        if meeting.viewer_mode == True:
+            force_listen_only = request.data["listen_only_mode"]
+            enable_webcam = request.data["webcam_enable"]
+            enable_screen_sharing = request.data["screen_sharing"]
+            ViewerDetails.objects.create(cast=meeting,
+                                         force_listen_only=force_listen_only,
+                                         enable_webcam=enable_webcam,
+                                         enable_screen_sharing=enable_screen_sharing)
         if meeting.audience_airdrop == True:
             mint_func_name = request.data['mint_function_name']
             contract_address = request.data['contract_address']
@@ -302,7 +327,7 @@ class create_event(APIView):
         else:
             pass
 
-        invite_mail(moderators, name)
+        invite_mail(moderators, meeting.public_meeting_id)
         if start_now == True:
             url = start_cast_now(public_meeting_id=meeting.public_meeting_id, name=meeting.event_creator_name)
             msg = "cast started successfully"

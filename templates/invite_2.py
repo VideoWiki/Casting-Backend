@@ -14,16 +14,16 @@ Dear {},
 <br>
 <br>
 
-You have been invited to join a cast <b>{}</b>. The cast will begin at <b>{}</b>. 
+You have been invited to join a cast <b>{}</b>, as a co-host. The cast will begin at <b>{}</b>. 
 <br>
 Your cast url is {}. 
 <br>
 Please join, provide your name and the following password: <strong>{}</strong>
 <br>
-Your stream url is {}
+Your stream url is {}.
 <br>
 
-Don't miss it!
+Don't miss it! We're looking forward to see you there.
 </body>
 </html>
 
