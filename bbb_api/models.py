@@ -303,6 +303,7 @@ class NftDetails(models.Model):
     network = models.TextField(blank=True, null=True)
     image = models.ImageField(blank=True, upload_to='nft_images', null=True)
     description = models.TextField(blank=True, null=True)
+    price = models.TextField(blank=True, null=True)
 
 
 class ViewerDetails(models.Model):
