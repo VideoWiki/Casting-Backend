@@ -24,6 +24,7 @@ class FetchNftDetails(APIView):
         image = nft_details_object.image
         nft_activated = cast_object.public_nft_activate
         pub_nft_flow = cast_object.public_nft_flow
+        price = nft_details_object.price
         if image == "":
             image_url = ""
         else:
@@ -38,6 +39,7 @@ class FetchNftDetails(APIView):
             "network": network,
             "image": image_url,
             "description": description,
+            "price": price,
             "nft_activated": nft_activated,
             "pub_nft_flow": pub_nft_flow
         })

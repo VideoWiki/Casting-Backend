@@ -302,6 +302,7 @@ class create_event(APIView):
             network = request.data['network']
             nft_image = request.data['nft_image']
             nft_description = request.data['nft_description']
+            price = request.data['price']
             try:
                 parser_o = json.loads(aib)
                 if parameter != "":
@@ -316,7 +317,8 @@ class create_event(APIView):
                     parameter=parameter_parser,
                     network=network,
                     image=nft_image,
-                    description=nft_description
+                    description=nft_description,
+                    price = price
                 )
             except json.JSONDecodeError:
                 Meeting.objects.filter(public_meeting_id=meeting.public_meeting_id).delete()
