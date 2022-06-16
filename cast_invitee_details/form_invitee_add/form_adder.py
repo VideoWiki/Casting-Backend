@@ -6,10 +6,11 @@ from django.core.exceptions import ObjectDoesNotExist
 import logging
 logger = logging.getLogger('__name__')
 logger_1 = logging.getLogger('django')
+from api.global_variable import TYPEFORM_URL
 
 
 def form_adder():
-    url = "https://api.typeform.com/forms/xQ5sUFNz/responses"
+    url = TYPEFORM_URL
 
     payload = {}
     headers = {
