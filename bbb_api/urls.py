@@ -18,6 +18,8 @@ from bbb_api.activate_public_nft.activate_public_nft import NftActivatePublic
 from bbb_api.stream.start import start_stream
 from bbb_api.stream.end import end_stream
 from bbb_api.join_event_api.join import join_meeting
+from bbb_api.nft.nft_details import AudienceAirdrop
+
 
 urlpatterns = [
     path('event/meeting/create/', create_event.as_view()),
@@ -38,7 +40,8 @@ urlpatterns = [
     path('event/nft/activate/public/', NftActivatePublic.as_view()),
     path('event/ls/start/', start_stream.as_view()),
     path('event/ls/end/', end_stream.as_view()),
-    
+    path('event/add/nft/details/', AudienceAirdrop.as_view()),
+
 ]
 
 
