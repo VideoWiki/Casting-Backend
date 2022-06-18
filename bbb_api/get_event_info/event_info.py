@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from ..models import Meeting
+from ..models import Meeting, NftDetails
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
@@ -47,17 +47,25 @@ class meeting_info(APIView):
                 c_i = BASE_URL + "/media/" + str(event_object.cover_image)
             else:
                 c_i = event_object.cover_image
-            url_status = "{}status".format(STREAM_URL)
-            payload = {'meeting_id': str(event_object.private_meeting_id)}
-            files = []
-            headers = {}
-            response1 = requests.request("POST", url_status, headers=headers, data=payload, files=files)
-            sp = response1.text.split(":")
-            sp2 = sp[1].split(",")
-            if sp2[0] == 'true':
-                stream_status = True
-            else:
-                stream_status = False
+            try:
+                email = event_object.event_creator_email
+            except:
+                email = ""
+            # url_status = "{}status".format(STREAM_URL)
+            # payload = {'meeting_id': str(event_object.private_meeting_id)}
+            # files = []
+            # headers = {}
+            # response1 = requests.request("POST", url_status, headers=headers, data=payload, files=files)
+            # sp = response1.text.split(":")
+            # sp2 = sp[1].split(",")
+            # if sp2[0] == 'true':
+            #     stream_status = True
+            # else:
+            #     stream_status = False
+            try:
+                nft_object_submitted = NftDetails.objects.get(cast=event_object).submitted
+            except ObjectDoesNotExist:
+                nft_object_submitted = False
             return Response({'status': True, 'meeting_info': {"event_name": event_name,
                                                               "event_creator_name": event_creator_name,
                                                               "public_meeting_id": public_meeting_id,
@@ -78,7 +86,9 @@ class meeting_info(APIView):
                                                               "expired": expired,
                                                               "running": is_runnig,
                                                               "viewer_mode": viewer_mode,
-                                                              "stream_status": stream_status
+                                                              "stream_status": False,
+                                                              "nft_details_submitted": nft_object_submitted,
+                                                              "event_creator_email": email
                                                               }
                              }
                             )

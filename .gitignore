@@ -1,11 +1,14 @@
 db.sqlite3
 venv/
+.env
+djangoenv/
 .idea/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 api/global_variable.py
+log/error_log.log
 media/
 static/
 ffmpeg/

@@ -25,14 +25,6 @@ class create_event(APIView):
                 "message": "cast name can't be empty"
             }, status=status.HTTP_400_BAD_REQUEST)
         meeting.event_name = name
-        # if Meeting.objects.filter(event_name__iexact=name):
-        #     return Response({
-        #         "status": False,
-        #         "message": "event with this name is already present"},
-        #         status=status.HTTP_400_BAD_REQUEST
-        #     )
-        # else:
-        #     meeting.event_name = name
         meeting.private_meeting_id = private_meeting_id_generator()
         meeting.public_meeting_id = public_meeting_id_generator()
         meeting.meeting_type = request.data['meeting_type']
@@ -198,7 +190,7 @@ class create_event(APIView):
                     "status": False,
                     "message": "invalid schedule time"},status=status.HTTP_400_BAD_REQUEST)
             meeting.schedule_time = ct
-        moderators = request.data['invitee_details']
+        # moderators = request.data['invitee_details']
         meeting.primary_color = request.data['primary_color']
         meeting.secondary_color = request.data['secondary_color']
         meeting.back_image = request.data['back_image']
@@ -244,11 +236,6 @@ class create_event(APIView):
             meeting.password_auth = True
         else:
             meeting.password_auth = False
-        audience_airdrop = request.data['audienceAirdrop']
-        if audience_airdrop == 'True':
-            meeting.audience_airdrop = True
-        else:
-            meeting.audience_airdrop = False
         public_otp = request.data['public_otp']
         if public_otp == 'True':
             meeting.public_otp = True
@@ -259,11 +246,6 @@ class create_event(APIView):
             meeting.public_stream = True
         else:
             meeting.public_stream = False
-        public_nft_flow = request.data["public_nft_flow"]
-        if public_nft_flow == 'True':
-            meeting.public_nft_flow = True
-        else:
-            meeting.public_nft_flow = False
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
         user_id = user_info(str(token))
         if user_id == -1:
@@ -294,42 +276,6 @@ class create_event(APIView):
                                          force_listen_only=force_listen_only,
                                          enable_webcam=enable_webcam,
                                          enable_screen_sharing=enable_screen_sharing)
-        if meeting.audience_airdrop == True:
-            mint_func_name = request.data['mint_function_name']
-            contract_address = request.data['contract_address']
-            aib = request.data['aib']
-            parameter = request.data['parameter']
-            network = request.data['network']
-            nft_image = request.data['nft_image']
-            nft_description = request.data['nft_description']
-            price = request.data['price']
-            try:
-                parser_o = json.loads(aib)
-                if parameter != "":
-                    parameter_parser = json.loads(parameter)
-                else:
-                    parameter_parser = ""
-                NftDetails.objects.create(
-                    cast=meeting,
-                    mint_function_name=mint_func_name,
-                    contract_address=contract_address,
-                    aib=parser_o,
-                    parameter=parameter_parser,
-                    network=network,
-                    image=nft_image,
-                    description=nft_description,
-                    price = price
-                )
-            except json.JSONDecodeError:
-                Meeting.objects.filter(public_meeting_id=meeting.public_meeting_id).delete()
-                return Response({
-                    "message": "json error in ABI/Parameter",
-                    "status": False
-                }, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            pass
-
-        invite_mail(moderators, meeting.public_meeting_id)
         if start_now == True:
             url = start_cast_now(public_meeting_id=meeting.public_meeting_id, name=meeting.event_creator_name)
             msg = "cast started successfully"

@@ -69,7 +69,7 @@ BASE_URL_AWS = "http://s3.us-east-2.amazonaws.com/video.wiki/media/"
 
 #stream_url
 STREAM_URL = "https://api.stream.video.wiki/api/cast/live/"
-
+TYPEFORM_URL = "https://api.typeform.com/forms/xQ5sUFNz/responses"
 
 # BBB_API_URL = 'https://dev.stream.video.wiki/bigbluebutton/'
 BBB_API_URL = 'https://live.event.video.wiki/bigbluebutton/'
