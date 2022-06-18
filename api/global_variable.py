@@ -71,8 +71,6 @@ BASE_URL_AWS = "http://s3.us-east-2.amazonaws.com/video.wiki/media/"
 STREAM_URL = "https://api.stream.video.wiki/api/cast/live/"
 TYPEFORM_URL = "https://api.typeform.com/forms/xQ5sUFNz/responses"
 
-# BBB_API_URL = 'https://dev.stream.video.wiki/bigbluebutton/'
-BBB_API_URL = 'https://live.event.video.wiki/bigbluebutton/'
+BBB_API_URL = "https://class.video.wiki/bigbluebutton/"
 
-# SALT = 'vOIxIbVyXS6xI4qiX94QO1kxoT42ITp58bJb3W1yDKI'
-SALT = 'PRatQHfVdKC5qqadJGgUDv3b0Fz9rWOTW4PkfSjF9t4'
+SALT = "Mxa621WXrztimJ9swYh38ZORHPyVBN0prSjlN6ftWI"

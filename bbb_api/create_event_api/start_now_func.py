@@ -1,5 +1,5 @@
 from ..models import Meeting
-from bbb_api.join_event_api.views import event_scheduler
+from bbb_api.join_event_api.join import event_scheduler
 import requests, json
 import ast
 
@@ -8,20 +8,6 @@ def start_cast_now(public_meeting_id, name):
     private_meeting_id = meeting_obj.private_meeting_id
     meeting_type = meeting_obj.meeting_type
 
-    # if meeting_type == 'public':
-    #     duration = meeting_obj.duration
-    #     if duration == 0:
-    #         duration = 1440
-    #     event_scheduler(private_meeting_id)
-    #     result = Meeting.join_url(private_meeting_id,
-    #                               name,
-    #                               meeting_obj.moderator_password,
-    #                               force_listen_only=False,
-    #                               enable_screen_sharing=True,
-    #                               enable_webcam=True
-    #                               )
-    #     return result
-    # else:
     duration = meeting_obj.duration
     if duration == 0:
         duration = 1440
