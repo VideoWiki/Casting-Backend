@@ -24,7 +24,6 @@ class PublicWalletVerify(APIView):
                 "status": False,
                 "message": "invalid cast id"
             }, status=status.HTTP_400_BAD_REQUEST)
-        print(cast_obj)
         try:
             wallet_obj = PublicWallet.objects.filter(cast=cast_obj, metamask_address=hashed_wallet_add)
         except ObjectDoesNotExist:

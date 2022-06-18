@@ -135,7 +135,7 @@ def reminder(sender, instance, created, update_fields, **kwargs):
         if len(subtracted_time_final[0:2]) == 1:
             subtracted_time_final[0:2] = "0" + str(subtracted_time_final[0:2])
         schedule('bbb_api.create_event_api.helper.email_sender',
-                 instance.event_name,
+                 instance.public_meeting_id,
                  schedule_type=Schedule.ONCE,
                  name=remind_schedular,
                  next_run=('{}-{}-{} {}:{}:00'.format(
