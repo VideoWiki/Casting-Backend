@@ -100,9 +100,7 @@ class fetch_details(APIView):
                         repl_char = '*'
                         signer = Signer()
                         unhashed_wallet_add = signer.unsign(wallet_address[0])
-                        temp = list(unhashed_wallet_add)
-                        res = [repl_char if not idx in test_list else ele for idx, ele in enumerate(temp)]
-                        res = ''.join(res)
+                        res = unhashed_wallet_add
                     else:
                         if wallet_address[0] == "None":
                             res = ""
