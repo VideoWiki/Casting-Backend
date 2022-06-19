@@ -7,6 +7,9 @@ import logging
 logger = logging.getLogger('__name__')
 logger_1 = logging.getLogger('django')
 from api.global_variable import TYPEFORM_URL
+from api.global_variable import BASE_DIR
+import os
+import datetime
 
 
 def form_adder():
@@ -34,4 +37,8 @@ def form_adder():
             else:
                 CastInviteeDetails.objects.create(cast=cast_obj, name=user_name, email=email, role='participant')
         except ObjectDoesNotExist:
-            logger_1.warning(creater_email, event_name, user_name, email)
+            dir = os.path.join(BASE_DIR, "log/error_log.log")
+            with open(dir, "a") as f:
+                f.write("\n" + str(datetime.datetime.now()) + " ERROR " + "creator_email: " + f"{creater_email} " + " event_name: " + f"{event_name}"
+                        + " user_name: " + f"{user_name}" + " user_email: " + f"{email}")
+            f.close()
