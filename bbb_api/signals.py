@@ -5,7 +5,7 @@ from bbb_api.create_event_email_sender import event_registration_mail, time_subt
 from django_q.tasks import schedule
 from api.global_variable import CLIENT_DOMAIN_URL
 from django_q.models import Schedule
-
+from api.global_variable import TYPEFORM_URL_PRE_REG
 
 @receiver(post_save, sender=Meeting)
 def post_save_prediction(sender, instance, created, update_fields, **kwargs):
@@ -29,7 +29,10 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
         else:
             stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL, instance.public_meeting_id)
         send_otp = instance.send_otp
-        pre_reg_form_url = "https://gtbrdd.typeform.com/to/xQ5sUFNz#event_name={}&creater_email={}".format(name, creator_email)
+        whitespace_replaced_event_name = name.replace(" ","%20")
+        pre_reg_form_url = TYPEFORM_URL_PRE_REG + "{}&creater_email={}".format(
+            whitespace_replaced_event_name,
+            creator_email)
         event_registration_mail(str(creator_email), str(user_name),str(name), str(schedule_time),
                                 stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password, send_otp, pre_reg_form_url)
     elif update_fields:
@@ -54,51 +57,13 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
             stream_url = ""
         else:
             stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL, instance.public_meeting_id)
-        pre_reg_form_url = "https://gtbrdd.typeform.com/to/xQ5sUFNz#event_name={}&creater_email={}".format(name,
+        whitespace_replaced_event_name = name.replace(" ","%20")
+        pre_reg_form_url = TYPEFORM_URL_PRE_REG + "{}&creater_email={}".format(whitespace_replaced_event_name,
                                                                                                            creator_email)
         event_registration_mail(str(creator_email), str(user_name), str(name), str(schedule_time),
                                 stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password, send_otp, pre_reg_form_url)
 
 
-# @receiver(post_save, sender=Meeting)
-# def emailer(sender, instance, created, **kwargs):
-#     if created:
-#         m_list = instance.moderators
-#         e_list = []
-#         for i in m_list:
-#             email = i["email"]
-#             e_list.append(email)
-#         if len(m_list) != 0:
-#             for item in m_list:
-#                 meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(instance.public_meeting_id)
-#                 a_password = instance.attendee_password
-#                 m_password = instance.moderator_password
-#                 vw_stream = instance.bbb_stream_url_vw
-#                 if vw_stream == None:
-#                     stream_url = ""
-#                 else:
-#                     stream_url = "https://play.stream.video.wiki/live/{}".format(instance.public_meeting_id)
-#                 if item["type"] == "speaker":
-#                     send_mail_invite = attendee_mail(item["name"],
-#                                                      item["email"],
-#                                                      instance.event_name,
-#                                                      instance.schedule_time,
-#                                                      meeting_url,
-#                                                      m_password,
-#                                                      stream_url
-#                                                      )
-#
-#                 else:
-#                     send_mail_invite = attendee_mail(item["name"],
-#                                                      item["email"],
-#                                                      instance.event_name,
-#                                                      instance.schedule_time,
-#                                                      meeting_url,
-#                                                      a_password,
-#                                                      stream_url
-#                                                      )
-#
-#
 @receiver(post_save, sender=Meeting)
 def reminder(sender, instance, created, update_fields, **kwargs):
     if created:
