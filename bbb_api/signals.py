@@ -28,8 +28,10 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
             stream_url = ""
         else:
             stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL, instance.public_meeting_id)
+        send_otp = instance.send_otp
+        pre_reg_form_url = "https://gtbrdd.typeform.com/to/xQ5sUFNz#event_name={}&creater_email={}".format(name, creator_email)
         event_registration_mail(str(creator_email), str(user_name),str(name), str(schedule_time),
-                                stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password)
+                                stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password, send_otp, pre_reg_form_url)
     elif update_fields:
         pass
     else:
@@ -43,6 +45,7 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
         user_name = instance.event_creator_name
         meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(instance.public_meeting_id)
         audience_airdrop = instance.audience_airdrop
+        send_otp = instance.send_otp
         if audience_airdrop == True:
             nft_drop_url = CLIENT_DOMAIN_URL + "/nftdrop/?cast_id={}".format(instance.public_meeting_id)
         else:
@@ -51,8 +54,10 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
             stream_url = ""
         else:
             stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL, instance.public_meeting_id)
+        pre_reg_form_url = "https://gtbrdd.typeform.com/to/xQ5sUFNz#event_name={}&creater_email={}".format(name,
+                                                                                                           creator_email)
         event_registration_mail(str(creator_email), str(user_name), str(name), str(schedule_time),
-                                stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password)
+                                stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password, send_otp, pre_reg_form_url)
 
 
 # @receiver(post_save, sender=Meeting)

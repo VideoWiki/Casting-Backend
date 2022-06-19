@@ -7,18 +7,18 @@ from bbb_api.create_event_api.helper import send_create1, send_create2, send_cre
 import pytz
 
 
-def event_registration_mail(email, user_name, event_name, time, stream_url, meeting_url, nft_drop_url, moderator_password, attendee_password):
+def event_registration_mail(email, user_name, event_name, time, stream_url, meeting_url, nft_drop_url, moderator_password, attendee_password, send_otp, pre_reg_url):
     if stream_url != "" and nft_drop_url == "":
-        send_create1(email, user_name, event_name, time, stream_url, meeting_url, moderator_password, attendee_password)
+        send_create1(email, user_name, event_name, time, stream_url, meeting_url, moderator_password, attendee_password, send_otp, pre_reg_url)
     elif stream_url == "" and nft_drop_url != "":
-        send_create3(email, user_name, event_name, time, nft_drop_url, meeting_url, moderator_password, attendee_password)
+        send_create3(email, user_name, event_name, time, nft_drop_url, meeting_url, moderator_password, attendee_password, send_otp, pre_reg_url)
     elif stream_url != "" and nft_drop_url != "":
-        send_create4(email, user_name, event_name, time, stream_url, nft_drop_url, meeting_url, moderator_password, attendee_password)
+        send_create4(email, user_name, event_name, time, stream_url, nft_drop_url, meeting_url, moderator_password, attendee_password, send_otp, pre_reg_url)
     else:
-        send_create2(email, user_name, event_name, time, meeting_url, moderator_password, attendee_password)
+        send_create2(email, user_name, event_name, time, meeting_url, moderator_password, attendee_password, send_otp, pre_reg_url)
 
 
-def attendee_mail(user_name, email, event_name, event_time, event_url, event_password, stream_url, role):
+def attendee_mail(user_name, email, event_name, event_time, event_url, event_password, stream_url, role, send_otp):
     if role == "co-host":
         if stream_url != "":
             send_invite_mail2(to_email=email,
@@ -27,7 +27,8 @@ def attendee_mail(user_name, email, event_name, event_time, event_url, event_pas
                               event_time= event_time,
                               event_url= event_url,
                               stream_url= stream_url,
-                              event_password= event_password
+                              event_password= event_password,
+                              send_otp= send_otp
                               )
         else:
             send_invite_mail1(to_email= email,
@@ -35,7 +36,8 @@ def attendee_mail(user_name, email, event_name, event_time, event_url, event_pas
                               event_name= event_name,
                               event_time= event_time,
                               event_url= event_url,
-                              event_password= event_password
+                              event_password= event_password,
+                              send_otp=send_otp
                               )
     elif role == "spectator":
         send_invite_mail3(to_email= email,
@@ -50,7 +52,8 @@ def attendee_mail(user_name, email, event_name, event_time, event_url, event_pas
                           event_name= event_name,
                           event_time= event_time,
                           event_url= event_url,
-                          event_password= event_password
+                          event_password= event_password,
+                          send_otp=send_otp
                           )
     elif role == "viewer":
         send_invite_mail5(to_email= email,
@@ -58,7 +61,8 @@ def attendee_mail(user_name, email, event_name, event_time, event_url, event_pas
                           event_name= event_name,
                           event_time= event_time,
                           event_url= event_url,
-                          event_password= event_password
+                          event_password= event_password,
+                          send_otp=send_otp
                           )
 
 
