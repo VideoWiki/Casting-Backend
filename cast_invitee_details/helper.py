@@ -1,14 +1,22 @@
 from api.global_variable import MANDRILL_API_KEY
 import mandrill
-from templates.invite_1 import email_invite1_mod, email_invite_participant, email_invite_viewer, email_invite_spectator
-from templates.invite_2 import email_invite2
+from templates.invite_1 import email_invite1_mod, email_invite_participant, \
+    email_invite_viewer, email_invite_spectator, email_invite1_mod_otp, \
+    email_invite_participant_otp, email_invite_viewer_otp
+from templates.invite_2 import email_invite2, email_invite2_otp
 
 
-def send_invite_mail1( to_email, user_name, event_name, event_time, event_url, event_password):
+def send_invite_mail1( to_email, user_name, event_name, event_time, event_url, event_password, send_otp):
+    if send_otp == True:
+        template_func = email_invite1_mod_otp(user_name=user_name, event_name=event_name, event_time=event_time,
+                                              event_url=event_url)
+    else:
+        template_func = email_invite1_mod(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url,
+                          event_password=event_password)
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
-            'html': email_invite1_mod(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password),
+            'html': template_func,
             'from_email': 'support@videowiki.pt',
             'from_name': 'Video.Wiki',
             'global_merge_vars': [],
@@ -31,11 +39,15 @@ def send_invite_mail1( to_email, user_name, event_name, event_time, event_url, e
     except mandrill.Error as e:
         print("An exception occurred: {}".format(e))
 
-def send_invite_mail2( to_email, user_name, event_name, event_time, event_url, event_password, stream_url):
+def send_invite_mail2( to_email, user_name, event_name, event_time, event_url, event_password, stream_url, send_otp):
+    if send_otp == True:
+        template_func = email_invite2_otp(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, stream_url= stream_url)
+    else:
+        template_func = email_invite2(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, stream_url= stream_url, event_password=event_password)
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
-            'html': email_invite2(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, stream_url= stream_url, event_password=event_password),
+            'html': template_func,
             'from_email': 'support@videowiki.pt',
             'from_name': 'Video.Wiki',
             'global_merge_vars': [],
@@ -86,11 +98,15 @@ def send_invite_mail3( to_email, user_name, event_name, event_time, stream_url):
         print("An exception occurred: {}".format(e))
 
 
-def send_invite_mail4( to_email, user_name, event_name, event_time, event_url, event_password):
+def send_invite_mail4( to_email, user_name, event_name, event_time, event_url, event_password, send_otp):
+    if send_otp == True:
+        template_func = email_invite_participant_otp(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url)
+    else:
+        template_func = email_invite_participant(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password)
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
-            'html': email_invite_participant(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password),
+            'html': template_func,
             'from_email': 'support@videowiki.pt',
             'from_name': 'Video.Wiki',
             'global_merge_vars': [],
@@ -114,11 +130,15 @@ def send_invite_mail4( to_email, user_name, event_name, event_time, event_url, e
         print("An exception occurred: {}".format(e))
 
 
-def send_invite_mail5( to_email, user_name, event_name, event_time, event_url, event_password):
+def send_invite_mail5( to_email, user_name, event_name, event_time, event_url, event_password, send_otp):
+    if send_otp == True:
+        template_func = email_invite_viewer_otp(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url)
+    else:
+        template_func = email_invite_viewer(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password)
     try:
         mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
         message = {
-            'html': email_invite_viewer(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password),
+            'html': template_func,
             'from_email': 'support@videowiki.pt',
             'from_name': 'Video.Wiki',
             'global_merge_vars': [],

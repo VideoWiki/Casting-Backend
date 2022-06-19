@@ -20,6 +20,7 @@ def post_save_emailer(sender, instance, created, **kwargs):
         min = dt.minute
         schedule_time = str(date) + " at " + str(hour) + ":" + str(min) + " GMT"
         print(instance.role, "ppp")
+        send_otp = instance.cast.send_otp
         if vw_stream == None:
             stream_url = ""
         else:
@@ -32,7 +33,8 @@ def post_save_emailer(sender, instance, created, **kwargs):
                                              meeting_url,
                                              a_password,
                                              stream_url,
-                                             instance.role
+                                             instance.role,
+                                             send_otp
                                              )
         elif instance.role == "spectator":
             send_mail_invite = attendee_mail(instance.name,
@@ -42,7 +44,8 @@ def post_save_emailer(sender, instance, created, **kwargs):
                                              meeting_url,
                                              a_password,
                                              stream_url,
-                                             instance.role
+                                             instance.role,
+                                             send_otp
                                              )
         elif instance.role == "viewer":
             send_mail_invite = attendee_mail(instance.name,
@@ -52,7 +55,8 @@ def post_save_emailer(sender, instance, created, **kwargs):
                                              meeting_url,
                                              v_password,
                                              stream_url,
-                                             instance.role
+                                             instance.role,
+                                             send_otp
                                              )
         else:
             send_mail_invite = attendee_mail(instance.name,
@@ -62,6 +66,7 @@ def post_save_emailer(sender, instance, created, **kwargs):
                                              meeting_url,
                                              m_password,
                                              stream_url,
-                                             instance.role
+                                             instance.role,
+                                             send_otp
                                              )
 

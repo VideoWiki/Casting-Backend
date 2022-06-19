@@ -1,6 +1,6 @@
 from api.global_variable import CLIENT_DOMAIN_URL
 
-def email_create2(user_name, event_name, event_time, meeting_url, moderator_password, attendee_password):
+def email_create2(user_name, event_name, event_time, meeting_url, moderator_password, attendee_password, pre_reg_url):
     template_part1 = """\
 <html lang="en">
     <head>
@@ -21,6 +21,8 @@ def email_create2(user_name, event_name, event_time, meeting_url, moderator_pass
     <br>
     Please visit {}/mycasts to initiate the cast.
     <br>
+    Here is the link for <b>Pre Registration form: {}<b>
+    <br>
     <br>
     All the best,
     <br>
@@ -29,5 +31,38 @@ def email_create2(user_name, event_name, event_time, meeting_url, moderator_pass
     </html>
 
 
-    """.format(user_name, event_name, event_time, meeting_url, moderator_password, attendee_password, CLIENT_DOMAIN_URL)
+    """.format(user_name, event_name, event_time, meeting_url, moderator_password, attendee_password, CLIENT_DOMAIN_URL, pre_reg_url)
+    return template_part1
+
+
+def email_create2_otp(user_name, event_name, event_time, meeting_url, pre_reg_url):
+    template_part1 = """\
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Cancelled</title>
+    </head>
+    <body>
+        Dear {},
+    <br>
+    <br>
+    Your cast <b>{}</b> has been created for <b>{}</b>.
+    <br>
+    Here is the link for cast: {}
+    <br>
+    Please visit {}/mycasts to initiate the cast.
+    <br>
+    Here is the link for <b>Pre Registration form: {}<b>
+    <br>
+    <br>
+    All the best,
+    <br>
+    VideoWiki team
+    </body>
+    </html>
+
+
+    """.format(user_name, event_name, event_time, meeting_url, CLIENT_DOMAIN_URL, pre_reg_url)
     return template_part1
