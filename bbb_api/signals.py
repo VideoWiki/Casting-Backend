@@ -29,10 +29,7 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
         else:
             stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL, instance.public_meeting_id)
         send_otp = instance.send_otp
-        whitespace_replaced_event_name = name.replace(" ","%20")
-        pre_reg_form_url = TYPEFORM_URL_PRE_REG + "{}&creater_email={}".format(
-            whitespace_replaced_event_name,
-            creator_email)
+        pre_reg_form_url = f"{CLIENT_DOMAIN_URL}/event-registration/{instance.public_meeting_id}/"
         event_registration_mail(str(creator_email), str(user_name),str(name), str(schedule_time),
                                 stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password, send_otp, pre_reg_form_url)
     elif update_fields:
@@ -57,9 +54,7 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
             stream_url = ""
         else:
             stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL, instance.public_meeting_id)
-        whitespace_replaced_event_name = name.replace(" ","%20")
-        pre_reg_form_url = TYPEFORM_URL_PRE_REG + "{}&creater_email={}".format(whitespace_replaced_event_name,
-                                                                                                           creator_email)
+        pre_reg_form_url = f"{CLIENT_DOMAIN_URL}/event-registration/{instance.public_meeting_id}/"
         event_registration_mail(str(creator_email), str(user_name), str(name), str(schedule_time),
                                 stream_url, meeting_url, nft_drop_url, instance.moderator_password, instance.attendee_password, send_otp, pre_reg_form_url)
 
