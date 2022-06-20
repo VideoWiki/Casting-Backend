@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from api.global_variable import CLIENT_DOMAIN_URL
 from bbb_api.create_event_email_sender import attendee_mail
-
+from bbb_api.models import Meeting
 @receiver(post_save, sender=CastInviteeDetails)
 def post_save_emailer(sender, instance, created, **kwargs):
 
@@ -14,6 +14,7 @@ def post_save_emailer(sender, instance, created, **kwargs):
         m_password = instance.cast.moderator_password
         v_password = instance.cast.viewer_password
         vw_stream = instance.cast.bbb_stream_url_vw
+        cast_type = Meeting.objects.get(public_meeting_id=instance.cast.public_meeting_id).meeting_type
         dt = instance.cast.schedule_time
         date = dt.date()
         hour = dt.hour
@@ -34,7 +35,8 @@ def post_save_emailer(sender, instance, created, **kwargs):
                                              a_password,
                                              stream_url,
                                              instance.role,
-                                             send_otp
+                                             send_otp,
+                                             cast_type
                                              )
         elif instance.role == "spectator":
             send_mail_invite = attendee_mail(instance.name,
@@ -45,7 +47,8 @@ def post_save_emailer(sender, instance, created, **kwargs):
                                              a_password,
                                              stream_url,
                                              instance.role,
-                                             send_otp
+                                             send_otp,
+                                             cast_type
                                              )
         elif instance.role == "viewer":
             send_mail_invite = attendee_mail(instance.name,
@@ -56,7 +59,8 @@ def post_save_emailer(sender, instance, created, **kwargs):
                                              v_password,
                                              stream_url,
                                              instance.role,
-                                             send_otp
+                                             send_otp,
+                                             cast_type
                                              )
         else:
             send_mail_invite = attendee_mail(instance.name,
@@ -67,6 +71,7 @@ def post_save_emailer(sender, instance, created, **kwargs):
                                              m_password,
                                              stream_url,
                                              instance.role,
-                                             send_otp
+                                             send_otp,
+                                             cast_type
                                              )
 

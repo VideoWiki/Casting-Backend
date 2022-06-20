@@ -98,8 +98,8 @@ def send_invite_mail3( to_email, user_name, event_name, event_time, stream_url):
         print("An exception occurred: {}".format(e))
 
 
-def send_invite_mail4( to_email, user_name, event_name, event_time, event_url, event_password, send_otp):
-    if send_otp == True:
+def send_invite_mail4( to_email, user_name, event_name, event_time, event_url, event_password, send_otp, cast_type):
+    if send_otp == True or cast_type == "public":
         template_func = email_invite_participant_otp(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url)
     else:
         template_func = email_invite_participant(user_name=user_name, event_name=event_name, event_time=event_time, event_url=event_url, event_password=event_password)
