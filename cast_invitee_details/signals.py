@@ -20,7 +20,6 @@ def post_save_emailer(sender, instance, created, **kwargs):
         hour = dt.hour
         min = dt.minute
         schedule_time = str(date) + " at " + str(hour) + ":" + str(min) + " GMT"
-        print(instance.role, "ppp")
         send_otp = instance.cast.send_otp
         if vw_stream == None:
             stream_url = ""

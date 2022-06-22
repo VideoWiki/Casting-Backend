@@ -1,4 +1,3 @@
-from library.mailchimp import send_mail
 from datetime import datetime, timedelta
 from cast_invitee_details.helper import send_invite_mail1, \
     send_invite_mail2, send_invite_mail3, \

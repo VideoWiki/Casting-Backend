@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from ..models import Meeting
 from rest_framework.response import Response
 from library.helper import user_info
-import django.utils.timezone
+from datetime import timedelta, datetime
 from api.global_variable import BASE_URL
 
 class get_my_events(APIView):
@@ -12,7 +12,7 @@ class get_my_events(APIView):
         user_meetings = Meeting.objects.filter(user_id=user_id).all().order_by('-schedule_time')
         my_event_list = []
         scheduled_event_list = []
-        events = Meeting.objects.filter(schedule_time__gt=django.utils.timezone.now())
+        events = Meeting.objects.filter(schedule_time__gt=datetime.now() + timedelta(minutes=-30))
         for i in events:
             event = i.event_name
             scheduled_event_list.append(event)

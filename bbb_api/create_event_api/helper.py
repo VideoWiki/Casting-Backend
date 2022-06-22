@@ -24,6 +24,7 @@ def email_sender(public_meeting_id):
     obj = CastInviteeDetails.objects.filter(cast=cast_obj)
     meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(cast_obj.public_meeting_id)
     send_otp = cast_obj.send_otp
+    cast_type = cast_obj.meeting_type
     for i in obj:
         email = i.email
         user_name = i.name
@@ -60,7 +61,8 @@ def email_sender(public_meeting_id):
                                          event_time= schedule_time,
                                          event_url= meeting_url,
                                          event_password= password,
-                                         send_otp= send_otp
+                                         send_otp= send_otp,
+                                         cast_type=cast_type
                                          )
         elif role == "viewer":
             password = cast_obj.viewer_password
@@ -189,8 +191,8 @@ def send_remind_mail2( to_email, user_name, event_name, event_time, event_url, e
         print("An exception occurred: {}".format(e))
 
 
-def send_remind_mail_participant( to_email, user_name, event_name, event_time, event_url, event_password, send_otp):
-    if send_otp == True:
+def send_remind_mail_participant( to_email, user_name, event_name, event_time, event_url, event_password, send_otp, cast_type):
+    if send_otp == True or cast_type == "public":
         template_func = reminder_participant_otp(user_name=user_name,
                                                  event_name=event_name,
                                                  event_time=event_time,
