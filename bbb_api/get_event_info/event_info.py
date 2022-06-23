@@ -6,13 +6,14 @@ from rest_framework import status
 from api.global_variable import BASE_URL, STREAM_URL
 import django.utils.timezone
 import requests
+from datetime import timedelta, datetime
 
 
 class meeting_info(APIView):
     def get(self, request):
         public_meeting_id = request.GET.get('public_meeting_id')
         event_object = Meeting.objects.get(public_meeting_id=public_meeting_id)
-        events = Meeting.objects.filter(schedule_time__gt=django.utils.timezone.now())
+        events = Meeting.objects.filter(schedule_time__gt=datetime.now() + timedelta(minutes=-30))
         if not event_object in events:
             private_meeting_id = event_object.private_meeting_id
             running = Meeting.is_meeting_running(private_meeting_id)
