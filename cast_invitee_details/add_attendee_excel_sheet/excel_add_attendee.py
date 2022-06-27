@@ -53,13 +53,13 @@ class ParseExcel(APIView):
                                     "status": False,
                                     "message": "invalid data"
                                 },status= status.HTTP_400_BAD_REQUEST)
-                            if CastInviteeDetails.objects.filter(cast=cast_obj, email=email).exists():
+                            if CastInviteeDetails.objects.filter(cast=cast_obj, email=email.lower()).exists():
                                 pass
                             else:
                                 CastInviteeDetails.objects.create(cast=cast_obj,
                                                                   name=name,
-                                                                  email=email,
-                                                                  role=role,
+                                                                  email=email.lower(),
+                                                                  role=role.lower(),
                                                                   nft_enable=False)
 
         return Response({
