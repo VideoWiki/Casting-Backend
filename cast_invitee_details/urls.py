@@ -18,7 +18,7 @@ from .public_wallet.add_wallet import PublicWalletAdd
 from .public_wallet.verify_wallet import PublicWalletVerify
 from .public_wallet.mint_nft_update import PublicMintUpdate
 from .public_wallet.send_hashed_data import SendHashedIdPublic
-
+from .add_attendee_excel_sheet.excel_add_attendee import ParseExcel
 urlpatterns = [
     path('event/meeting/add/invitees/', add_invitees.as_view()),
     path('event/send/otp/', SendOtp.as_view()),
@@ -39,6 +39,7 @@ urlpatterns = [
     path('event/verify/public/wallet/', PublicWalletVerify.as_view()),
     path('event/mint/update/public/wallet/', PublicMintUpdate.as_view()),
     path('event/send/hashed/id/public/', SendHashedIdPublic.as_view()),
+    path('event/invitee/import/', ParseExcel.as_view())
 
 ]
 
