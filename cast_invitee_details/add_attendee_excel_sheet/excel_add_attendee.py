@@ -58,8 +58,8 @@ class ParseExcel(APIView):
                             else:
                                 CastInviteeDetails.objects.create(cast=cast_obj,
                                                                   name=name,
-                                                                  email=email,
-                                                                  role=role,
+                                                                  email=email.lower(),
+                                                                  role=role.lower(),
                                                                   nft_enable=False)
 
         return Response({
