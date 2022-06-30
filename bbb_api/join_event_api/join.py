@@ -205,17 +205,13 @@ class join_meeting(APIView):
                                              'url': result}
                                             )
 
-                        elif password == meeting_obj.viewer_password:
-                            viewer_obj = ViewerDetails.objects.get(cast=meeting_obj)
-                            force_listen = viewer_obj.force_listen_only
-                            screen_share = viewer_obj.enable_screen_sharing
-                            webcam = viewer_obj.enable_webcam
+                        elif password == meeting_obj.attendee_password:
                             result = Meeting.join_url(private_meeting_id,
                                                       name,
                                                       meeting_obj.attendee_password,
-                                                      force_listen_only=force_listen,
-                                                      enable_screen_sharing=screen_share,
-                                                      enable_webcam=webcam
+                                                      force_listen_only=False,
+                                                      enable_screen_sharing=True,
+                                                      enable_webcam=True
                                                       )
                             meeting_obj.join_count = meeting_obj.join_count + 1
                             meeting_obj.save(update_fields=['join_count'])
@@ -234,12 +230,16 @@ class join_meeting(APIView):
                                             status=HTTP_400_BAD_REQUEST
                                             )
                     else:
+                        viewer_obj = ViewerDetails.objects.get(cast=meeting_obj)
+                        force_listen = viewer_obj.force_listen_only
+                        screen_share = viewer_obj.enable_screen_sharing
+                        webcam = viewer_obj.enable_webcam
                         result = Meeting.join_url(private_meeting_id,
                                                   name,
                                                   meeting_obj.attendee_password,
-                                                  force_listen_only=False,
-                                                  enable_screen_sharing=True,
-                                                  enable_webcam=True
+                                                  force_listen_only=force_listen,
+                                                  enable_screen_sharing=screen_share,
+                                                  enable_webcam=webcam
                                                   )
                         meeting_obj.join_count = meeting_obj.join_count + 1
                         meeting_obj.save(update_fields=['join_count'])
