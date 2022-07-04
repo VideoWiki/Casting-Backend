@@ -21,56 +21,30 @@ def post_save_emailer(sender, instance, created, **kwargs):
         min = dt.minute
         schedule_time = str(date) + " at " + str(hour) + ":" + str(min) + " GMT"
         send_otp = instance.cast.send_otp
+        creator_email = instance.cast.event_creator_email
+        creator_name = instance.cast.event_creator_name
+        viewer_mode = instance.cast.viewer_mode
+        public_otp = instance.cast.public_otp
         if vw_stream == None:
             stream_url = ""
         else:
             stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL,instance.cast.public_meeting_id)
-        if instance.role == "participant":
-            send_mail_invite = attendee_mail(instance.name,
-                                             instance.email,
-                                             instance.cast.event_name,
-                                             schedule_time,
-                                             meeting_url,
-                                             a_password,
-                                             stream_url,
-                                             instance.role,
-                                             send_otp,
-                                             cast_type
-                                             )
-        elif instance.role == "spectator":
-            send_mail_invite = attendee_mail(instance.name,
-                                             instance.email,
-                                             instance.cast.event_name,
-                                             schedule_time,
-                                             meeting_url,
-                                             a_password,
-                                             stream_url,
-                                             instance.role,
-                                             send_otp,
-                                             cast_type
-                                             )
-        elif instance.role == "viewer":
-            send_mail_invite = attendee_mail(instance.name,
-                                             instance.email,
-                                             instance.cast.event_name,
-                                             schedule_time,
-                                             meeting_url,
-                                             v_password,
-                                             stream_url,
-                                             instance.role,
-                                             send_otp,
-                                             cast_type
-                                             )
-        else:
-            send_mail_invite = attendee_mail(instance.name,
-                                             instance.email,
-                                             instance.cast.event_name,
-                                             schedule_time,
-                                             meeting_url,
-                                             m_password,
-                                             stream_url,
-                                             instance.role,
-                                             send_otp,
-                                             cast_type
-                                             )
+        attendee_mail(instance.name,
+                      instance.email,
+                      instance.cast.event_name,
+                      schedule_time,
+                      meeting_url,
+                      a_password,
+                      m_password,
+                      stream_url,
+                      instance.role,
+                      send_otp,
+                      cast_type,
+                      dt,
+                      creator_email,
+                      creator_name,
+                      viewer_mode,
+                      public_otp,
+                      v_password
+                      )
 
