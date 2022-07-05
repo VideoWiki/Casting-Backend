@@ -31,7 +31,7 @@ Don't miss it! We're looking forward to see you there.
     return template_part1
 
 
-def email_invite_participant(user_name, event_name, event_time, event_url, event_password):
+def email_invite_participant(user_name, event_name, event_time, event_url):
     template_part1 = """\
 <!DOCTYPE html>
 <html lang="en">
@@ -51,7 +51,35 @@ You have been invited to join a cast as <b>{}</b>, as a participant. The cast wi
 <br>
 Your cast url is {}. 
 <br>
-Please join, provide your name and the following password: <strong>{}</strong>
+<br>
+
+Don't miss it! We're looking forward to see you there.
+</body>
+</html>
+
+
+    """.format(user_name, event_name, event_time, event_url)
+    return template_part1
+
+def email_invite_viewer_pub(user_name, event_name, event_time, event_url):
+    template_part1 = """\
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marta Getboarded: and for attendee</title>
+</head>
+<body>
+
+Dear {},
+<br>
+<br>
+
+You have been invited to join a cast as <b>{}</b>, as a viewer. The cast will begin at <b>{}</b>. 
+<br>
+Your cast url is {}. 
 <br>
 <br>
 
@@ -60,7 +88,70 @@ Don't miss it! We're looking forward to see you there.
 </html>
 
 
-    """.format(user_name, event_name, event_time, event_url, event_password)
+    """.format(user_name, event_name, event_time, event_url)
+    return template_part1
+
+
+def email_invite_spec(user_name, event_name, event_time, event_url):
+    template_part1 = """\
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marta Getboarded: and for attendee</title>
+</head>
+<body>
+
+Dear {},
+<br>
+<br>
+
+You have been invited to join a cast as <b>{}</b>, as a spectator. The cast will begin at <b>{}</b>. 
+<br>
+Your stream url is {}. 
+<br>
+<br>
+
+Don't miss it! We're looking forward to see you there.
+</body>
+</html>
+
+
+    """.format(user_name, event_name, event_time, event_url)
+    return template_part1
+
+def email_invite_participant_vm(user_name, event_name, event_time, event_url, password):
+    template_part1 = """\
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marta Getboarded: and for attendee</title>
+</head>
+<body>
+
+Dear {},
+<br>
+<br>
+
+You have been invited to join a cast as <b>{}</b>, as a participant. The cast will begin at <b>{}</b>. 
+<br>
+Your cast url is {}. 
+<br>
+Your cast Password is: <b>{}</b>
+<br>
+<br>
+
+Don't miss it! We're looking forward to see you there.
+</body>
+</html>
+
+
+    """.format(user_name, event_name, event_time, event_url, password)
     return template_part1
 
 def email_invite_viewer(user_name, event_name, event_time, event_url, event_password):
@@ -157,6 +248,39 @@ Don't miss it! We're looking forward to see you there.
     return template_part1
 
 
+def email_invite1_pass(user_name, event_name, role, event_time, event_url, password):
+    template_part1 = """\
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marta Getboarded: and for attendee</title>
+</head>
+<body>
+
+Dear {},
+<br>
+<br>
+
+You have been invited to join a cast <b>{}</b>, as a {}. The cast will begin at <b>{}</b>. 
+<br>
+Your cast url is {}. 
+<br>
+Your Password is {}
+<br>
+<br>
+
+Don't miss it! We're looking forward to see you there.
+</body>
+</html>
+
+
+    """.format(user_name, event_name, role, event_time, event_url, password)
+    return template_part1
+
+
 def email_invite_participant_otp(user_name, event_name, event_time, event_url):
     template_part1 = """\
 <!DOCTYPE html>
@@ -216,4 +340,35 @@ Don't miss it! We're looking forward to see you there.
 
 
     """.format(user_name, event_name, event_time, event_url)
+    return template_part1
+
+
+def email_invite1_otp(user_name, event_name, role, event_time, event_url):
+    template_part1 = """\
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marta Getboarded: and for attendee</title>
+</head>
+<body>
+
+Dear {},
+<br>
+<br>
+
+You have been invited to join a cast <b>{}</b>, as a {}. The cast will begin at <b>{}</b>. 
+<br>
+Your cast url is {}. 
+<br>
+<br>
+
+Don't miss it! We're looking forward to see you there.
+</body>
+</html>
+
+
+    """.format(user_name, event_name, role, event_time, event_url)
     return template_part1
