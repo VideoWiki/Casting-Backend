@@ -5,8 +5,7 @@ from bbb_api.create_event_email_sender import event_registration_mail, time_subt
 from django_q.tasks import schedule
 from api.global_variable import CLIENT_DOMAIN_URL
 from django_q.models import Schedule
-from api.global_variable import TYPEFORM_URL_PRE_REG
-from datetime import timedelta, datetime
+from datetime import timedelta
 
 
 @receiver(post_save, sender=Meeting)

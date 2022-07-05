@@ -1,24 +1,19 @@
 from cast_invitee_details.models import CastInviteeDetails
 from bbb_api.models import Meeting
 import mandrill
-from api.global_variable import MANDRILL_API_KEY, CLIENT_DOMAIN_URL, VW_RTMP_URL
-from templates.reminder2 import reminder2, reminder2_otp
+from api.global_variable import MANDRILL_API_KEY, CLIENT_DOMAIN_URL
 from templates.reminder1 import reminder_mod1, \
     reminder_participant, reminder_spectator, \
-    reminder_viewer, reminder_mod1_otp, \
-    reminder_participant_otp, reminder_viewer_otp, reminder_parti_wo_pass
+    reminder_viewer, reminder_viewer_otp, reminder_parti_wo_pass
 from templates.create import email_create, email_create_otp, email_create_view, email_create_view_str
 from templates.create2 import email_create2, email_create2_otp
-from templates.create3 import email_create3, email_create3_otp
-from templates.create4 import email_create4, email_create4_otp, email_create5, email_create6
-import json, ast
+from templates.create3 import email_create3
+from templates.create4 import email_create4, email_create5, email_create6
 from base64 import b64encode
-import icalendar
 from icalendar import Calendar, Event
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 import pytz
 from icalendar import vCalAddress, vText
-from icalendar import vDatetime
 import json
 
 
@@ -129,79 +124,6 @@ def send_remind_mail_part_view( to_email, user_name, role, event_name, event_tim
     template_func = reminder_parti_wo_pass(user_name, role, event_name, event_time, event_url)
     try:
         mandrill_mailer_func(template_func=template_func, to_email=to_email, user_name=user_name)
-    except mandrill.Error as e:
-        print("An exception occurred: {}".format(e))
-
-
-def send_remind_mail_viewer( to_email, user_name, event_name, event_time, event_url, event_password, send_otp):
-    if send_otp == True:
-        template_func = reminder_viewer_otp(user_name=user_name,
-                                            event_name=event_name,
-                                            event_time=event_time,
-                                            event_url=event_url
-                                            )
-    else:
-        template_func = reminder_viewer(user_name=user_name,
-                                        event_name=event_name,
-                                        event_time=event_time,
-                                        event_url=event_url,
-                                        event_password=event_password
-                                        )
-    try:
-        mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
-        message = {
-            'html': template_func,
-            'from_email': 'support@videowiki.pt',
-            'from_name': 'Video.Wiki',
-            'global_merge_vars': [],
-            # need reply mail
-            'headers': {'Reply-To': 'support@videowiki.pt'},
-            'merge': True,
-            'merge_language': 'mailchimp',
-            'subject': "Reminder",
-            'tags': ['password-resets'],
-            'text': 'Example text content',
-            'to': [{'email': to_email,
-                    'name': user_name,
-                    'type': 'to'}],
-        }
-        result = mandrill_client.messages.send(message = message)
-        print(result)
-        print(result[0]["status"])
-        status = result[0]["status"]
-        return status
-    except mandrill.Error as e:
-        print("An exception occurred: {}".format(e))
-
-
-def send_remind_mail_spectator( to_email, user_name, event_name, event_time, event_url):
-    try:
-        mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
-        message = {
-            'html': reminder_spectator(user_name=user_name,
-                              event_name=event_name,
-                              event_time=event_time,
-                              event_url=event_url
-                                       ),
-            'from_email': 'support@videowiki.pt',
-            'from_name': 'Video.Wiki',
-            'global_merge_vars': [],
-            # need reply mail
-            'headers': {'Reply-To': 'support@videowiki.pt'},
-            'merge': True,
-            'merge_language': 'mailchimp',
-            'subject': "Reminder",
-            'tags': ['password-resets'],
-            'text': 'Example text content',
-            'to': [{'email': to_email,
-                    'name': user_name,
-                    'type': 'to'}],
-        }
-        result = mandrill_client.messages.send(message = message)
-        print(result)
-        print(result[0]["status"])
-        status = result[0]["status"]
-        return status
     except mandrill.Error as e:
         print("An exception occurred: {}".format(e))
 
