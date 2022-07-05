@@ -6,7 +6,7 @@ from templates.reminder2 import reminder2, reminder2_otp
 from templates.reminder1 import reminder_mod1, \
     reminder_participant, reminder_spectator, \
     reminder_viewer, reminder_mod1_otp, \
-    reminder_participant_otp, reminder_viewer_otp
+    reminder_participant_otp, reminder_viewer_otp, reminder_parti_wo_pass
 from templates.create import email_create, email_create_otp, email_create_view, email_create_view_str
 from templates.create2 import email_create2, email_create2_otp
 from templates.create3 import email_create3, email_create3_otp
@@ -33,66 +33,48 @@ def email_sender(public_meeting_id):
     meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(cast_obj.public_meeting_id)
     send_otp = cast_obj.send_otp
     cast_type = cast_obj.meeting_type
+    viewer_mode = cast_obj.viewer_mode
     for i in obj:
         email = i.email
         user_name = i.name
         role = i.role
-        if role == "co-host":
-            password = cast_obj.moderator_password
-            if cast_obj.bbb_stream_url_vw != "" and None:
-                converted_stream_urls = ast.literal_eval(cast_obj.bbb_stream_url_vw)
-                url = "{}{}".format(VW_RTMP_URL, cast_obj.public_meeting_id)
-                if converted_stream_urls[0] == url:
+        if cast_type == "public":
+            if role == "co-host":
+                password = cast_obj.moderator_password
+                send_remind_mail1( email, user_name, role, cast_obj.event_name, schedule_time, meeting_url, password)
+            if role == "spectator":
+                str_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
+                send_remind_mail_spec( email, user_name, cast_obj.event_name, schedule_time, str_url)
+            if viewer_mode == False:
+                if role == "participant":
+                    send_remind_mail_part_view( email, user_name, role, cast_obj.event_name, schedule_time, meeting_url)
+            if viewer_mode == True:
+                if role == "viewer":
+                    send_remind_mail_part_view( email, user_name, role, cast_obj.event_name, schedule_time, meeting_url)
+                if role == "participant":
+                    send_remind_mail2(email, user_name, role, cast_obj.event_name, schedule_time, meeting_url, cast_obj.attendee_password)
+
+        elif cast_type == "private":
+            if send_otp == True:
+                if role == "spectator":
                     str_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
-                    send_remind_mail2(to_email=email,
-                                      user_name= user_name,
-                                      event_name= cast_obj.event_name,
-                                      event_time= schedule_time,
-                                      event_url= meeting_url,
-                                      event_password= password,
-                                      stream_url= str_url,
-                                      send_otp= send_otp
-                                      )
-            else:
-                send_remind_mail1(to_email=email,
-                                  user_name= user_name,
-                                  event_name= cast_obj.event_name,
-                                  event_time= schedule_time,
-                                  event_url= meeting_url,
-                                  event_password= password,
-                                  send_otp= send_otp)
-        elif role == "participant":
-            password = cast_obj.attendee_password
-            send_remind_mail_participant(to_email= email,
-                                         user_name= user_name,
-                                         event_name= cast_obj.event_name,
-                                         event_time= schedule_time,
-                                         event_url= meeting_url,
-                                         event_password= password,
-                                         send_otp= send_otp,
-                                         cast_type=cast_type
-                                         )
-        elif role == "viewer":
-            password = cast_obj.viewer_password
-            send_remind_mail_viewer(to_email= email,
-                                    user_name= user_name,
-                                    event_name= cast_obj.event_name,
-                                    event_time= schedule_time,
-                                    event_url= meeting_url,
-                                    event_password= password,
-                                    send_otp= send_otp)
-        elif role == "spectator":
-            if cast_obj.bbb_stream_url_vw != "":
-                converted_stream_urls = ast.literal_eval(cast_obj.bbb_stream_url_vw)
-                url = "{}{}".format(VW_RTMP_URL,cast_obj.public_meeting_id)
-                if converted_stream_urls[0] == url:
+                    send_remind_mail_spec(email, user_name, cast_obj.event_name, schedule_time, str_url)
+                else:
+                    send_remind_mail_part_view(email, user_name, role, cast_obj.event_name, schedule_time, meeting_url)
+            elif send_otp != True:
+                if role == "spectator":
                     str_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
-                    send_remind_mail_spectator(to_email= email,
-                                               user_name= user_name,
-                                               event_name= cast_obj.event_name,
-                                               event_time= schedule_time,
-                                               event_url= str_url
-                                               )
+                    send_remind_mail_spec(email, user_name, cast_obj.event_name, schedule_time, str_url)
+                else:
+                    if role == "viewer":
+                        send_remind_mail2(email, user_name, role, cast_obj.event_name, schedule_time, meeting_url,
+                                          cast_obj.viewer_password)
+                    if role == "co-host":
+                        send_remind_mail2(email, user_name, role, cast_obj.event_name, schedule_time, meeting_url,
+                                          cast_obj.moderator_password)
+                    if role == "participant":
+                        send_remind_mail2(email, user_name, role, cast_obj.event_name, schedule_time, meeting_url,
+                                          cast_obj.attendee_password)
 
     return "sent"
 
@@ -120,122 +102,33 @@ def invite_mail(moderators, public_meeting_id):
                                           mint='not started'
                                           )
 
-def send_remind_mail1( to_email, user_name, event_name, event_time, event_url, event_password, send_otp):
-    if send_otp == True:
-        template_func = reminder_mod1_otp(user_name=user_name,
-                                          event_name=event_name,
-                                          event_time=event_time,
-                                          event_url=event_url)
-    else:
-        template_func = reminder_mod1(user_name=user_name,
-                                      event_name=event_name,
-                                      event_time=event_time,
-                                      event_url=event_url,
-                                      event_password=event_password)
+def send_remind_mail1( to_email, user_name, role, event_name, event_time, event_url, event_password):
+    template_func = reminder_mod1(user_name, role, event_name, event_time, event_url, event_password)
     try:
-        mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
-        message = {
-            'html': template_func,
-            'from_email': 'support@videowiki.pt',
-            'from_name': 'Video.Wiki',
-            'global_merge_vars': [],
-            # need reply mail
-            'headers': {'Reply-To': 'support@videowiki.pt'},
-            'merge': True,
-            'merge_language': 'mailchimp',
-            'subject': "Reminder",
-            'tags': ['password-resets'],
-            'text': 'Example text content',
-            'to': [{'email': to_email,
-                    'name': user_name,
-                    'type': 'to'}],
-        }
-        result = mandrill_client.messages.send(message = message)
-        print(result[0]["status"])
-        status = result[0]["status"]
-        return status
+        mandrill_mailer_func(template_func=template_func, to_email=to_email, user_name=user_name)
+    except mandrill.Error as e:
+        print("An exception occurred: {}".format(e))
+
+def send_remind_mail_spec( to_email, user_name, event_name, event_time, event_url):
+    template_func = reminder_spectator(user_name, event_name, event_time, event_url)
+    try:
+        mandrill_mailer_func(template_func=template_func, to_email=to_email, user_name=user_name)
     except mandrill.Error as e:
         print("An exception occurred: {}".format(e))
 
 
-def send_remind_mail2( to_email, user_name, event_name, event_time, event_url, event_password, stream_url, send_otp):
-    if send_otp == True:
-        template_func = reminder2_otp(user_name=user_name,
-                                      event_name=event_name,
-                                      event_time=event_time,
-                                      event_url=event_url,
-                                      stream_url=stream_url)
-    else:
-        template_func = reminder2(user_name=user_name,
-                                  event_name=event_name,
-                                  event_time=event_time,
-                                  event_url=event_url,
-                                  event_password=event_password,
-                                  stream_url=stream_url)
+def send_remind_mail2( to_email, user_name, role, event_name, event_time, event_url, event_password):
+    template_func = reminder_participant(user_name, role, event_name, event_time, event_url, event_password)
     try:
-        mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
-        message = {
-            'html': template_func,
-            'from_email': 'support@videowiki.pt',
-            'from_name': 'Video.Wiki',
-            'global_merge_vars': [],
-            # need reply mail
-            'headers': {'Reply-To': 'support@videowiki.pt'},
-            'merge': True,
-            'merge_language': 'mailchimp',
-            'subject': "Reminder",
-            'tags': ['password-resets'],
-            'text': 'Example text content',
-            'to': [{'email': to_email,
-                    'name': user_name,
-                    'type': 'to'}],
-        }
-        result = mandrill_client.messages.send(message = message)
-        print(result)
-        print(result[0]["status"])
-        status = result[0]["status"]
-        return status
+        mandrill_mailer_func(template_func=template_func, to_email=to_email, user_name=user_name)
     except mandrill.Error as e:
         print("An exception occurred: {}".format(e))
 
 
-def send_remind_mail_participant( to_email, user_name, event_name, event_time, event_url, event_password, send_otp, cast_type):
-    if send_otp == True or cast_type == "public":
-        template_func = reminder_participant_otp(user_name=user_name,
-                                                 event_name=event_name,
-                                                 event_time=event_time,
-                                                 event_url=event_url
-                                                 )
-    else:
-        template_func = reminder_participant(user_name=user_name,
-                                             event_name=event_name,
-                                             event_time=event_time,
-                                             event_url=event_url,
-                                             event_password=event_password
-                                             )
+def send_remind_mail_part_view( to_email, user_name, role, event_name, event_time, event_url):
+    template_func = reminder_parti_wo_pass(user_name, role, event_name, event_time, event_url)
     try:
-        mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
-        message = {
-            'html': template_func,
-            'from_email': 'support@videowiki.pt',
-            'from_name': 'Video.Wiki',
-            'global_merge_vars': [],
-            # need reply mail
-            'headers': {'Reply-To': 'support@videowiki.pt'},
-            'merge': True,
-            'merge_language': 'mailchimp',
-            'subject': "Reminder",
-            'tags': ['password-resets'],
-            'text': 'Example text content',
-            'to': [{'email': to_email,
-                    'name': user_name,
-                    'type': 'to'}],
-        }
-        result = mandrill_client.messages.send(message = message)
-        print(result)
-        print(result[0]["status"])
-        status = result[0]["status"]
-        return status
+        mandrill_mailer_func(template_func=template_func, to_email=to_email, user_name=user_name)
     except mandrill.Error as e:
         print("An exception occurred: {}".format(e))
 
@@ -527,5 +420,29 @@ def madril_mailer(template_func, calb, to_email, user_name):
     }
     result = mandrill_client.messages.send(message=message)
     print(result)
+    status = result[0]["status"]
+    return status
+
+
+def mandrill_mailer_func(template_func, to_email, user_name):
+    mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
+    message = {
+        'html': template_func,
+        'from_email': 'support@videowiki.pt',
+        'from_name': 'Video.Wiki',
+        'global_merge_vars': [],
+        # need reply mail
+        'headers': {'Reply-To': 'support@videowiki.pt'},
+        'merge': True,
+        'merge_language': 'mailchimp',
+        'subject': "Reminder",
+        'tags': ['password-resets'],
+        'text': 'Example text content',
+        'to': [{'email': to_email,
+                'name': user_name,
+                'type': 'to'}],
+    }
+    result = mandrill_client.messages.send(message=message)
+    print(result[0]["status"])
     status = result[0]["status"]
     return status

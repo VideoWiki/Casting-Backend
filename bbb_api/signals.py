@@ -6,6 +6,8 @@ from django_q.tasks import schedule
 from api.global_variable import CLIENT_DOMAIN_URL
 from django_q.models import Schedule
 from api.global_variable import TYPEFORM_URL_PRE_REG
+from datetime import timedelta, datetime
+
 
 @receiver(post_save, sender=Meeting)
 def post_save_prediction(sender, instance, created, update_fields, **kwargs):
@@ -77,34 +79,15 @@ def reminder(sender, instance, created, update_fields, **kwargs):
     if created:
         remind_schedular = instance.public_meeting_id
         reminder_time = instance.schedule_time
-        if len(str(reminder_time.month)) == 1:
-            rem_month = "0" + str(reminder_time.month)
-        else:
-            rem_month = reminder_time.month
-        if len(str(reminder_time.day)) == 1:
-            rem_day = "0" + str(reminder_time.day)
-        else:
-            rem_day = reminder_time.day
-        subtracted_time = time_subtractor(reminder_time)
-        print(subtracted_time, "st")
-        subtracted_time_final = str(subtracted_time)
-        a = subtracted_time_final.split(":")
-        print(a, "aaa")
-        if len(a[0]) == 1:
-            a[0] = "0" + a[0]
-        if len(subtracted_time_final[0:2]) == 1:
-            subtracted_time_final[0:2] = "0" + str(subtracted_time_final[0:2])
+        reminder_mail_time = reminder_time + timedelta(minutes=-10)
+
         schedule('bbb_api.create_event_api.helper.email_sender',
                  instance.public_meeting_id,
                  schedule_type=Schedule.ONCE,
                  name=remind_schedular,
-                 next_run=('{}-{}-{} {}:{}:00'.format(
-                     reminder_time.year,
-                     rem_month,
-                     rem_day,
-                     a[0],
-                     a[1]
-                 )))
+                 next_run= reminder_mail_time)
+
+
     elif update_fields:
         pass
     else:
@@ -115,24 +98,12 @@ def reminder(sender, instance, created, update_fields, **kwargs):
         except:
             pass
         reminder_time = instance.schedule_time
-        subtracted_time = time_subtractor(reminder_time)
-        subtracted_time_final = str(subtracted_time)
-        a = subtracted_time_final.split(":")
-        if len(a[0]) == 1:
-            a[0] = "0" + a[0]
-        if len(subtracted_time_final[0:2]) == 1:
-            subtracted_time_final[0:2] = "0" + str(subtracted_time_final[0:2])
+        reminder_mail_time = reminder_time + timedelta(minutes=-10)
         schedule('bbb_api.create_event_api.helper.email_sender',
                  instance.public_meeting_id,
                  schedule_type=Schedule.ONCE,
                  name=remind_schedular,
-                 next_run=('{}-{}-{} {}:{}:00'.format(
-                     reminder_time.year,
-                     reminder_time.month,
-                     reminder_time.day,
-                     a[0],
-                     a[1]
-                 )))
+                 next_run=reminder_mail_time)
 
 
 
