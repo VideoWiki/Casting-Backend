@@ -24,8 +24,12 @@ class meeting_info(APIView):
                 expired = True
                 is_runnig = False
         else:
+            running = Meeting.is_meeting_running(event_object.private_meeting_id)
             expired = False
-            is_runnig = False
+            if running == 'true':
+                is_runnig = True
+            else:
+                is_runnig = False
         try:
             event_name = event_object.event_name
             event_creator_name = event_object.event_creator_name
