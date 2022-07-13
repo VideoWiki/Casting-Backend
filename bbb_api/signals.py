@@ -16,7 +16,6 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
         date = instance.schedule_time.date()
         hour = instance.schedule_time.hour
         min = instance.schedule_time.minute
-        print(instance.schedule_time, "st")
         start_time = instance.schedule_time
         schedule_time = str(date) +" at "+ str(hour) + ":"+ str(min) + " GMT"
         vw_stream = instance.bbb_stream_url_vw

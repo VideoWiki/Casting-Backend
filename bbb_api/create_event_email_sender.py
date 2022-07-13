@@ -16,7 +16,6 @@ def event_registration_mail(email, user_name, event_name, time, stream_url, meet
                             pre_reg_url, start_time, event_type, viewer_mode, viewer_password):
     if event_type == "public":
         if stream_url == "" and viewer_mode == False:
-            print("here")
             send_create2(email, user_name, event_name,
                          time, meeting_url, moderator_password,
                          pre_reg_url, start_time)
@@ -81,7 +80,6 @@ def attendee_mail(user_name, email, event_name, event_time, event_url, event_pas
             send_invite_mail_viewer(user_name, email, event_name, event_time, event_url, dt, creator_nmae,
                                     creator_email, role)
         elif role == "spectator" and stream_url != "":
-            print(stream_url, 'su')
             send_invite_mail_spec(user_name, email, event_name, event_time, stream_url, dt, creator_nmae,
                                   creator_email, role)
 
