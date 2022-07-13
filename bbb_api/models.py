@@ -32,8 +32,11 @@ class Meeting(models.Model):
     public_meeting_id = models.CharField(max_length=100, unique=True)
     meeting_type = models.CharField(max_length=10, blank=True, null=True, default='private')
     attendee_password = models.CharField(max_length=50)
+    hashed_attendee_password = models.CharField(max_length=100)
     moderator_password = models.CharField(max_length=50)
+    hashed_moderator_password = models.CharField(max_length=100)
     viewer_password = models.CharField(max_length=50)
+    hashed_viewer_password = models.CharField(max_length=100)
     viewer_mode = models.BooleanField(default=False, blank=True, null=True)
     moderator_only_text = models.TextField(blank=True, null=True)
     welcome = models.TextField(default='welcome', blank=True, null=True)
@@ -313,6 +316,12 @@ class ViewerDetails(models.Model):
     enable_screen_sharing = models.BooleanField(default=False, blank=True, null=True)
     enable_webcam = models.BooleanField(default=False, blank=True, null=True)
 
+
+class MailTemplateDetails(models.Model):
+    cast = models.ForeignKey(Meeting, on_delete=models.CASCADE, null=True, blank=True)
+    role = models.CharField(max_length=20, blank=True, null=True)
+    body = models.CharField(max_length=2000, blank=True, null=True)
+    subject = models.CharField(max_length=200, blank=True, null=True)
 
 
 

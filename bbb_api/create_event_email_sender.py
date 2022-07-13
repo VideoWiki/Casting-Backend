@@ -16,6 +16,7 @@ def event_registration_mail(email, user_name, event_name, time, stream_url, meet
                             pre_reg_url, start_time, event_type, viewer_mode, viewer_password):
     if event_type == "public":
         if stream_url == "" and viewer_mode == False:
+            print("here")
             send_create2(email, user_name, event_name,
                          time, meeting_url, moderator_password,
                          pre_reg_url, start_time)

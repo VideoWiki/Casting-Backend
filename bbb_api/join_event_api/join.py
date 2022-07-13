@@ -484,7 +484,7 @@ def event_scheduler(private_meeting_id):
 
 def time_in_range(start, end, current):
 
-    return start <= current <= end
+    return start <= current
 
 def sub_time(b):
     original_time = datetime(year=int(b.year), month=int(b.month), day=int(b.day)) + timedelta(hours=int(b.hour),
