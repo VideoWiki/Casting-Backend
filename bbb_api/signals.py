@@ -44,10 +44,11 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
             url for Co-host: {CLIENT_DOMAIN_URL + "/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_moderator_password)} 
             url for Participant: {CLIENT_DOMAIN_URL + "/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_attendee_password)}'''
             if viewer_mode == True:
-                body_view = f'url for Participant: {CLIENT_DOMAIN_URL + "/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_viewer_password)}'
+                body_view = f'url for Viewer: {CLIENT_DOMAIN_URL + "/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_viewer_password)}'
                 body = body + body_view
             if instance.is_streaming == True:
                 body_spec = f'url for Spectator: {VW_RTMP_URL + "{}".format(instance.public_meeting_id)}'
+                body = body + body_spec
             MailTemplateDetails.objects.create(cast=instance, role='co-host', body=body, subject=name)
 
             body = f'''You have been invited to join a cast {name}, as a Participant. The cast will begin at {schedule_time}
