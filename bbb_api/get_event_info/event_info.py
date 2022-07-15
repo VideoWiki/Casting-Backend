@@ -13,7 +13,11 @@ class meeting_info(APIView):
     def get(self, request):
         public_meeting_id = request.GET.get('public_meeting_id')
         event_object = Meeting.objects.get(public_meeting_id=public_meeting_id)
-        events = Meeting.objects.filter(schedule_time__gt=datetime.now() + timedelta(minutes=-30))
+        if event_object.duration == 0:
+            duration = 150
+        else:
+            duration = event_object.duration + 30
+        events = Meeting.objects.filter(schedule_time__gt=datetime.now() + timedelta(minutes=-duration))
         if not event_object in events:
             private_meeting_id = event_object.private_meeting_id
             running = Meeting.is_meeting_running(private_meeting_id)

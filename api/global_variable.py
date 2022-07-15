@@ -45,7 +45,6 @@ else:
     CLIENT_DOMAIN_URL = "https://cast.video.wiki"
     VW_RTMP_URL = "rtmp://play.stream.video.wiki/stream/"
 
-
     DATABASE = {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),

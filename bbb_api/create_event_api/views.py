@@ -14,6 +14,7 @@ import datetime
 from .start_now_func import start_cast_now
 import json
 import ast
+from django.utils.crypto import get_random_string
 
 class create_event(APIView):
     def post(self, request):
@@ -31,28 +32,30 @@ class create_event(APIView):
         if meeting.meeting_type == "":
             meeting.meeting_type = "private"
         attendee_password = request.data['attendee_password']
-
         if attendee_password == '':
             random_password = generate_random_key()
             meeting.attendee_password = random_password
+            meeting.hashed_attendee_password = get_random_string()
         else:
             meeting.attendee_password = attendee_password
-
+            meeting.hashed_attendee_password = get_random_string()
         mod_password = request.data['moderator_password']
 
         if mod_password == '':
             random_password = generate_random_key()
             meeting.moderator_password = random_password
+            meeting.hashed_moderator_password = get_random_string()
         else:
             meeting.moderator_password = mod_password
-
+            meeting.hashed_moderator_password = get_random_string()
         viewer_password = request.data["viewer_password"]
         if viewer_password == '':
             random_password = generate_random_key()
             meeting.viewer_password = random_password
+            meeting.hashed_viewer_password = get_random_string()
         else:
             meeting.viewer_password = viewer_password
-
+            meeting.hashed_viewer_password = get_random_string()
         mode_viewer = request.data["viewer_mode"]
         if mode_viewer == "True":
             mode_viewer = True

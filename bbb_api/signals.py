@@ -1,9 +1,9 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from bbb_api.models import Meeting
+from bbb_api.models import Meeting, MailTemplateDetails
 from bbb_api.create_event_email_sender import event_registration_mail, time_subtractor
 from django_q.tasks import schedule
-from api.global_variable import CLIENT_DOMAIN_URL
+from api.global_variable import CLIENT_DOMAIN_URL, VW_RTMP_URL
 from django_q.models import Schedule
 from datetime import timedelta
 
@@ -16,7 +16,6 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
         date = instance.schedule_time.date()
         hour = instance.schedule_time.hour
         min = instance.schedule_time.minute
-        print(instance.schedule_time, "st")
         start_time = instance.schedule_time
         schedule_time = str(date) +" at "+ str(hour) + ":"+ str(min) + " GMT"
         vw_stream = instance.bbb_stream_url_vw
@@ -40,6 +39,30 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
                                 stream_url, meeting_url, nft_drop_url, instance.moderator_password,
                                 instance.attendee_password, send_otp, pre_reg_form_url, start_time,
                                 event_type, viewer_mode, viewer_password)
+        if instance.meeting_type == 'public':
+            body = f'''You have been invited to join a cast {name} for {schedule_time} 
+            url for Co-host: {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_moderator_password)} 
+            url for Participant: {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_attendee_password)}'''
+            if viewer_mode == True:
+                body_view = f'url for Viewer: {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_viewer_password)}'
+                body = body + body_view
+            if instance.is_streaming == True:
+                body_spec = f'url for Spectator: {VW_RTMP_URL + "live/{}".format(instance.public_meeting_id)}'
+                body = body + body_spec
+            MailTemplateDetails.objects.create(cast=instance, role='co-host', body=body, subject=name)
+
+            body = f'''You have been invited to join a cast {name}, as a Participant. The cast will begin at {schedule_time}
+            url for cast: {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_attendee_password)}'''
+            MailTemplateDetails.objects.create(cast=instance, role='participant', body=body, subject=name)
+            if viewer_mode == True:
+                body = f'''You have been invited to join a cast {name}, as a Viewer. The cast will begin at {schedule_time}
+                url for cast: {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_viewer_password)}'''
+                MailTemplateDetails.objects.create(cast=instance, role='viewer', body=body, subject=name)
+            if instance.is_streaming ==True:
+                body = f'''You have been invited to join a cast {name}, as a Spectator. The cast will begin at {schedule_time}
+                url for cast: {VW_RTMP_URL + "live/{}".format(instance.public_meeting_id)}'''
+                MailTemplateDetails.objects.create(cast=instance, role='spectator', body=body, subject=name)
+
     elif update_fields:
         pass
     else:

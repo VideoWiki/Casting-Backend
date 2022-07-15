@@ -10,6 +10,7 @@ def post_save_emailer(sender, instance, created, **kwargs):
     if created:
         print(instance.cast.event_name, instance.name, instance.role, instance.email)
         meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(instance.cast.public_meeting_id)
+        cast_id = instance.cast.public_meeting_id
         a_password = instance.cast.attendee_password
         m_password = instance.cast.moderator_password
         v_password = instance.cast.viewer_password
@@ -45,6 +46,7 @@ def post_save_emailer(sender, instance, created, **kwargs):
                       creator_name,
                       viewer_mode,
                       public_otp,
-                      v_password
+                      v_password,
+                      cast_id
                       )
 
