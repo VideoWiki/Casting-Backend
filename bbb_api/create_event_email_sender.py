@@ -1,9 +1,5 @@
 from datetime import datetime, timedelta
-from cast_invitee_details.helper import send_invite_mail1, \
-    send_invite_mail2, send_invite_mail3, \
-    send_invite_mail4, send_invite_mail5, send_invite_mail_cohost,\
-    send_invite_mail_part_vm, send_invite_mail_viewer, \
-    send_invite_mail_spec, send_invite_mail_otp, \
+from cast_invitee_details.helper import send_invite_mail_spec, send_invite_mail_otp, \
     send_invite_mail_pass
 from bbb_api.create_event_api.helper import icf_file_generator
 from .models import MailTemplateDetails, Meeting
