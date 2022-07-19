@@ -18,6 +18,7 @@ class delete_meeting(APIView):
             curr_user_id = user_info(token)
         except:
             pass
+
         if curr_user_id == meeting_user_id:
             delete_mailer(meeting_obj)
             meeting_obj.delete()

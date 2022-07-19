@@ -10,11 +10,14 @@ def delete_mailer(obj):
     creator_name = obj.event_creator_name
     for i in objs:
         email = i.email
-        user_name = i.name
-        event_cancelled_mail(email= email,
-                             user_name= user_name,
-                             event_name=event_name,
-                             creator_name=creator_name)
+        if email == None:
+            pass
+        else:
+            user_name = i.name
+            event_cancelled_mail(email= email,
+                                 user_name= user_name,
+                                 event_name=event_name,
+                                 creator_name=creator_name)
 
 
 
