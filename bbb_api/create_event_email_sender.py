@@ -82,7 +82,7 @@ def attendee_mail(user_name, email, event_name, event_time, event_url, event_pas
                               user_name=user_name)
             except mandrill.Error as e:
                 print("An exception occurred: {}".format(e))
-        if cast_obj.viewer_mode == True:
+        if cast_obj.viewer_mode == True and role == "viewer":
             temp_obj = MailTemplateDetails.objects.get(cast=cast_obj, role=role)
             meet_url = CLIENT_DOMAIN_URL + "/{}/?pass={}".format(cast_id, cast_obj.hashed_viewer_password)
             calb = icf_file_generator(start_time=dt, event_name=event_name, to_email=email, user_name=user_name,
