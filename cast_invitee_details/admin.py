@@ -4,7 +4,7 @@ from .models import CastInviteeDetails, PublicWallet
 
 @admin.register(CastInviteeDetails)
 class CastAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'email', 'role', 'nft_enable')
+    list_display = ('id', 'email', 'role', 'nft_enable')
 
 
 @admin.register(PublicWallet)

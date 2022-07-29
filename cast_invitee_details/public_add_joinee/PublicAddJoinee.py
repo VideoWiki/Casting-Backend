@@ -9,7 +9,6 @@ from django.core.exceptions import ObjectDoesNotExist
 class PublicAddJoinee(APIView):
     def post(self, request):
         cast_id = request.data["session_id"]
-        name = request.data["user_name"]
         email = request.data["user_email"]
         email = email.lower()
         if cast_id == "":
@@ -34,13 +33,12 @@ class PublicAddJoinee(APIView):
             print("1")
             if not CastInviteeDetails.objects.filter(cast=cast_obj, email=email).exists():
                 CastInviteeDetails.objects.create(cast=cast_obj,
-                                                  name= name,
                                                   email= email,
                                                   invited= False,
                                                   role= role,
                                                   mint='not started')
         else:
-            CastInviteeDetails.objects.create(cast=cast_obj, name=name, invited=False, role= role, mint='not started')
+            CastInviteeDetails.objects.create(cast=cast_obj, invited=False, role= role, mint='not started')
 
         return Response({
             "status": True,

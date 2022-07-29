@@ -43,7 +43,6 @@ class MagicUrl(APIView):
         if viewer_mode == True:
             hashed_view_key = cast_obj.hashed_viewer_password
             if cast_key == hashed_view_key:
-                print('view')
                 viewer_obj = ViewerDetails.objects.get(cast=cast_obj)
                 force_listen = viewer_obj.force_listen_only
                 screen_share = viewer_obj.enable_screen_sharing
@@ -71,7 +70,6 @@ class MagicUrl(APIView):
         else:
             pass
         if cast_key == hashed_pub_key:
-            print('pub')
             result = Meeting.join_url(cast_obj.private_meeting_id,
                                       name,
                                       cast_obj.attendee_password,
@@ -85,7 +83,6 @@ class MagicUrl(APIView):
                              'url': result}
                             )
         elif cast_key == hashed_mod_key:
-            print('mod')
             result = Meeting.join_url(cast_obj.private_meeting_id,
                                       name,
                                       cast_obj.moderator_password,

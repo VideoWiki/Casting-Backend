@@ -8,7 +8,7 @@ from bbb_api.models import Meeting
 def post_save_emailer(sender, instance, created, **kwargs):
 
     if created:
-        print(instance.cast.event_name, instance.name, instance.role, instance.email)
+        print(instance.cast.event_name, instance.role, instance.email)
         meeting_url = CLIENT_DOMAIN_URL + "/e/{}/".format(instance.cast.public_meeting_id)
         cast_id = instance.cast.public_meeting_id
         a_password = instance.cast.attendee_password
@@ -30,8 +30,7 @@ def post_save_emailer(sender, instance, created, **kwargs):
             stream_url = ""
         else:
             stream_url = "{}/live/{}".format(CLIENT_DOMAIN_URL,instance.cast.public_meeting_id)
-        attendee_mail(instance.name,
-                      instance.email,
+        attendee_mail(instance.email,
                       instance.cast.event_name,
                       schedule_time,
                       meeting_url,

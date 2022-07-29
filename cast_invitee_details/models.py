@@ -5,7 +5,7 @@ from bbb_api.models import Meeting
 
 class CastInviteeDetails(models.Model):
     cast = models.ForeignKey(Meeting, on_delete=models.CASCADE, null=True, blank=True)
-    name = models.CharField(max_length=20, blank=True, null= True)
+    # name = models.CharField(max_length=20, blank=True, null= True)
     email = models.EmailField(max_length=50, blank= True, null= True)
     role = models.CharField(max_length= 20, blank=True, null=True)
     otp = models.CharField(max_length=9, blank=True, null=True)

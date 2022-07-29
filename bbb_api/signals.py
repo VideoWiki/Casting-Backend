@@ -40,7 +40,7 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
                                 instance.attendee_password, send_otp, pre_reg_form_url, start_time,
                                 event_type, viewer_mode, viewer_password)
         if instance.meeting_type == 'public':
-            body = f'''You have been invited to join a cast {name} for {schedule_time} 
+            body = f'''You have been invited to join a cast {name} for {schedule_time}.
             url for Co-host: {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_moderator_password)} 
             url for Participant: {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_attendee_password)}'''
             if viewer_mode == True:
@@ -51,15 +51,15 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
                 body = body + body_spec
             MailTemplateDetails.objects.create(cast=instance, role='co-host', body=body, subject=name)
 
-            body = f'''You have been invited to join a cast {name}, as a Participant. The cast will begin at {schedule_time}
+            body = f'''You have been invited to join a cast {name}, as a Participant. The cast will begin at {schedule_time}.
             url for cast: {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_attendee_password)}'''
             MailTemplateDetails.objects.create(cast=instance, role='participant', body=body, subject=name)
             if viewer_mode == True:
-                body = f'''You have been invited to join a cast {name}, as a Viewer. The cast will begin at {schedule_time}
+                body = f'''You have been invited to join a cast {name}, as a Viewer. The cast will begin at {schedule_time}.
                 url for cast: {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_viewer_password)}'''
                 MailTemplateDetails.objects.create(cast=instance, role='viewer', body=body, subject=name)
             if instance.is_streaming ==True:
-                body = f'''You have been invited to join a cast {name}, as a Spectator. The cast will begin at {schedule_time}
+                body = f'''You have been invited to join a cast {name}, as a Spectator. The cast will begin at {schedule_time}.
                 url for cast: {VW_RTMP_URL + "live/{}".format(instance.public_meeting_id)}'''
                 MailTemplateDetails.objects.create(cast=instance, role='spectator', body=body, subject=name)
 

@@ -34,7 +34,6 @@ class add_invitees(APIView):
                     else:
                         bool_nft_enable = False
                     CastInviteeDetails.objects.create(cast=obj,
-                                                      name=i["name"],
                                                       email=i["email"].lower(),
                                                       role=i["type"],
                                                       nft_enable=bool_nft_enable,
@@ -45,7 +44,6 @@ class add_invitees(APIView):
                         inv_obj = CastInviteeDetails.objects.filter(cast=obj, email=i["email"].lower()).get()
                         d = {
                             "id": inv_obj.id,
-                            "name": inv_obj.name,
                             "role": inv_obj.role,
                             "email": inv_obj.email,
                             "otp_verified": inv_obj.verified,
@@ -90,7 +88,6 @@ class fetch_details(APIView):
             if cast_invite_object.count() != 0:
                 for i in cast_invite_object:
                     id = i.id
-                    name = i.name
                     role = i.role
                     email = i.email
                     otp_verified = i.verified,
@@ -109,7 +106,6 @@ class fetch_details(APIView):
                     joined = i.joined
                     d = {
                         "id": id,
-                        "name": name,
                         "role": role,
                         "email": email,
                         "otp_verified": otp_verified,
