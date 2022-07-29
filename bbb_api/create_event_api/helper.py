@@ -31,50 +31,49 @@ def email_sender(public_meeting_id):
     viewer_mode = cast_obj.viewer_mode
     for i in obj:
         email = i.email
-        user_name = i.name
         role = i.role
         if cast_type == "public":
             if role == "co-host":
                 meeting_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_obj.public_meeting_id, cast_obj.hashed_moderator_password)
-                send_remind_mail_part_view( email, user_name, role, cast_obj.event_name, schedule_time, meeting_url)
+                send_remind_mail_part_view( email, email, role, cast_obj.event_name, schedule_time, meeting_url)
             if role == "spectator":
                 str_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
-                send_remind_mail_spec( email, user_name, cast_obj.event_name, schedule_time, str_url)
+                send_remind_mail_spec( email, email, cast_obj.event_name, schedule_time, str_url)
             if viewer_mode == False:
                 if role == "participant":
                     meeting_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_obj.public_meeting_id,
                                                                        cast_obj.hashed_attendee_password)
-                    send_remind_mail_part_view( email, user_name, role, cast_obj.event_name, schedule_time, meeting_url)
+                    send_remind_mail_part_view( email, email, role, cast_obj.event_name, schedule_time, meeting_url)
             if viewer_mode == True:
                 if role == "viewer":
                     meeting_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_obj.public_meeting_id,
                                                                        cast_obj.hashed_viewer_password)
-                    send_remind_mail_part_view( email, user_name, role, cast_obj.event_name, schedule_time, meeting_url)
+                    send_remind_mail_part_view( email, email, role, cast_obj.event_name, schedule_time, meeting_url)
                 if role == "participant":
                     meeting_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_obj.public_meeting_id,
                                                                        cast_obj.hashed_attendee_password)
-                    send_remind_mail_part_view(email, user_name, role, cast_obj.event_name, schedule_time, meeting_url)
+                    send_remind_mail_part_view(email, email, role, cast_obj.event_name, schedule_time, meeting_url)
 
         elif cast_type == "private":
             if send_otp == True:
                 if role == "spectator":
                     str_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
-                    send_remind_mail_spec(email, user_name, cast_obj.event_name, schedule_time, str_url)
+                    send_remind_mail_spec(email, email, cast_obj.event_name, schedule_time, str_url)
                 else:
-                    send_remind_mail_part_view(email, user_name, role, cast_obj.event_name, schedule_time, meeting_url)
+                    send_remind_mail_part_view(email, email, role, cast_obj.event_name, schedule_time, meeting_url)
             elif send_otp != True:
                 if role == "spectator":
                     str_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
-                    send_remind_mail_spec(email, user_name, cast_obj.event_name, schedule_time, str_url)
+                    send_remind_mail_spec(email, email, cast_obj.event_name, schedule_time, str_url)
                 else:
                     if role == "viewer":
-                        send_remind_mail2(email, user_name, role, cast_obj.event_name, schedule_time, meeting_url,
+                        send_remind_mail2(email, email, role, cast_obj.event_name, schedule_time, meeting_url,
                                           cast_obj.viewer_password)
                     if role == "co-host":
-                        send_remind_mail2(email, user_name, role, cast_obj.event_name, schedule_time, meeting_url,
+                        send_remind_mail2(email, email, role, cast_obj.event_name, schedule_time, meeting_url,
                                           cast_obj.moderator_password)
                     if role == "participant":
-                        send_remind_mail2(email, user_name, role, cast_obj.event_name, schedule_time, meeting_url,
+                        send_remind_mail2(email, email, role, cast_obj.event_name, schedule_time, meeting_url,
                                           cast_obj.attendee_password)
 
     return "sent"
