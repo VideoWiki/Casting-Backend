@@ -38,6 +38,11 @@ class get_my_events(APIView):
                 event_expired = False
             else:
                 event_expired = True
+            result = Meeting.get_recordings(event.private_meeting_id)
+            if result == None:
+                recording_available = False
+            else:
+                recording_available = True
             my_event_list.append({"event_name": event_name,
                                   "moderator_password": event_password,
                                   "event_date": event_date,
@@ -47,7 +52,8 @@ class get_my_events(APIView):
                                   "public_meeting_id": public_meeting_id,
                                   "event_id": event_id,
                                   "short_description": short_description,
-                                  "cover_image": str(c_i)
+                                  "cover_image": str(c_i),
+                                  "recording_available": recording_available
                          })
         return Response({"status": True,
                          "my_events": my_event_list
