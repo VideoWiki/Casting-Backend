@@ -75,6 +75,11 @@ class meeting_info(APIView):
                 nft_object_submitted = NftDetails.objects.get(cast=event_object).submitted
             except ObjectDoesNotExist:
                 nft_object_submitted = False
+            result = Meeting.get_recordings(event_object.private_meeting_id)
+            if result == None:
+                recording_available = False
+            else:
+                recording_available = True
             return Response({'status': True, 'meeting_info': {"event_name": event_name,
                                                               "event_creator_name": event_creator_name,
                                                               "public_meeting_id": public_meeting_id,
@@ -97,7 +102,8 @@ class meeting_info(APIView):
                                                               "viewer_mode": viewer_mode,
                                                               "stream_status": False,
                                                               "nft_details_submitted": nft_object_submitted,
-                                                              "event_creator_email": email
+                                                              "event_creator_email": email,
+                                                              "recording_available": recording_available
                                                               }
                              }
                             )
