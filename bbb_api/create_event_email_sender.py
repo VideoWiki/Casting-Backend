@@ -58,7 +58,7 @@ def event_registration_mail(email, user_name, event_name, time, stream_url, meet
 
 
 
-def attendee_mail(user_name, email, event_name, event_time, event_url, event_password,
+def attendee_mail(email, event_name, event_time, event_url, event_password,
                   co_password, stream_url, role, send_otp, cast_type, dt, creator_nmae,
                   creator_email, viewer_mode, public_otp, viewer_pass, cast_id):
     if cast_type == "public":
@@ -67,38 +67,38 @@ def attendee_mail(user_name, email, event_name, event_time, event_url, event_pas
         if role == 'co-host':
             temp_obj = MailTemplateDetails.objects.get(cast=cast_obj, role=role)
             meet_url = CLIENT_DOMAIN_URL + "/{}/?pass={}".format(cast_id, cast_obj.hashed_moderator_password)
-            calb = icf_file_generator(start_time=dt, event_name=event_name, to_email=email, user_name=user_name, meeting_url=meet_url)
+            calb = icf_file_generator(start_time=dt, event_name=event_name, to_email=email, user_name=email, meeting_url=meet_url)
             try:
-                madril_mailer(template_func=temp_obj.body, subject= temp_obj.subject, calb=calb, to_email=email, user_name=user_name)
+                madril_mailer(template_func=temp_obj.body, subject= temp_obj.subject, calb=calb, to_email=email, user_name=email)
             except mandrill.Error as e:
                 print("An exception occurred: {}".format(e))
         if role == "participant":
             temp_obj = MailTemplateDetails.objects.get(cast=cast_obj, role=role)
             meet_url = CLIENT_DOMAIN_URL + "/{}/?pass={}".format(cast_id, cast_obj.hashed_attendee_password)
-            calb = icf_file_generator(start_time=dt, event_name=event_name, to_email=email, user_name=user_name,
+            calb = icf_file_generator(start_time=dt, event_name=event_name, to_email=email, user_name=email,
                                       meeting_url=meet_url)
             try:
                 madril_mailer(template_func=temp_obj.body, subject=temp_obj.subject, calb=calb, to_email=email,
-                              user_name=user_name)
+                              user_name=email)
             except mandrill.Error as e:
                 print("An exception occurred: {}".format(e))
         if cast_obj.viewer_mode == True and role == "viewer":
             temp_obj = MailTemplateDetails.objects.get(cast=cast_obj, role=role)
             meet_url = CLIENT_DOMAIN_URL + "/{}/?pass={}".format(cast_id, cast_obj.hashed_viewer_password)
-            calb = icf_file_generator(start_time=dt, event_name=event_name, to_email=email, user_name=user_name,
+            calb = icf_file_generator(start_time=dt, event_name=event_name, to_email=email, user_name=email,
                                       meeting_url=meet_url)
             try:
                 madril_mailer(template_func=temp_obj.body, subject=temp_obj.subject, calb=calb, to_email=email,
-                              user_name=user_name)
+                              user_name=email)
             except mandrill.Error as e:
                 print("An exception occurred: {}".format(e))
         if cast_obj.is_streaming == True:
             temp_obj = MailTemplateDetails.objects.get(cast=cast_obj, role=role)
-            calb = icf_file_generator(start_time=event_time, event_name=event_name, to_email=email, user_name=user_name,
+            calb = icf_file_generator(start_time=event_time, event_name=event_name, to_email=email, user_name=email,
                                       meeting_url=stream_url)
             try:
                 madril_mailer(template_func=temp_obj.body, subject=temp_obj.subject, calb=calb, to_email=email,
-                              user_name=user_name)
+                              user_name=email)
             except mandrill.Error as e:
                 print("An exception occurred: {}".format(e))
 
@@ -106,35 +106,35 @@ def attendee_mail(user_name, email, event_name, event_time, event_url, event_pas
     elif cast_type == "private":
         if send_otp == True:
             if role == "co-host":
-                send_invite_mail_otp(user_name=user_name, event_name=event_name, event_time=event_time, role=role,
+                send_invite_mail_otp(user_name=email, event_name=event_name, event_time=event_time, role=role,
                                      event_url=event_url, to_email=email, dt=dt, creator_email=creator_email,
                                      creator_nmae=creator_nmae)
             elif role == "participant":
-                send_invite_mail_otp(user_name=user_name, event_name=event_name, event_time=event_time, role=role,
+                send_invite_mail_otp(user_name=email, event_name=event_name, event_time=event_time, role=role,
                                      event_url=event_url, to_email=email, dt=dt, creator_email=creator_email,
                                      creator_nmae=creator_nmae)
             elif role == "viewer":
-                send_invite_mail_otp(user_name=user_name, event_name=event_name, event_time=event_time, role=role,
+                send_invite_mail_otp(user_name=email, event_name=event_name, event_time=event_time, role=role,
                                      event_url=event_url, to_email=email, dt=dt, creator_email=creator_email,
                                      creator_nmae=creator_nmae)
             elif role == "spectator":
-                send_invite_mail_spec(user_name, email, event_name, event_time, stream_url, dt, creator_nmae,
+                send_invite_mail_spec(email, email, event_name, event_time, stream_url, dt, creator_nmae,
                                       creator_email, role)
         elif send_otp == False and public_otp == True:
             if role == "co-host":
-                send_invite_mail_pass(user_name=user_name, event_name=event_name, event_time=event_time, role=role,
+                send_invite_mail_pass(user_name=email, event_name=event_name, event_time=event_time, role=role,
                                      event_url=event_url, to_email=email, dt=dt, creator_email=creator_email,
                                       creator_nmae=creator_nmae, password= co_password)
             elif role == "participant":
-                send_invite_mail_pass(user_name=user_name, event_name=event_name, event_time=event_time, role=role,
+                send_invite_mail_pass(user_name=email, event_name=event_name, event_time=event_time, role=role,
                                      event_url=event_url, to_email=email, dt=dt, creator_email=creator_email,
                                      creator_nmae=creator_nmae, password=event_password)
             elif role == "viewer" and viewer_mode == True:
-                send_invite_mail_pass(user_name=user_name, event_name=event_name, event_time=event_time, role=role,
+                send_invite_mail_pass(user_name=email, event_name=event_name, event_time=event_time, role=role,
                                      event_url=event_url, to_email=email, dt=dt, creator_email=creator_email,
                                      creator_nmae=creator_nmae, password= viewer_pass)
             elif role == "spectator":
-                send_invite_mail_spec(user_name, email, event_name, event_time, stream_url, dt, creator_nmae,
+                send_invite_mail_spec(email, email, event_name, event_time, stream_url, dt, creator_nmae,
                                       creator_email, role)
 
 

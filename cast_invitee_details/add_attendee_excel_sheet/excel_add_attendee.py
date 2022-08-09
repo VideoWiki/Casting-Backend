@@ -53,10 +53,9 @@ class ParseExcel(APIView):
                             }, status=status.HTTP_400_BAD_REQUEST)
                         if (len(item) > 0):
                             if (item[0] != "Name"):
-                                name = item[0]
                                 email = item[1]
                                 role = item[2]
-                                if name == "" or email == "" or role == "":
+                                if email == "" or role == "":
                                     return Response({
                                         "status": False,
                                         "message": "invalid data"
@@ -65,7 +64,6 @@ class ParseExcel(APIView):
                                     pass
                                 else:
                                     CastInviteeDetails.objects.create(cast=cast_obj,
-                                                                      name=name,
                                                                       email=email.lower(),
                                                                       role=role.lower(),
                                                                       nft_enable=False)

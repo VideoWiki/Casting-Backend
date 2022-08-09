@@ -32,13 +32,13 @@ def form_adder():
         try:
             cast_obj = Meeting.objects.get(event_creator_email=creater_email.lower(), event_name=event_name)
             print(cast_obj)
-            if CastInviteeDetails.objects.filter(email=email.lower(), name=user_name, cast=cast_obj).exists():
+            if CastInviteeDetails.objects.filter(email=email.lower(), cast=cast_obj).exists():
                 pass
             else:
-                CastInviteeDetails.objects.create(cast=cast_obj, name=user_name, email=email.lower(), role='participant')
+                CastInviteeDetails.objects.create(cast=cast_obj, email=email.lower(), role='participant')
         except ObjectDoesNotExist:
             dir = os.path.join(BASE_DIR, "log/error_log.log")
             with open(dir, "a") as f:
                 f.write("\n" + str(datetime.datetime.now()) + " ERROR " + "creator_email: " + f"{creater_email} " + " event_name: " + f"{event_name}"
-                        + " user_name: " + f"{user_name}" + " user_email: " + f"{email}")
+                        + " user_email: " + f"{email}")
             f.close()

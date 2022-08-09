@@ -22,6 +22,9 @@ from bbb_api.nft.nft_details import AudienceAirdrop
 from bbb_api.join_event_api.magic_url import MagicUrl
 from bbb_api.get_template.get import GetTemplate
 from bbb_api.get_template.update import UpdateTemplate
+from bbb_api.send_test_mail.views import SendTestMail
+from bbb_api.get_template.reset import ResetTemplate
+
 
 urlpatterns = [
     path('event/meeting/create/', create_event.as_view()),
@@ -45,7 +48,9 @@ urlpatterns = [
     path('event/add/nft/details/', AudienceAirdrop.as_view()),
     path('event/join/', MagicUrl.as_view()),
     path('event/get/template/', GetTemplate.as_view()),
-    path('event/update/template/', UpdateTemplate.as_view())
+    path('event/update/template/', UpdateTemplate.as_view()),
+    path('event/send/test/mail/', SendTestMail.as_view()),
+    path('event/reset/template/', ResetTemplate.as_view())
 
 
 ]

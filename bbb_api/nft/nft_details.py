@@ -77,7 +77,7 @@ class AudienceAirdrop(APIView):
                     submitted=True
                 )
             except json.JSONDecodeError:
-                Meeting.objects.filter(public_meeting_id=meeting_obj.public_meeting_id).delete()
+                # Meeting.objects.filter(public_meeting_id=meeting_obj.public_meeting_id).delete()
                 return Response({
                     "message": "json error in ABI/Parameter",
                     "status": False
