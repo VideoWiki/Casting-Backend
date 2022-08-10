@@ -31,7 +31,7 @@ class NftDropMail(APIView):
             nft_drop_url = CLIENT_DOMAIN_URL + "/nftdrop/?cast_id={}".format(cast_object.public_meeting_id)
             for i in invitee_obj:
                 if i.nft_mail_sent == False:
-                    nftMailer(to_email=i.email, user_name=i.name, nft_drop_url=nft_drop_url)
+                    nftMailer(to_email=i.email, nft_drop_url=nft_drop_url)
                     i.nft_mail_sent = True
                     i.save()
                 else:
