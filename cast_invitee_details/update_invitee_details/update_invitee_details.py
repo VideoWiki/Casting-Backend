@@ -31,7 +31,6 @@ class UptadeInviteeDetails(APIView):
                 for i in invitee_details:
                     id = i['id']
                     invitee_obj = cast_invite_object.get(id=id)
-                    invitee_obj.name = i['name']
                     invitee_obj.email = i['email']
                     invitee_obj.role = i['type']
                     invitee_obj.nft_enable = i['nft_enable']
