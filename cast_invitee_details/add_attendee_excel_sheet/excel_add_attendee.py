@@ -46,15 +46,15 @@ class ParseExcel(APIView):
                 attendees  = data[i]
                 if len(attendees) > 1:
                     for item in attendees:
-                        if len(item) < 3:
+                        if len(item) < 2:
                             return Response({
                                 "status": False,
                                 "message": "invalid data"
                             }, status=status.HTTP_400_BAD_REQUEST)
                         if (len(item) > 0):
-                            if (item[0] != "Name"):
-                                email = item[1]
-                                role = item[2]
+                            if (item[0] != "Email"):
+                                email = item[0]
+                                role = item[1]
                                 if email == "" or role == "":
                                     return Response({
                                         "status": False,

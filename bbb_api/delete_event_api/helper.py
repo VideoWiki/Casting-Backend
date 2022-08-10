@@ -13,9 +13,8 @@ def delete_mailer(obj):
         if email == None:
             pass
         else:
-            user_name = i.name
             event_cancelled_mail(email= email,
-                                 user_name= user_name,
+                                 user_name= email.split(".")[0],
                                  event_name=event_name,
                                  creator_name=creator_name)
 
