@@ -2,10 +2,9 @@ from bbb_api.models import Meeting
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from library.helper import user_info
 from django.core.exceptions import ObjectDoesNotExist
 from api.global_variable import BASE_URL
-from cast_invitee_details.models import CastInviteeDetails
+from library.helper import user_info
 
 class get_details(APIView):
     def get(self, request):
@@ -28,63 +27,61 @@ class get_details(APIView):
         if curr_user_id == user_id:
             logo_obj = cast_object.logo
             if logo_obj == "https://class.video.wiki/images/VideoWiki_Logo.svg":
-                logo = logo_obj
+                logo = str(logo_obj)
             elif logo_obj == "":
                 logo = None
+            elif str(logo_obj).startswith(BASE_URL):
+                logo = str(logo_obj)
             else:
                 logo = BASE_URL + logo_obj.url
 
-            if cast_object.cover_image != "https://api.cast.video.wiki/static/alt.png":
+            if cast_object.cover_image == "https://api.cast.video.wiki/static/alt.png":
                 c_i = BASE_URL + "/media/" + str(cast_object.cover_image)
+            elif str(cast_object.cover_image).startswith(BASE_URL):
+                c_i = str(cast_object.cover_image)
             else:
                 c_i = str(cast_object.cover_image)
-            inv_list = []
-            cast_invite_object = CastInviteeDetails.objects.filter(cast=cast_object)
-            if cast_invite_object.count() != 0:
-                for i in cast_invite_object:
-                    name = i.name
-                    role = i.role
-                    email = i.email
-                    d = {
-                        "name": name,
-                        "role": role,
-                        "email": email
-                    }
-                    inv_list.append(d)
+            rawtime = cast_object.raw_time
+            if rawtime != None:
+                split_obj = rawtime.split("~")
+                if len(split_obj) == 1:
+                    split_obj = ["", ""]
+            else:
+                split_obj = ["", ""]
             data = {
                 "event_name": cast_object.event_name,
-                "welcome_text": cast_object.welcome,
                 "description": cast_object.description,
-                "short_description": cast_object.short_description,
-                "max_participant": cast_object.max_participant,
-                "record": cast_object.record,
-                "duration": cast_object.duration,
-                "mute_on_start": cast_object.mute_on_start,
-                "attendee_password": cast_object.attendee_password,
-                "moderator_password": cast_object.moderator_password,
-                "banner_text": cast_object.banner_text,
+                "cast_type": cast_object.meeting_type,
+                "collect_attendee_email": cast_object.public_otp,
+                "schedule_time": split_obj[0],
+                "timezone": split_obj[1],
+                "otp_private": cast_object.send_otp,
+
                 "logo": logo,
+                "cover_image": c_i,
+                "primary_color": cast_object.primary_color,
+                "welcome_text": cast_object.welcome,
+                "banner_text": cast_object.banner_text,
                 "guest_policy": cast_object.guest_policy,
+                "moderator_only_text": cast_object.moderator_only_text,
+                "duration": cast_object.duration,
+                "logout_url": cast_object.logout_url,
+
+                "is_streaming": cast_object.is_streaming,
+                "public_stream": cast_object.public_stream,
+                "bbb_stream_url": cast_object.bbb_stream_url_vw,
+
+                "record": cast_object.record,
+                "password_auth": cast_object.password_auth,
                 "end_when_no_moderator": cast_object.end_when_no_moderator,
                 "allow_moderator_to_unmute_user": cast_object.allow_moderator_to_unmute_user,
-                "webcam_only_for_moderator": cast_object.webcam_only_for_moderator,
                 "auto_start_recording": cast_object.auto_start_recording,
-                "allow_start_stop_recording": cast_object.allow_start_stop_recording,
+                "mute_on_start": cast_object.mute_on_start,
+                "webcam_only_for_moderator": cast_object.webcam_only_for_moderator,
                 "disable_cam": cast_object.disable_cam,
                 "disable_mic": cast_object.disable_mic,
-                "logout_url": cast_object.logout_url,
                 "lock_layout": cast_object.lock_layout,
-                "lock_on_join": cast_object.lock_on_join,
-                "hide_users": cast_object.hide_users,
-                "primary_color": cast_object.primary_color,
-                "secondary_color": cast_object.secondary_color,
-                "back_image": cast_object.back_image,
-                "event_tag": cast_object.event_tag,
-                "cover_image": c_i,
-                "is_streaming": cast_object.is_streaming,
-                "bbb_stream_url_youtube": cast_object.bbb_stream_url_youtube,
-                "schedule_time": cast_object.raw_time,
-                "invitee_details": inv_list
+                "viewer_mode": cast_object.viewer_mode
             }
 
             return Response({"status": True, "details": data})
