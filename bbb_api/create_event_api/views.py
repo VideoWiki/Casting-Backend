@@ -184,8 +184,8 @@ class create_event(APIView):
         if start_now == True:
             schedule_time = datetime.datetime.now().astimezone(pytz.utc)
 
-        meeting.raw_time = schedule_time
         if start_now != True:
+            meeting.raw_time = schedule_time + "~" + timezone
             ct = tc(schedule_time,timezone)
             time_now = datetime.datetime.now().astimezone(pytz.utc)
             if time_now > ct:
