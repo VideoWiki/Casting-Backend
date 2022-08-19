@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'custom_background',
     'library',
     'class_details',
-    'timezone_calc'
+    'single_click'
 ]
 
 MIDDLEWARE = [
