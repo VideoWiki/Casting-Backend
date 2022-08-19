@@ -14,13 +14,14 @@ from api.global_variable import CLIENT_DOMAIN_URL
 class create_cast(APIView):
     def post(self, request):
         meeting = Meeting()
-        meeting.event_name = get_random_string()
+        event_name = request.data['event_name']
         name = request.data['creator_name']
-        if name == "":
+        if event_name == "" or name == "":
             return Response({
                 "status": False,
-                "message": "cast name can't be empty"
+                "message": "cast name or creator name can't be empty"
             }, status=HTTP_400_BAD_REQUEST)
+        meeting.event_name = event_name
         meeting.event_creator_name = name
         meeting.private_meeting_id = private_meeting_id_generator()
         meeting.public_meeting_id = public_meeting_id_generator()
@@ -55,6 +56,7 @@ class create_cast(APIView):
         co_host_url = {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(meeting.public_meeting_id, meeting.hashed_moderator_password)}
         return Response({
             "status": True,
+            "cast_name": event_name,
             "public_cast_id": meeting.public_meeting_id,
             "message": "cast_created_successfully",
             "creator_url": event_creator_url,
