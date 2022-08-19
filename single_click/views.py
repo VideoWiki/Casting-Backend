@@ -14,13 +14,14 @@ from api.global_variable import CLIENT_DOMAIN_URL
 class create_cast(APIView):
     def post(self, request):
         meeting = Meeting()
-        name = request.data['event_name']
+        meeting.event_name = get_random_string()
+        name = request.data['creator_name']
         if name == "":
             return Response({
                 "status": False,
                 "message": "cast name can't be empty"
             }, status=HTTP_400_BAD_REQUEST)
-        meeting.event_name = name
+        meeting.event_creator_name = name
         meeting.private_meeting_id = private_meeting_id_generator()
         meeting.public_meeting_id = public_meeting_id_generator()
         meeting.meeting_type = "public"
@@ -45,13 +46,18 @@ class create_cast(APIView):
                 "status": False,
                 "message": "invalid schedule time"}, status=HTTP_400_BAD_REQUEST)
         meeting.schedule_time = ct
+        meeting.primary_color = "#753FB5"
+        meeting.record = True
         meeting.user_id = 0
         meeting.save()
+        event_creator_url = {CLIENT_DOMAIN_URL + "/e/creator/join/{}/?pass={}".format(meeting.public_meeting_id, meeting.hashed_moderator_password)}
         participant_url = {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(meeting.public_meeting_id, meeting.hashed_attendee_password)}
         co_host_url = {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(meeting.public_meeting_id, meeting.hashed_moderator_password)}
         return Response({
             "status": True,
+            "public_cast_id": meeting.public_meeting_id,
             "message": "cast_created_successfully",
+            "creator_url": event_creator_url,
             "participant_url": participant_url,
             "co-host_url": co_host_url
         })
