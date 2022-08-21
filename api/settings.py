@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'custom_background',
     'library',
     'class_details',
-    'single_click'
+    'single_click',
+    'rest_framework_api_key',
+
 ]
 
 MIDDLEWARE = [

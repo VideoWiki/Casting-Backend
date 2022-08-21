@@ -8,11 +8,24 @@ from bbb_api.create_event_api.views import timezone_adder
 from bbb_api.create_event_email_sender import tc
 import pytz, datetime
 from api.global_variable import CLIENT_DOMAIN_URL
+from rest_framework_api_key.permissions import HasAPIKey
+from rest_framework_api_key.models import APIKey
+
 # Create your views here.
 
 
 class create_cast(APIView):
+    permission_classes = [HasAPIKey]
     def post(self, request):
+        # key = request.META["HTTP_AUTHORIZATION"].split()[1]
+        # api_key = APIKey.objects.get_from_key(key)
+        # if str(api_key) == "qwerty":
+        #     pass
+        # else:
+        #     return Response({
+        #         "status": False,
+        #         "message": "invalid API key"
+        #     }, status=HTTP_400_BAD_REQUEST)
         meeting = Meeting()
         event_name = request.data['event_name']
         name = request.data['creator_name']
