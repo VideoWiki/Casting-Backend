@@ -8,11 +8,27 @@ from bbb_api.create_event_api.views import timezone_adder
 from bbb_api.create_event_email_sender import tc
 import pytz, datetime
 from api.global_variable import CLIENT_DOMAIN_URL
+from rest_framework_api_key.permissions import HasAPIKey
+from rest_framework_api_key.models import APIKey
+from .models import KeyDetails
 # Create your views here.
 
 
 class create_cast(APIView):
+    permission_classes = [HasAPIKey]
     def post(self, request):
+        key = request.META["HTTP_AUTHORIZATION"].split()[1]
+        key_obj = APIKey.objects.get_from_key(key)
+        key_detail_obj = KeyDetails.objects.get(key=key_obj)
+        room_limit = key_detail_obj.room_limit
+        room_count = key_detail_obj.room_count
+        if room_count < room_limit:
+            pass
+        else:
+            return Response({
+                "status": False,
+                "message": "room create limit reached"
+            }, status=HTTP_400_BAD_REQUEST)
         meeting = Meeting()
         event_name = request.data['event_name']
         name = request.data['creator_name']
@@ -51,6 +67,8 @@ class create_cast(APIView):
         meeting.record = True
         meeting.user_id = 0
         meeting.save()
+        key_detail_obj.room_count = key_detail_obj.room_count + 1
+        key_detail_obj.save()
         event_creator_url = {CLIENT_DOMAIN_URL + "/e/creator/join/{}/?pass={}".format(meeting.public_meeting_id, meeting.hashed_moderator_password)}
         participant_url = {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(meeting.public_meeting_id, meeting.hashed_attendee_password)}
         co_host_url = {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(meeting.public_meeting_id, meeting.hashed_moderator_password)}

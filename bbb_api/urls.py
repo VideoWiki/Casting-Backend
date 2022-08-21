@@ -24,7 +24,7 @@ from bbb_api.get_template.get import GetTemplate
 from bbb_api.get_template.update import UpdateTemplate
 from bbb_api.send_test_mail.views import SendTestMail
 from bbb_api.get_template.reset import ResetTemplate
-
+from bbb_api.nft.update_details import UpdateAudienceAirdrop
 
 urlpatterns = [
     path('event/meeting/create/', create_event.as_view()),
@@ -50,7 +50,8 @@ urlpatterns = [
     path('event/get/template/', GetTemplate.as_view()),
     path('event/update/template/', UpdateTemplate.as_view()),
     path('event/send/test/mail/', SendTestMail.as_view()),
-    path('event/reset/template/', ResetTemplate.as_view())
+    path('event/reset/template/', ResetTemplate.as_view()),
+    path('event/update/nft/details/', UpdateAudienceAirdrop.as_view())
 
 
 ]
