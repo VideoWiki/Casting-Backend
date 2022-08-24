@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from ..models import Meeting, NftDetails
 import json
 from library.helper import user_info
-
+from api.global_variable import BASE_URL
 
 class UpdateAudienceAirdrop(APIView):
     def patch(self, request):
@@ -19,7 +19,13 @@ class UpdateAudienceAirdrop(APIView):
         nft_image = request.data['nft_image']
 
         if type(nft_image) == str:
-            nft_image = str(nft_image)
+            if nft_image.startswith(f'{BASE_URL}/media/'):
+                nft_image = nft_image[34:]
+            else:
+                return Response({
+                "message": "invalid NFT image url",
+                "status": False
+            }, status=status.HTTP_400_BAD_REQUEST)
         else:
             nft_image = nft_image
         nft_description = request.data['nft_description']
