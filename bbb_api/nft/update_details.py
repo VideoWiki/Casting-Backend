@@ -17,6 +17,10 @@ class UpdateAudienceAirdrop(APIView):
         parameter = request.data['parameter']
         network = request.data['network']
         nft_image = request.data['nft_image']
+        if nft_image.startswith('https://api.cast.video.wiki/'):
+            nft_image = str(nft_image)
+        else:
+            nft_image = nft_image
         nft_description = request.data['nft_description']
         price = request.data['price']
         give_nft = request.data['give_nft']
