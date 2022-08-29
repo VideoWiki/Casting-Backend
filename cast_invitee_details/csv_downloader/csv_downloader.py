@@ -32,7 +32,6 @@ class CsvDownloader(APIView):
             inv_list = []
             if cast_invite_object.count() != 0:
                 for i in cast_invite_object:
-                    name = i.name
                     role = i.role
                     email = i.email
                     otp_verified = i.verified,
@@ -42,7 +41,6 @@ class CsvDownloader(APIView):
                     else:
                         otp_slice = 'False'
                     d = {
-                        "name": name,
                         "role": role,
                         "email": email,
                         "otp_verified": otp_slice
@@ -54,12 +52,12 @@ class CsvDownloader(APIView):
             path = "/media/csv_downloader/csv_files/{}_{}_invitee_list.csv".format(cast_name_without_ws, random_name)
             dir = BASE_DIR + path
             with open(dir, 'w', encoding='UTF8') as f:
-                fieldnames = ['name', 'role', 'email', 'verified']
+                fieldnames = ['role', 'email', 'verified']
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 for i in inv_list:
                     print(i['otp_verified'])
-                    writer.writerow({'name': i['name'], 'role': i['role'], 'email': i['email'], 'verified': i['otp_verified']})
+                    writer.writerow({'role': i['role'], 'email': i['email'], 'verified': i['otp_verified']})
             f.close()
             return Response(
                 {
