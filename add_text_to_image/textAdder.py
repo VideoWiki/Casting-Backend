@@ -18,7 +18,7 @@ def ImageWriter(user_name):
     I1 = ImageDraw.Draw(img)
 
     # Custom font style and font size
-    myFont = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 48)
+    myFont = ImageFont.truetype('/usr/share/fonts/truetype/Ikaros-Regular.ttf', 48)
 
     # Add Text to an image
     I1.text((36, 230), f"{user_name}", font=myFont, fill=(0, 0, 0))
