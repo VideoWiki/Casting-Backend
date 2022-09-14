@@ -21,7 +21,7 @@ def ImageWriter(user_name):
     myFont = ImageFont.truetype('/usr/share/fonts/truetype/Ikaros-Regular.ttf', 48)
 
     # Add Text to an image
-    I1.text((36, 230), f"{user_name}", font=myFont, fill=(0, 0, 0))
+    I1.text((36, 250), f"{user_name}", font=myFont, fill=(0, 0, 0))
 
     # Display edited image
     # img.show()
