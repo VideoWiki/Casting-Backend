@@ -6,7 +6,7 @@ from api.global_variable import BASE_URL
 class scheduled_meetings(APIView):
     def get(self, request):
         meeting = Meeting
-        scheduled_meetings = meeting.objects.filter().all().order_by('-schedule_time')
+        scheduled_meetings = meeting.objects.filter().all().exclude(user_id=0).order_by('-schedule_time')
         a = list(scheduled_meetings)
         l = []
         for i in a:
