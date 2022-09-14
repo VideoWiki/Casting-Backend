@@ -32,5 +32,5 @@ def ImageWriter(user_name):
         os.mkdir("media/nft_images/")
     generated_path = os.path.join("media/nft_images/{}".format(img_name)+ ".jpeg")
     img.save(generated_path)
-    return BASE_DIR + "/" + generated_path
+    return BASE_URL + "/" + generated_path
 
