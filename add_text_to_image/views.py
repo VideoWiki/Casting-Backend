@@ -5,7 +5,8 @@ from api.global_variable import BASE_URL
 from .textAdder import ImageWriter
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from django.http import FileResponse
-
+import base64
+from django.http import HttpResponse
 
 class textAdderView(APIView):
     def get(self, request):
@@ -19,5 +20,7 @@ class textAdderView(APIView):
         # return Response({"status": True,
         #                  "image_url": image_url
         #                  })
-        response = FileResponse(open(image_url, 'rb'))
-        return response
+        # response = FileResponse(open(image_url, 'rb'))
+        data = base64.b64encode(image_url.encode())
+        print(data, type(data))
+        return HttpResponse(data, content_type="image/png")
