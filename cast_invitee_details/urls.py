@@ -19,6 +19,9 @@ from .public_wallet.verify_wallet import PublicWalletVerify
 from .public_wallet.mint_nft_update import PublicMintUpdate
 from .public_wallet.send_hashed_data import SendHashedIdPublic
 from .add_attendee_excel_sheet.excel_add_attendee import ParseExcel
+from .nft_drop_mail.gala_cerificate.VCDropMail import NftCertiDropMail
+
+
 urlpatterns = [
     path('event/meeting/add/invitees/', add_invitees.as_view()),
     path('event/send/otp/', SendOtp.as_view()),
@@ -31,6 +34,7 @@ urlpatterns = [
     path('event/invitee/details/update/', UptadeInviteeDetails.as_view()),
     path('event/send/wallet/adress/', FetchWalletAdress.as_view()),
     path('event/send/nft/drop/mail/', NftDropMail.as_view()),
+    path('event/send/nft/certi/drop/mail/', NftCertiDropMail.as_view()),
     path('event/public/joinee/add/', PublicAddJoinee.as_view()),
     path('event/verify/public/address/', VerifyWalletAddress.as_view()),
     path('event/update/mint/data/', UpdateMintData.as_view()),
