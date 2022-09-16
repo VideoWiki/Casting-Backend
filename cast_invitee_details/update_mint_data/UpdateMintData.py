@@ -12,6 +12,7 @@ class UpdateMintData(APIView):
         public_address = request.data['public_address']
         transaction_id = request.data['mint_id']
         mint_status = request.data['status']
+        nft_type = request.data["nft_type"]
 
         if public_address == "" or cast_id == "":
             return Response({
@@ -33,37 +34,71 @@ class UpdateMintData(APIView):
                 "status": False,
                 "message": "invalid public adrdess"
             }, status=status.HTTP_400_BAD_REQUEST)
-        if mint_status == "successful":
-            if obj.mint_count == 0:
-                if transaction_id == "":
+        if nft_type == "vc":
+            print("vc")
+            if mint_status == "successful":
+                if obj.vc_mint_count == 0:
+                    if transaction_id == "":
+                        return Response({
+                            "status": False,
+                            "message": "no transaction id"
+                        }, status=status.HTTP_400_BAD_REQUEST)
+                    obj.vc_transaction_id = transaction_id
+                    obj.vc_mint = mint_status
+                    obj.vc_mint_count = 1
+                    obj.save()
+                else:
                     return Response({
                         "status": False,
-                        "message": "no transaction id"
-                    }, status=status.HTTP_400_BAD_REQUEST)
-                obj.transaction_id = transaction_id
-                obj.mint = mint_status
-                obj.mint_count = 1
-                obj.save()
+                        "message": "already minted"
+                    }, status= status.HTTP_400_BAD_REQUEST)
+            elif mint_status == "started":
+                if obj.vc_mint_count == 0:
+                    obj.vc_transaction_id = transaction_id
+                    obj.vc_mint = mint_status
+                    obj.vc_mint_count = 0
+                    obj.save()
             else:
                 return Response({
                     "status": False,
                     "message": "already minted"
-                }, status= status.HTTP_400_BAD_REQUEST)
-        elif mint_status == "started":
-            if obj.mint_count == 0:
-                obj.transaction_id = transaction_id
-                obj.mint = mint_status
-                obj.mint_count = 0
-                obj.save()
-        else:
+                }, status=status.HTTP_400_BAD_REQUEST)
             return Response({
-                "status": False,
-                "message": "already minted"
-            }, status=status.HTTP_400_BAD_REQUEST)
-        return Response({
-            "status": True,
-            "message": "successful"
-        })
+                "status": True,
+                "message": "successful"
+            })
+        else:
+            if mint_status == "successful":
+                if obj.mint_count == 0:
+                    if transaction_id == "":
+                        return Response({
+                            "status": False,
+                            "message": "no transaction id"
+                        }, status=status.HTTP_400_BAD_REQUEST)
+                    obj.transaction_id = transaction_id
+                    obj.mint = mint_status
+                    obj.mint_count = 1
+                    obj.save()
+                else:
+                    return Response({
+                        "status": False,
+                        "message": "already minted"
+                    }, status= status.HTTP_400_BAD_REQUEST)
+            elif mint_status == "started":
+                if obj.mint_count == 0:
+                    obj.transaction_id = transaction_id
+                    obj.mint = mint_status
+                    obj.mint_count = 0
+                    obj.save()
+            else:
+                return Response({
+                    "status": False,
+                    "message": "already minted"
+                }, status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "status": True,
+                "message": "successful"
+            })
 
 
 

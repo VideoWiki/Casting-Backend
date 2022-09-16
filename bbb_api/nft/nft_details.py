@@ -20,6 +20,7 @@ class AudienceAirdrop(APIView):
         nft_description = request.data['nft_description']
         price = request.data['price']
         give_nft = request.data['give_nft']
+        give_vc = request.data['give_vc']
         data_token = request.data['data_token']
         try:
             meeting_obj = Meeting.objects.get(public_meeting_id=public_meeting_id)
@@ -57,7 +58,11 @@ class AudienceAirdrop(APIView):
                 meeting_obj.give_nft = True
             else:
                 meeting_obj.give_nft = False
-            meeting_obj.save(update_fields=['audience_airdrop','public_nft_flow','give_nft'])
+            if give_vc == 'True':
+                meeting_obj.give_vc = True
+            else:
+                meeting_obj.give_vc = False
+            meeting_obj.save(update_fields=['audience_airdrop','public_nft_flow','give_nft','give_vc'])
             try:
                 parser_o = json.loads(aib)
                 if parameter != "":

@@ -34,6 +34,8 @@ class UptadeInviteeDetails(APIView):
                     invitee_obj.email = i['email']
                     invitee_obj.role = i['type']
                     invitee_obj.nft_enable = i['nft_enable']
+                    invitee_obj.nft_type = i['nft_type']
+                    invitee_obj.vc_enable = i['vc_enable']
                     invitee_obj.save()
             else:
                 return Response({

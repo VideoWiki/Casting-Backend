@@ -32,7 +32,7 @@ class NftCertiDropMail(APIView):
             for i in invitee_obj:
                 if i.nft_mail_sent == False:
                     nftCertiMailer(to_email=i.email, nft_drop_url=nft_drop_url)
-                    i.nft_mail_sent = True
+                    i.vc_nft_mail_sent = True
                     i.save()
                 else:
                     pass

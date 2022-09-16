@@ -10,6 +10,7 @@ class SendHashedId(APIView):
     def get(self, request):
         public_address = request.GET.get("public_address")
         public_cast_id = request.GET.get("cast_id")
+        nft_type = request.GET.get("nft_type")
         if public_address == "" or public_cast_id == "":
             return Response({
                 "message": "invalid data"
@@ -31,14 +32,25 @@ class SendHashedId(APIView):
                 "status": False,
                 "message": "invalid public address"
             }, status=status.HTTP_400_BAD_REQUEST)
-        if hashed_metamask_obj.mint_count == 1:
-            statu_s = True
-            trans_id = hashed_metamask_obj.transaction_id
-            status_code = status.HTTP_200_OK
+        if nft_type == "vc":
+            print("vc")
+            if hashed_metamask_obj.vc_mint_count == 1:
+                statu_s = True
+                trans_id = hashed_metamask_obj.vc_transaction_id
+                status_code = status.HTTP_200_OK
+            else:
+                statu_s = False
+                trans_id = "not available"
+                status_code = status.HTTP_400_BAD_REQUEST
         else:
-            statu_s = False
-            trans_id = "not available"
-            status_code = status.HTTP_400_BAD_REQUEST
+            if hashed_metamask_obj.mint_count == 1:
+                statu_s = True
+                trans_id = hashed_metamask_obj.transaction_id
+                status_code = status.HTTP_200_OK
+            else:
+                statu_s = False
+                trans_id = "not available"
+                status_code = status.HTTP_400_BAD_REQUEST
 
         return Response({
             "status": statu_s,

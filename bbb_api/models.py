@@ -78,6 +78,7 @@ class Meeting(models.Model):
     bbb_stream_url_vw = models.TextField(blank=True, null=True)
     raw_time = models.CharField(max_length=100, blank=True, null=True)
     give_nft = models.BooleanField(default=False, null=True, blank=True)
+    give_vc = models.BooleanField(default=False, null=True, blank=True)
     send_otp = models.BooleanField(default=False, null=True, blank=True)
     audience_airdrop = models.BooleanField(default=False, blank=True, null=True)
     password_auth = models.BooleanField(default=False, blank=True, null=True)
