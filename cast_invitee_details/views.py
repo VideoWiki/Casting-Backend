@@ -102,6 +102,7 @@ class fetch_details(APIView):
                         if wallet_address[0] == "None":
                             res = ""
                     nft_enable = i.nft_enable
+                    vc_enable = i.vc_enable
                     mint_status = i.mint
                     joined = i.joined
                     d = {
@@ -111,6 +112,7 @@ class fetch_details(APIView):
                         "otp_verified": otp_verified,
                         "wallet_address": res,
                         "nft_enable": nft_enable,
+                        "vc_enable": vc_enable,
                         "mint_status": mint_status,
                         "joined": joined
                     }
