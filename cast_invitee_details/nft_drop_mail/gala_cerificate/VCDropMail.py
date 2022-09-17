@@ -27,7 +27,7 @@ class NftCertiDropMail(APIView):
         except:
             pass
         if curr_user_id == user_id:
-            invitee_obj = CastInviteeDetails.objects.filter(cast=cast_object, nft_enable=True).all()
+            invitee_obj = CastInviteeDetails.objects.filter(cast=cast_object, vc_enable=True).all()
             nft_drop_url = CLIENT_DOMAIN_URL + "/VC/{}".format(cast_object.public_meeting_id)
             for i in invitee_obj:
                 if i.nft_mail_sent == False:
