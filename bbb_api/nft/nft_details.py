@@ -69,12 +69,28 @@ class AudienceAirdrop(APIView):
                     parameter_parser = json.loads(parameter)
                 else:
                     parameter_parser = ""
+                try:
+                    vc_o = NftDetails.objects.get(cast=meeting_obj, nft_type="vc")
+                    if vc_o.vc_submitted == True:
+                        vc_submitted = True
+                except ObjectDoesNotExist:
+                    vc_submitted = False
+                try:
+                    nft_o = NftDetails.objects.get(cast=meeting_obj, nft_type="simple")
+                    if nft_o.submitted == True:
+                        nft_submitted = True
+                except ObjectDoesNotExist:
+                    nft_submitted = False
                 if meeting_obj.public_nft_flow == True:
                     nft_t_ype = "simple"
+                    nft_submitted = True
                 if meeting_obj.give_nft == True:
                     nft_t_ype = "simple"
+                    nft_submitted = True
                 elif meeting_obj.give_vc == True:
                     nft_t_ype = "vc"
+                    vc_submitted = True
+
                 NftDetails.objects.create(
                     cast=meeting_obj,
                     nft_type=nft_t_ype,
@@ -86,7 +102,8 @@ class AudienceAirdrop(APIView):
                     image=nft_image,
                     description=nft_description,
                     price = price,
-                    submitted=True
+                    submitted=nft_submitted,
+                    vc_submitted=vc_submitted
                 )
             except json.JSONDecodeError:
                 # Meeting.objects.filter(public_meeting_id=meeting_obj.public_meeting_id).delete()

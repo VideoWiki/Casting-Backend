@@ -73,9 +73,13 @@ class meeting_info(APIView):
             # else:
             #     stream_status = False
             try:
-                nft_object_submitted = NftDetails.objects.get(cast=event_object).submitted
+                nft_object_submitted = NftDetails.objects.get(cast=event_object, nft_type="simple").submitted
             except ObjectDoesNotExist:
                 nft_object_submitted = False
+            try:
+                vc_object_submitted = NftDetails.objects.get(cast=event_object, nft_type="vc").vc_submitted
+            except ObjectDoesNotExist:
+                vc_object_submitted = False
             return Response({'status': True, 'meeting_info': {"event_name": event_name,
                                                               "event_creator_name": event_creator_name,
                                                               "public_meeting_id": public_meeting_id,
@@ -99,6 +103,7 @@ class meeting_info(APIView):
                                                               "viewer_mode": viewer_mode,
                                                               "stream_status": False,
                                                               "nft_details_submitted": nft_object_submitted,
+                                                              "vc_details_submitted": vc_object_submitted,
                                                               "event_creator_email": email
                                                               }
                              }
