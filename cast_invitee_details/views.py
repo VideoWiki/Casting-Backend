@@ -104,6 +104,7 @@ class fetch_details(APIView):
                     nft_enable = i.nft_enable
                     vc_enable = i.vc_enable
                     mint_status = i.mint
+                    vc_mint_status = i.vc_mint
                     joined = i.joined
                     d = {
                         "id": id,
@@ -114,6 +115,7 @@ class fetch_details(APIView):
                         "nft_enable": nft_enable,
                         "vc_enable": vc_enable,
                         "mint_status": mint_status,
+                        "vc_mint_status": vc_mint_status,
                         "joined": joined
                     }
                     inv_list.append(d)
