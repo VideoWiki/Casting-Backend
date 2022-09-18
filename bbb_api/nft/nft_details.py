@@ -69,6 +69,8 @@ class AudienceAirdrop(APIView):
                     parameter_parser = json.loads(parameter)
                 else:
                     parameter_parser = ""
+                if meeting_obj.public_nft_flow == True:
+                    nft_t_ype = "simple"
                 if meeting_obj.give_nft == True:
                     nft_t_ype = "simple"
                 elif meeting_obj.give_vc == True:
