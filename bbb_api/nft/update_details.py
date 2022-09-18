@@ -17,20 +17,26 @@ class UpdateAudienceAirdrop(APIView):
         parameter = request.data['parameter']
         network = request.data['network']
         nft_image = request.data['nft_image']
-
-        if type(nft_image) == str:
-            if nft_image.startswith(f'{BASE_URL}/media/'):
-                nft_image = nft_image[34:]
+        nft_type = request.data["nft_type"]
+        if nft_type != "vc":
+            if type(nft_image) == str:
+                if nft_image.startswith(f'{BASE_URL}/media/'):
+                    nft_image = nft_image[34:]
+                else:
+                    return Response({
+                    "message": "invalid NFT image url",
+                    "status": False
+                }, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response({
-                "message": "invalid NFT image url",
-                "status": False
-            }, status=status.HTTP_400_BAD_REQUEST)
+                nft_image = nft_image
+        if nft_type == "vc":
+            nft_type = "vc"
         else:
-            nft_image = nft_image
+            nft_type = "simple"
         nft_description = request.data['nft_description']
         price = request.data['price']
         give_nft = request.data['give_nft']
+        give_vc = request.data["give_vc"]
         try:
             meeting_obj = Meeting.objects.get(public_meeting_id=public_meeting_id)
         except ObjectDoesNotExist:
@@ -47,7 +53,7 @@ class UpdateAudienceAirdrop(APIView):
             pass
         if curr_user_id == meeting_user_id:
             try:
-                nft_obj = NftDetails.objects.get(cast=meeting_obj)
+                nft_obj = NftDetails.objects.get(cast=meeting_obj, nft_type=nft_type)
             except ObjectDoesNotExist:
                 return Response({
                     "message": "nft object does not exist",
@@ -66,6 +72,10 @@ class UpdateAudienceAirdrop(APIView):
                 meeting_obj.give_nft = True
             else:
                 meeting_obj.give_nft = False
+            if give_vc == 'True':
+                meeting_obj.give_vc = True
+            else:
+                meeting_obj.give_vc = False
             meeting_obj.save(update_fields=['audience_airdrop','public_nft_flow','give_nft'])
             try:
                 parser_o = json.loads(aib)

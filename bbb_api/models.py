@@ -300,6 +300,9 @@ def path_getter(path):
 
 class NftDetails(models.Model):
     cast = models.ForeignKey(Meeting, on_delete=models.CASCADE, null=True, blank=True)
+    nft_types = (('simple', 'Simple'),
+                 ('vc', 'VC'))
+    nft_type = models.CharField(max_length=20, choices=nft_types, blank=True, null=True)
     mint_function_name = models.TextField(null=True, blank=True)
     contract_address = models.TextField(null=True, blank=True)
     parameter = models.JSONField(null=True, blank=True)

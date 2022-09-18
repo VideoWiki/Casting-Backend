@@ -69,8 +69,13 @@ class AudienceAirdrop(APIView):
                     parameter_parser = json.loads(parameter)
                 else:
                     parameter_parser = ""
+                if meeting_obj.give_nft == True:
+                    nft_t_ype = "simple"
+                elif meeting_obj.give_vc == True:
+                    nft_t_ype = "vc"
                 NftDetails.objects.create(
                     cast=meeting_obj,
+                    nft_type=nft_t_ype,
                     mint_function_name=mint_func_name,
                     contract_address=contract_address,
                     aib=parser_o,
