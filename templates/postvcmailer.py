@@ -11,7 +11,7 @@ def post_vc_mailer(email, nft_url, trans_id):
         Dear {},
     <br>
     <br>
-    Congratulations for successfully claiming your <b>Certificate of Recognisation by GALA Academy</b>.
+    Congratulations for successfully claiming your <b>Certificate of Recognition by GALA Academy</b>.
     <br>
     Here is the url for your claimed Certificate: {}
     <br>

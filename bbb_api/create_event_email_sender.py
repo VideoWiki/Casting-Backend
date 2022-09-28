@@ -106,14 +106,17 @@ def attendee_mail(email, event_name, event_time, event_url, event_password,
     elif cast_type == "private":
         if send_otp == True:
             if role == "co-host":
+                event_url = event_url + "?email={}".format(email)
                 send_invite_mail_otp(user_name=email, event_name=event_name, event_time=event_time, role=role,
                                      event_url=event_url, to_email=email, dt=dt, creator_email=creator_email,
                                      creator_nmae=creator_nmae)
             elif role == "participant":
+                event_url = event_url + "?email={}".format(email)
                 send_invite_mail_otp(user_name=email, event_name=event_name, event_time=event_time, role=role,
                                      event_url=event_url, to_email=email, dt=dt, creator_email=creator_email,
                                      creator_nmae=creator_nmae)
             elif role == "viewer":
+                event_url = event_url + "?email={}".format(email)
                 send_invite_mail_otp(user_name=email, event_name=event_name, event_time=event_time, role=role,
                                      event_url=event_url, to_email=email, dt=dt, creator_email=creator_email,
                                      creator_nmae=creator_nmae)

@@ -11,7 +11,7 @@ def vc_mailer(user_name, nft_drop_url):
         Dear {},
     <br>
     <br>
-    Please claim your awesome <b>Certificate of Recognisation by GALA Academy</b> by visiting this url: {}.
+    Please claim your awesome <b>Certificate of Recognition by GALA Academy</b> by visiting this url: {}.
     <br>
     <br>
     All the best,
