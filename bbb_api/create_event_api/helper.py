@@ -4,11 +4,14 @@ import mandrill
 from api.global_variable import MANDRILL_API_KEY, CLIENT_DOMAIN_URL
 from templates.reminder1 import reminder_mod1, \
     reminder_participant, reminder_spectator, \
-    reminder_viewer, reminder_viewer_otp, reminder_parti_wo_pass
-from templates.create import email_create, email_create_otp, email_create_view, email_create_view_str
+    reminder_viewer, reminder_viewer_otp, reminder_parti_wo_pass, \
+    reminder_pri_unique
+from templates.create import email_create, email_create_otp, \
+    email_create_view, email_create_view_str
 from templates.create2 import email_create2, email_create2_otp
 from templates.create3 import email_create3
-from templates.create4 import email_create4, email_create5, email_create6
+from templates.create4 import email_create4, email_create5,\
+    email_create6
 from base64 import b64encode
 from icalendar import Calendar, Event
 from datetime import datetime, timedelta
@@ -60,8 +63,10 @@ def email_sender(public_meeting_id):
                     str_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
                     send_remind_mail_spec(email, email, cast_obj.event_name, schedule_time, str_url)
                 else:
+                    print("123")
                     send_remind_mail_part_view(email, email, role, cast_obj.event_name, schedule_time, meeting_url)
             elif send_otp != True:
+                print("456")
                 if role == "spectator":
                     str_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
                     send_remind_mail_spec(email, email, cast_obj.event_name, schedule_time, str_url)
@@ -126,6 +131,14 @@ def send_remind_mail2( to_email, user_name, role, event_name, event_time, event_
 
 
 def send_remind_mail_part_view( to_email, user_name, role, event_name, event_time, event_url):
+    event_url = event_url + f"?email={to_email}"
+    template_func = reminder_parti_wo_pass(user_name, role, event_name, event_time, event_url)
+    try:
+        mandrill_mailer_func(template_func=template_func, to_email=to_email, user_name=user_name)
+    except mandrill.Error as e:
+        print("An exception occurred: {}".format(e))
+
+def send_remind_mail_pri_unique_mail( to_email, user_name, role, event_name, event_time, event_url):
     template_func = reminder_parti_wo_pass(user_name, role, event_name, event_time, event_url)
     try:
         mandrill_mailer_func(template_func=template_func, to_email=to_email, user_name=user_name)
