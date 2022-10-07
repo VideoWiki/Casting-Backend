@@ -31,9 +31,11 @@ class get_details(APIView):
             elif logo_obj == "":
                 logo = None
             elif str(logo_obj).startswith(BASE_URL):
-                logo = str(logo_obj)
+                # logo = str(logo_obj)
+                logo = str(cast_object.logo)
             else:
-                logo = BASE_URL + logo_obj.url
+                # logo = BASE_URL + logo_obj.url
+                logo = str(cast_object.logo)
 
             if cast_object.cover_image == "https://api.cast.video.wiki/static/alt.png":
                 c_i = BASE_URL + "/media/" + str(cast_object.cover_image)
