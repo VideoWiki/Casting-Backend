@@ -20,7 +20,7 @@ class get_rooms(APIView):
     def get(self, request):
         username = request.GET.get("username")
         try:
-            user_objs = Meeting.objects.filter(event_creator_name=username)
+            user_objs = Meeting.objects.filter(event_creator_name=username, user_id=0)
         except ObjectDoesNotExist:
             return Response({
                 "message": "no cast found for this user",
