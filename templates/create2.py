@@ -50,8 +50,6 @@ def email_create2_otp(user_name, event_name, event_time, meeting_url, pre_reg_ur
     <br>
     Your cast <b>{}</b> has been created for <b>{}</b>.
     <br>
-    Here is the link for cast: {}
-    <br>
     Please visit {}/mycasts to initiate the cast.
     <br>
     Here is the link for <b>Pre Registration form: {}<b>

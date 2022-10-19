@@ -53,8 +53,6 @@ def email_create_otp(user_name, event_name, event_time, event_url, meeting_url, 
     <br>
     Here is the link for stream: {} 
     <br>
-    Here is the link for cast: {}
-    <br>
     Please visit {}/mycasts to initiate the cast.
     <br>
     Here is the link for <b>Pre Registration form: {}<b>
