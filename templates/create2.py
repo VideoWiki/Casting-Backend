@@ -62,5 +62,5 @@ def email_create2_otp(user_name, event_name, event_time, meeting_url, pre_reg_ur
     </html>
 
 
-    """.format(user_name, event_name, event_time, meeting_url, CLIENT_DOMAIN_URL, pre_reg_url)
+    """.format(user_name, event_name, event_time, CLIENT_DOMAIN_URL, pre_reg_url)
     return template_part1
