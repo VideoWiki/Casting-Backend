@@ -39,6 +39,11 @@ class MagicUrlCreator(APIView):
         current = datetime.utcnow()
         status = time_in_range(subtracted_time, added_time, current)
         name = cast_obj.event_creator_name
+        if "@" in name:
+            split_name = name.split("@")
+            name = split_name[0]
+        else:
+            pass
         if status == True:
             event_scheduler(cast_obj.private_meeting_id)
             result = Meeting.join_url(cast_obj.private_meeting_id,
