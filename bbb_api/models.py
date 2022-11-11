@@ -201,7 +201,7 @@ class Meeting(models.Model):
             ('lockSettingsHideUserList', self.hide_users),
             ('meta_bbb-origin', 'Greenlight'),
             ('meta_bbb-origin-version', "v2"),
-            ('meta_bbb-origin-server-name', 'class.video.wiki'),
+            ('meta_bbb-origin-server-name', 'room.video.wiki'),
             ('meta_primary-color', self.primary_color),
             ('meta_secondary-color', self.secondary_color),
             ('meta_back-image', self.back_image),
@@ -291,7 +291,7 @@ class TemporaryFiles(models.Model):
 
 
 def path_getter(path):
-    if path == "https://class.video.wiki/images/VideoWiki_Logo.svg":
+    if path == "https://videowikistorage.blob.core.windows.net/room-db-backup/vwlogo.png":
         url = path
     else:
         url = BASE_URL + path.url
