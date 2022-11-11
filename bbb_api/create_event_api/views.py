@@ -95,7 +95,7 @@ class create_event(APIView):
         meeting.banner_text = banner_text
         logo = request.data['logo']
         if logo == "":
-            logo = "https://class.video.wiki/images/VideoWiki_Logo.svg"
+            logo = "https://videowikistorage.blob.core.windows.net/room-db-backup/vwlogo.png"
             meeting.logo = logo
         else:
             meeting.logo = logo
