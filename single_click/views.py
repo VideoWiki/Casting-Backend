@@ -46,7 +46,7 @@ class create_cast(APIView):
         meeting.hashed_attendee_password = get_random_string()
         meeting.moderator_password = generate_random_key()
         meeting.hashed_moderator_password = get_random_string()
-        logo = "https://class.video.wiki/images/VideoWiki_Logo.svg"
+        logo = "https://videowikistorage.blob.core.windows.net/room-db-backup/vwlogo.png"
         meeting.logo = logo
         schedule_time = request.data['schedule_time']
         timezone = request.data['timezone']
