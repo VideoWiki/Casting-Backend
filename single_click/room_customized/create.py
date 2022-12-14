@@ -53,8 +53,12 @@ class create_custom_room(APIView):
             logo = logo
         meeting.logo = logo
         meeting.back_image = request.data['back_image']
-        meeting.mute_on_start = request.data['mute_user_when_they_join']
-        meeting.primary_color = request.data["primary_color"]
+        meeting.mute_on_start = request.data['mute_on_start']
+        primary_color = request.data["primary_color"]
+        if primary_color == "":
+            primary_color = "#753FB5"
+        meeting.primary_color = primary_color
+        meeting.moderator_only_text = "You are a Moderator, you can control who presents and participates in the live cast"
         schedule_time = request.data['schedule_time']
         timezone = request.data['timezone']
         if timezone == "":
@@ -70,7 +74,6 @@ class create_custom_room(APIView):
                 "status": False,
                 "message": "invalid schedule time"}, status=HTTP_400_BAD_REQUEST)
         meeting.schedule_time = ct
-        meeting.primary_color = "#753FB5"
         meeting.record = True
         meeting.user_id = 0
         meeting.save()

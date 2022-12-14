@@ -64,6 +64,7 @@ class create_cast(APIView):
                 "message": "invalid schedule time"}, status=HTTP_400_BAD_REQUEST)
         meeting.schedule_time = ct
         meeting.primary_color = "#753FB5"
+        meeting.moderator_only_text = "You are a Moderator, you can control who presents and participates in the live cast"
         meeting.record = True
         meeting.user_id = 0
         meeting.save()
