@@ -10,7 +10,7 @@ import pytz, datetime
 from api.global_variable import CLIENT_DOMAIN_URL
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework_api_key.models import APIKey
-from .models import KeyDetails
+from ..models import KeyDetails
 # Create your views here.
 
 
