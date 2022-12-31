@@ -52,3 +52,7 @@ class PublicWallet(models.Model):
     transaction_id = models.CharField(max_length=300, blank=True, null=True)
     class Meta:
         unique_together = ('cast', 'metamask_address')
+
+class MerkelTreeDetail(models.Model):
+    cast = models.ForeignKey(Meeting, on_delete=models.CASCADE, null=True, blank=True)
+    data = models.CharField(max_length=10000, blank=True, null=True)
