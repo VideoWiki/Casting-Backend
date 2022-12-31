@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..models import MerkelTreeDetail
 from django.core.exceptions import ObjectDoesNotExist
-
+import json
+import ast
 
 class PostMerkelTreeDetails(APIView):
     def post(self, request):
@@ -22,8 +23,15 @@ class PostMerkelTreeDetails(APIView):
             return Response({
                 "message": "invalid cast_id"
             }, status=status.HTTP_400_BAD_REQUEST)
-
-        MerkelTreeDetail.objects.create(cast=meeting_obj, data=merkel_data)
+        if not MerkelTreeDetail.objects.filter(cast=meeting_obj).exists():
+            MerkelTreeDetail.objects.create(cast=meeting_obj, data=merkel_data)
+        else:
+            merkel_obj = MerkelTreeDetail.objects.get(cast=meeting_obj)
+            existing_data = merkel_obj.data
+            converted_dict = ast.literal_eval(existing_data)
+            converted_dict.update(merkel_data)
+            merkel_obj.data = converted_dict
+            merkel_obj.save()
         return Response({
             "status": True,
             "message": "successful"
