@@ -10,7 +10,7 @@ import pytz, datetime
 from api.global_variable import CLIENT_DOMAIN_URL
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework_api_key.models import APIKey
-from ..models import KeyDetails
+from ..models import KeyDetails, CustomRoomInfo
 # Create your views here.
 
 
@@ -82,6 +82,8 @@ class create_custom_room(APIView):
         event_creator_url = {CLIENT_DOMAIN_URL + "/e/creator/join/{}/?pass={}".format(meeting.public_meeting_id, meeting.hashed_moderator_password)}
         participant_url = {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(meeting.public_meeting_id, meeting.hashed_attendee_password)}
         co_host_url = {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(meeting.public_meeting_id, meeting.hashed_moderator_password)}
+        obj = Meeting.objects.get(public_meeting_id=meeting.public_meeting_id)
+        CustomRoomInfo.objects.create(cast=obj, room_type="custom", username=name)
         return Response({
             "status": True,
             "cast_name": event_name,
