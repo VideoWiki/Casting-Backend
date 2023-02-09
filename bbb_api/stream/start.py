@@ -47,6 +47,7 @@ class start_stream(APIView):
                     files = []
                     headers = {}
                     response2 = requests.request("POST", url, headers=headers, data=payload, files=files)
+                print(new_stream_str, "lstr")
                 stream_dict = {
                     "TZ": "Europe/Vienna",
                     "BBB_RESOLUTION": str(meet_obj.bbb_resolution),
