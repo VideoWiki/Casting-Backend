@@ -61,17 +61,17 @@ class meeting_info(APIView):
                 email = event_object.event_creator_email
             except:
                 email = ""
-            # url_status = "{}status".format(STREAM_URL)
-            # payload = {'meeting_id': str(event_object.private_meeting_id)}
-            # files = []
-            # headers = {}
-            # response1 = requests.request("POST", url_status, headers=headers, data=payload, files=files)
-            # sp = response1.text.split(":")
-            # sp2 = sp[1].split(",")
-            # if sp2[0] == 'true':
-            #     stream_status = True
-            # else:
-            #     stream_status = False
+            url_status = "{}status".format(STREAM_URL)
+            payload = {'meeting_id': str(event_object.private_meeting_id)}
+            files = []
+            headers = {}
+            response1 = requests.request("POST", url_status, headers=headers, data=payload, files=files)
+            sp = response1.text.split(":")
+            sp2 = sp[1].split(",")
+            if sp2[0] == 'true':
+                stream_status = True
+            else:
+                stream_status = False
             try:
                 nft_object_submitted = NftDetails.objects.get(cast=event_object, nft_type="simple").submitted
             except ObjectDoesNotExist:
@@ -101,7 +101,7 @@ class meeting_info(APIView):
                                                               "expired": expired,
                                                               "running": is_runnig,
                                                               "viewer_mode": viewer_mode,
-                                                              "stream_status": False,
+                                                              "stream_status": stream_status,
                                                               "nft_details_submitted": nft_object_submitted,
                                                               "vc_details_submitted": vc_object_submitted,
                                                               "event_creator_email": email
