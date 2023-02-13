@@ -94,7 +94,7 @@ def attendee_mail(email, event_name, event_time, event_url, event_password,
                 print("An exception occurred: {}".format(e))
         if cast_obj.is_streaming == True:
             temp_obj = MailTemplateDetails.objects.get(cast=cast_obj, role=role)
-            calb = icf_file_generator(start_time=event_time, event_name=event_name, to_email=email, user_name=email,
+            calb = icf_file_generator(start_time=dt, event_name=event_name, to_email=email, user_name=email,
                                       meeting_url=stream_url)
             try:
                 madril_mailer(template_func=temp_obj.body, subject=temp_obj.subject, calb=calb, to_email=email,
