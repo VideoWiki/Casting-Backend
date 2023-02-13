@@ -47,12 +47,13 @@ class start_stream(APIView):
                     files = []
                     headers = {}
                     response2 = requests.request("POST", url, headers=headers, data=payload, files=files)
+                print(new_stream_str, "lstr")
                 stream_dict = {
                     "TZ": "Europe/Vienna",
                     "BBB_RESOLUTION": str(meet_obj.bbb_resolution),
                     "BBB_START_MEETING": "false",
                     "BBB_MEETING_ID": str(meet_obj.private_meeting_id),
-                    "BBB_STREAM_URL": stream_urls_list,
+                    "BBB_STREAM_URL": new_stream_str,
                     "BBB_SHOW_CHAT": "false",
                     "BBB_USER_NAME": "Live",
                     "BBB_MODERATOR_PASSWORD": str(meet_obj.moderator_password),
