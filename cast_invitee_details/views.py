@@ -159,17 +159,19 @@ class delete_invitee(APIView):
         if curr_user_id == user_id:
             cast_invite_object = CastInviteeDetails.objects.filter(cast=cast_object)
             if cast_invite_object.count() != 0:
-                
-                for i in cast_invite_object:
-                
-                    if i.email in email:
-            
-                        i.delete()
+                for i in email:
+                    if not (i is None):
+
+                        
+                        CastInviteeDetails.objects.get(cast=cast_object, email=i).delete()
                 return Response({
                             "status": True,
                             "message": "invitee deleted successfully"
                         })
-                   
+
+
+                        
+
 
             else:
                 return Response({
