@@ -66,7 +66,7 @@ def attendee_mail(email, event_name, event_time, event_url, event_password,
         cast_obj = Meeting.objects.get(public_meeting_id=cast_id)
         if role == 'co-host':
             temp_obj = MailTemplateDetails.objects.get(cast=cast_obj, role=role)
-            meet_url = CLIENT_DOMAIN_URL + "/{}/?pass={}".format(cast_id, cast_obj.hashed_moderator_password)
+            meet_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_id, cast_obj.hashed_moderator_password)
             calb = icf_file_generator(start_time=dt, event_name=event_name, to_email=email, user_name=email, meeting_url=meet_url)
             try:
                 madril_mailer(template_func=temp_obj.body, subject= temp_obj.subject, calb=calb, to_email=email, user_name=email)
@@ -74,7 +74,7 @@ def attendee_mail(email, event_name, event_time, event_url, event_password,
                 print("An exception occurred: {}".format(e))
         if role == "participant":
             temp_obj = MailTemplateDetails.objects.get(cast=cast_obj, role=role)
-            meet_url = CLIENT_DOMAIN_URL + "/{}/?pass={}".format(cast_id, cast_obj.hashed_attendee_password)
+            meet_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_id, cast_obj.hashed_attendee_password)
             calb = icf_file_generator(start_time=dt, event_name=event_name, to_email=email, user_name=email,
                                       meeting_url=meet_url)
             try:
@@ -84,7 +84,7 @@ def attendee_mail(email, event_name, event_time, event_url, event_password,
                 print("An exception occurred: {}".format(e))
         if cast_obj.viewer_mode == True and role == "viewer":
             temp_obj = MailTemplateDetails.objects.get(cast=cast_obj, role=role)
-            meet_url = CLIENT_DOMAIN_URL + "/{}/?pass={}".format(cast_id, cast_obj.hashed_viewer_password)
+            meet_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_id, cast_obj.hashed_viewer_password)
             calb = icf_file_generator(start_time=dt, event_name=event_name, to_email=email, user_name=email,
                                       meeting_url=meet_url)
             try:
