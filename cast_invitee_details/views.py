@@ -141,7 +141,6 @@ class delete_invitee(APIView):
     def delete(self, request):
         cast_id = request.data['cast_id']
         email = request.data['email']
-
         try:
             cast_object = Meeting.objects.get(public_meeting_id=cast_id)
         except ObjectDoesNotExist:
@@ -152,38 +151,35 @@ class delete_invitee(APIView):
         user_id = cast_object.user_id
         curr_user_id = -1
         try:
-            token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
-            curr_user_id = user_info(token)
+            curr_user_id = request.META["USER_ID"]
         except:
             pass
         if curr_user_id == user_id:
             cast_invite_object = CastInviteeDetails.objects.filter(cast=cast_object)
             if cast_invite_object.count() != 0:
-                for i in email:
-                    if not (i is None):
-
-                        
-                        CastInviteeDetails.objects.get(cast=cast_object, email=i).delete()
-                return Response({
+                for i in cast_invite_object:
+                    if i.email == email:
+                        i.delete()
+                        return Response({
                             "status": True,
                             "message": "invitee deleted successfully"
                         })
-
-
-                        
-
-
+                else:
+                    return Response({
+                        "status": False,
+                        "message": "email not found"
+                    }, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({
-                        "status": False,
-                        "message": "no invitee found"
-                    }, status=status.HTTP_400_BAD_REQUEST)
-        
+                    "status": False,
+                    "message": "no invitee found"
+                }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({
-                    "status": False,
-                    "message": "user permission error"
-                    }, status=status.HTTP_400_BAD_REQUEST)
+                "status": False,
+                "message": "user permission error"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 def send_otp(email):
