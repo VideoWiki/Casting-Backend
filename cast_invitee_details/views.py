@@ -151,7 +151,8 @@ class delete_invitee(APIView):
         user_id = cast_object.user_id
         curr_user_id = -1
         try:
-            curr_user_id = request.META["USER_ID"]
+            token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
+            curr_user_id = user_info(token)
         except:
             pass
         if curr_user_id == user_id:
