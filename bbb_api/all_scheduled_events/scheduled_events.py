@@ -21,7 +21,7 @@ class scheduled_meetings(APIView):
             event_creator_id = i.user_id
             # logo = BASE_URL + "/media/" + str(i.logo)
             logo_obj = i.logo
-            if logo_obj == "https://videowikistorage.blob.core.windows.net/room-db-backup/vwlogo.png":
+            if logo_obj == "https://videowikistorage.blob.core.windows.net/room-db-backup/vwlogo.svg":
                 logo = logo_obj
             elif logo_obj == "":
                 logo = ""
