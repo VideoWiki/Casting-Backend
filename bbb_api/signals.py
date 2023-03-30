@@ -47,7 +47,7 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
                 body_view = f'url for Viewer: {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(instance.public_meeting_id, instance.hashed_viewer_password)}'
                 body = body + body_view
             if instance.is_streaming == True:
-                body_spec = f'url for Spectator: {VW_RTMP_URL + "live/{}".format(instance.public_meeting_id)}'
+                body_spec = f'url for Spectator: {CLIENT_DOMAIN_URL + "/live/{}".format(instance.public_meeting_id)}'
                 body = body + body_spec
             MailTemplateDetails.objects.create(cast=instance, role='co-host', body=body, subject=name)
 
@@ -60,7 +60,7 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
                 MailTemplateDetails.objects.create(cast=instance, role='viewer', body=body, subject=name)
             if instance.is_streaming == True:
                 body = f'''You have been invited to join a cast {name}, as a Spectator. The cast will begin at {schedule_time}.
-                url for cast: {VW_RTMP_URL + "live/{}".format(instance.public_meeting_id)}'''
+                url for cast: {CLIENT_DOMAIN_URL + "/live/{}".format(instance.public_meeting_id)}'''
                 MailTemplateDetails.objects.create(cast=instance, role='spectator', body=body, subject=name)
 
         if instance.meeting_type == "private":
@@ -80,7 +80,7 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
 
                 if instance.is_streaming == True:
                     body = f'''You have been invited to join a cast {name}, as a Spectator. The cast will begin at {schedule_time}.
-                                url for cast: {VW_RTMP_URL + "live/{}".format(instance.public_meeting_id)}'''
+                                url for cast: {CLIENT_DOMAIN_URL + "/live/{}".format(instance.public_meeting_id)}'''
                     MailTemplateDetails.objects.create(cast=instance, role='spectator', body=body, subject=name)
             else:
 
@@ -99,7 +99,7 @@ def post_save_prediction(sender, instance, created, update_fields, **kwargs):
 
                 if instance.is_streaming == True:
                     body = f'''You have been invited to join a cast {name}, as a Spectator. The cast will begin at {schedule_time}.
-                                url for cast: {VW_RTMP_URL + "live/{}".format(instance.public_meeting_id)}'''
+                                url for cast: {CLIENT_DOMAIN_URL + "/live/{}".format(instance.public_meeting_id)}'''
                     MailTemplateDetails.objects.create(cast=instance, role='spectator', body=body, subject=name)
 
     elif update_fields:
