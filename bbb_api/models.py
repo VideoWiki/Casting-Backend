@@ -291,7 +291,7 @@ class TemporaryFiles(models.Model):
 
 
 def path_getter(path):
-    if path == "https://videowikistorage.blob.core.windows.net/room-db-backup/vwlogo.png":
+    if path == "https://videowikistorage.blob.core.windows.net/room-db-backup/vwlogo.svg":
         url = path
     else:
         url = BASE_URL + path.url
