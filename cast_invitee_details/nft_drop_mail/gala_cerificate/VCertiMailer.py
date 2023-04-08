@@ -16,7 +16,7 @@ def nftCertiMailer( to_email, nft_drop_url):
             'merge': True,
             'merge_language': 'mailchimp',
             'subject': "Claim GALA Certificate",
-            'tags': ['password-resets'],
+            'tags': ['Claim GALA Certificate'],
             'text': 'Example text content',
             'to': [{'email': to_email,
                     'name': to_email,

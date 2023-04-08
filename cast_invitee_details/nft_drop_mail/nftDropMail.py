@@ -5,7 +5,7 @@ from rest_framework import status
 from ..models import CastInviteeDetails
 from django.core.exceptions import ObjectDoesNotExist
 from library.helper import user_info
-from .nftMailer import nftMailer
+from .nftMailer import nft_drop_mail
 from api.global_variable import CLIENT_DOMAIN_URL
 
 
@@ -31,7 +31,7 @@ class NftDropMail(APIView):
             nft_drop_url = CLIENT_DOMAIN_URL + "/nftdrop/?cast_id={}".format(cast_object.public_meeting_id)
             for i in invitee_obj:
                 if i.nft_mail_sent == False:
-                    nftMailer(to_email=i.email, nft_drop_url=nft_drop_url)
+                    nft_drop_mail(to_email=i.email, subject=f'NFT Drop for {cast_object.event_name}', nft_url=nft_drop_url)
                     i.nft_mail_sent = True
                     i.save()
                 else:

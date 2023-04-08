@@ -20,12 +20,13 @@ def post_save_emailer(sender, instance, created, **kwargs):
         date = dt.date()
         hour = dt.hour
         min = dt.minute
-        schedule_time = str(date) + " at " + str(hour) + ":" + str(min) + " GMT"
+        schedule_time = str(hour) + ":" + str(min)
         send_otp = instance.cast.send_otp
         creator_email = instance.cast.event_creator_email
         creator_name = instance.cast.event_creator_name
         viewer_mode = instance.cast.viewer_mode
         public_otp = instance.cast.public_otp
+        description = instance.cast.description
         if vw_stream == None:
             stream_url = ""
         else:
@@ -46,6 +47,8 @@ def post_save_emailer(sender, instance, created, **kwargs):
                       viewer_mode,
                       public_otp,
                       v_password,
-                      cast_id
+                      cast_id,
+                      date,
+                      description
                       )
 

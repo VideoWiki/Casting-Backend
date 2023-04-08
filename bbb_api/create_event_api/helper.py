@@ -34,52 +34,51 @@ def email_sender(public_meeting_id):
     viewer_mode = cast_obj.viewer_mode
     for i in obj:
         email = i.email
+        print(email)
         role = i.role
+        event_name = cast_obj.event_name
+        subject = f'Reminder for {event_name}'
+        description = cast_obj.description
         if cast_type == "public":
             if role == "co-host":
                 meeting_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_obj.public_meeting_id, cast_obj.hashed_moderator_password)
-                send_remind_mail_part_view( email, email, role, cast_obj.event_name, schedule_time, meeting_url)
+                send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
             if role == "spectator":
-                str_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
-                send_remind_mail_spec( email, email, cast_obj.event_name, schedule_time, str_url)
+                meeting_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
+                send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
             if viewer_mode == False:
                 if role == "participant":
                     meeting_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_obj.public_meeting_id,
                                                                        cast_obj.hashed_attendee_password)
-                    send_remind_mail_part_view( email, email, role, cast_obj.event_name, schedule_time, meeting_url)
+                    send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
             if viewer_mode == True:
                 if role == "viewer":
                     meeting_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_obj.public_meeting_id,
                                                                        cast_obj.hashed_viewer_password)
-                    send_remind_mail_part_view( email, email, role, cast_obj.event_name, schedule_time, meeting_url)
+                    send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
                 if role == "participant":
                     meeting_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_obj.public_meeting_id,
                                                                        cast_obj.hashed_attendee_password)
-                    send_remind_mail_part_view(email, email, role, cast_obj.event_name, schedule_time, meeting_url)
+                    send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
 
         elif cast_type == "private":
             if send_otp == True:
                 if role == "spectator":
-                    str_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
-                    send_remind_mail_spec(email, email, cast_obj.event_name, schedule_time, str_url)
+                    meeting_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
+                    send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
                 else:
-                    print("123")
-                    send_remind_mail_part_view(email, email, role, cast_obj.event_name, schedule_time, meeting_url)
+                    send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
             elif send_otp != True:
-                print("456")
                 if role == "spectator":
-                    str_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
-                    send_remind_mail_spec(email, email, cast_obj.event_name, schedule_time, str_url)
+                    meeting_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
+                    send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
                 else:
                     if role == "viewer":
-                        send_remind_mail2(email, email, role, cast_obj.event_name, schedule_time, meeting_url,
-                                          cast_obj.viewer_password)
+                        send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
                     if role == "co-host":
-                        send_remind_mail2(email, email, role, cast_obj.event_name, schedule_time, meeting_url,
-                                          cast_obj.moderator_password)
+                        send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
                     if role == "participant":
-                        send_remind_mail2(email, email, role, cast_obj.event_name, schedule_time, meeting_url,
-                                          cast_obj.attendee_password)
+                        send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
 
     return "sent"
 
@@ -386,3 +385,51 @@ def mandrill_mailer_func(template_func, to_email, user_name):
     print(result[0]["status"])
     status = result[0]["status"]
     return status
+
+
+mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
+
+def send_remind_mail(to_email, subject, event_name, event_url, event_info):
+    message = {
+        'from_email': 'support@videowiki.pt',
+        'from_name': 'VideoWiki',
+        'to': [{'email': to_email, 'type': 'to'}],
+        'subject': subject,
+        'merge_language': 'mailchimp',
+        'merge_vars': [
+            {
+                'rcpt': to_email,
+                'vars': [
+                    {
+                        'name': 'recipient_name',
+                        'content': to_email
+                    },
+                    {
+                        'name': 'event_name',
+                        'content': event_name
+                    },
+                    {
+                        'name': 'event_url',
+                        'content': event_url
+                    },
+                    {
+                        'name': 'event_info',
+                        'content': event_info
+                    },
+                    {
+                        'name': 'mail',
+                        'content': 'support@videowiki.pt'
+                    }
+                ]
+            }
+        ],
+        'tags': ['VW_Reminder_Mail'],
+        'template_name': 'VW_Reminder_Mail'
+    }
+
+    # Send the message
+    result = mandrill_client.messages.send_template(template_name=message['template_name'], template_content=[], message=message)
+
+    # Print the result
+    print(result)
+    return result

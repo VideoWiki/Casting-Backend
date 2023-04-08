@@ -15,7 +15,7 @@ if development == False:
         'access_token': '3a684ebfdcc34ff69446d583519d5666'
     }
 
-    MANDRILL_API_KEY = "feczsxGoFPR7Kc1Wqdd841Vw"
+    MANDRILL_API_KEY = "'md-Oay7kVe0ZMHb1umALd72dw'"
     PIXABAY_API_KEY = '14852807-36c181b80405fd874ccda74a5f7'
 
 else:
