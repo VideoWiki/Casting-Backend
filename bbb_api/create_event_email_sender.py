@@ -21,6 +21,9 @@ def event_registration_mail(email, event_name, date, time,
 def attendee_mail(email, event_name, event_time, event_url, event_password,
                   co_password, stream_url, role, send_otp, cast_type, dt, creator_nmae,
                   creator_email, viewer_mode, public_otp, viewer_pass, cast_id, date, description):
+    print(email, "lll")
+    if email == None:
+        return "done"
     if cast_type == "public":
         cast_obj = Meeting.objects.get(public_meeting_id=cast_id)
         if role == 'co-host':
@@ -33,6 +36,7 @@ def attendee_mail(email, event_name, event_time, event_url, event_password,
                              date=date, time=event_time, event_url=meet_url, event_info=description)
 
         if cast_obj.viewer_mode == True and role == "viewer":
+
             meet_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_id, cast_obj.hashed_viewer_password)
             send_invite_mail(subject=f'Invitation to {event_name}', to_email=email, event_name=event_name,
                              date=date, time=event_time, event_url=meet_url, event_info=description)
