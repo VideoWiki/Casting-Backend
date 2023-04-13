@@ -12,14 +12,17 @@ from datetime import timedelta
 def post_save_prediction(sender, instance, created, update_fields, **kwargs):
     if created:
         creator_email = instance.event_creator_email
-        name = instance.event_name
-        date = instance.schedule_time.date()
-        hour = instance.schedule_time.hour
-        min = instance.schedule_time.minute
-        schedule_time = str(hour) + ":"+ str(min)
-        pre_reg_form_url = f"{CLIENT_DOMAIN_URL}/event-registration/{instance.public_meeting_id}/"
-        event_registration_mail(str(creator_email), str(name), str(date), str(schedule_time),
-                                pre_reg_form_url)
+        if creator_email == "":
+            pass
+        else:
+            name = instance.event_name
+            date = instance.schedule_time.date()
+            hour = instance.schedule_time.hour
+            min = instance.schedule_time.minute
+            schedule_time = str(hour) + ":"+ str(min)
+            pre_reg_form_url = f"{CLIENT_DOMAIN_URL}/event-registration/{instance.public_meeting_id}/"
+            event_registration_mail(str(creator_email), str(name), str(date), str(schedule_time),
+                                    pre_reg_form_url)
 
 
     elif update_fields:
