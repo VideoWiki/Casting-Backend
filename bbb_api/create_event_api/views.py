@@ -1,3 +1,4 @@
+import os, uuid
 import pytz
 from rest_framework.views import APIView
 from ..models import Meeting, NftDetails, ViewerDetails
@@ -15,6 +16,7 @@ from .start_now_func import start_cast_now
 import json
 import ast
 from django.utils.crypto import get_random_string
+
 
 class create_event(APIView):
     def post(self, request):
@@ -196,7 +198,30 @@ class create_event(APIView):
         # moderators = request.data['invitee_details']
         meeting.primary_color = request.data['primary_color']
         meeting.secondary_color = request.data['secondary_color']
-        meeting.back_image = request.data['back_image']
+
+        if 'back_image' in request.data:
+            back_image = request.data["back_image"]
+            if hasattr(back_image, 'file'):  # Check if the field contains a file object
+                filename = back_image.name
+                extension = os.path.splitext(filename)[1]
+                new_filename = str(uuid.uuid4()) + extension
+                MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+                IMAGE_ROOT = os.path.join(MEDIA_ROOT, 'image')
+
+                if not os.path.exists(IMAGE_ROOT):
+                    os.makedirs(IMAGE_ROOT)
+
+                with open(os.path.join(IMAGE_ROOT, new_filename), 'wb') as f:
+                    f.write(back_image.read())
+
+                image_url = BASE_URL + "/" + os.path.join('media', 'image', new_filename)
+            else:  # Assume that the field contains an image URL
+                image_url = back_image
+        else:
+            # No image or URL provided
+            image_url = ""
+        print(image_url)
+        meeting.back_image = image_url
         meeting.event_tag = request.data['event_tag']
         cover_image = request.data["cover_image"]
         if cover_image != "":

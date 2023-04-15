@@ -83,7 +83,8 @@ class get_details(APIView):
                 "disable_cam": cast_object.disable_cam,
                 "disable_mic": cast_object.disable_mic,
                 "lock_layout": cast_object.lock_layout,
-                "viewer_mode": cast_object.viewer_mode
+                "viewer_mode": cast_object.viewer_mode,
+                "back_image": cast_object.back_image
             }
 
             return Response({"status": True, "details": data})

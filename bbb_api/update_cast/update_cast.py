@@ -5,10 +5,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 import datetime
 from bbb_api.create_event_email_sender import tc
-import pytz, ast
+import pytz, ast, os, uuid
 from api.global_variable import VW_RTMP_URL
 from bbb_api.models import ViewerDetails
 from library.helper import user_info
+from api.global_variable import BASE_URL, BASE_DIR
 
 class update_cast(APIView):
     def patch(self, request):
@@ -55,6 +56,29 @@ class update_cast(APIView):
         disable_mic = request.data["disable_mic"]
         lock_layout = request.data["lock_layout"]
         viewer_mode = request.data["viewer_mode"]
+        if 'back_image' in request.data:
+            back_image = request.data["back_image"]
+            if hasattr(back_image, 'file'):  # Check if the field contains a file object
+                filename = back_image.name
+                extension = os.path.splitext(filename)[1]
+                new_filename = str(uuid.uuid4()) + extension
+                MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+                IMAGE_ROOT = os.path.join(MEDIA_ROOT, 'image')
+
+                if not os.path.exists(IMAGE_ROOT):
+                    os.makedirs(IMAGE_ROOT)
+
+                with open(os.path.join(IMAGE_ROOT, new_filename), 'wb') as f:
+                    f.write(back_image.read())
+
+                image_url = BASE_URL + "/" + os.path.join('media', 'image', new_filename)
+            else:  # Assume that the field contains an image URL
+                image_url = back_image
+        else:
+            # No image or URL provided
+            image_url = ""
+        print(image_url)
+
         user_id = cast_object.user_id
         curr_user_id = -1
         try:
@@ -101,6 +125,7 @@ class update_cast(APIView):
 
             cast_object.logo = logo
             cast_object.cover_image = cover_image
+            cast_object.back_image = image_url
             cast_object.primary_color = primary_color
             cast_object.welcome = welcome_text
             cast_object.banner_text = banner_text
