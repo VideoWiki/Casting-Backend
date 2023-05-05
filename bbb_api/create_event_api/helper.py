@@ -39,6 +39,7 @@ def email_sender(public_meeting_id):
         event_name = cast_obj.event_name
         subject = f'Reminder for {event_name}'
         description = cast_obj.description
+        print(cast_type, "ctttt")
         if cast_type == "public":
             if role == "co-host":
                 meeting_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_obj.public_meeting_id, cast_obj.hashed_moderator_password)
@@ -48,6 +49,7 @@ def email_sender(public_meeting_id):
                 send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
             if viewer_mode == False:
                 if role == "participant":
+                    print("hereeeeermmmmm")
                     meeting_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(cast_obj.public_meeting_id,
                                                                        cast_obj.hashed_attendee_password)
                     send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
