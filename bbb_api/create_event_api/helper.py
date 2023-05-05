@@ -69,17 +69,21 @@ def email_sender(public_meeting_id):
                     meeting_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
                     send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
                 else:
+                    meeting_url = meeting_url + f"?email={to_email}"
                     send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
             elif send_otp != True:
                 if role == "spectator":
                     meeting_url = CLIENT_DOMAIN_URL + "/live/{}".format(cast_obj.public_meeting_id)
                     send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
                 else:
+                    meeting_url = meeting_url + f"?email={to_email}"
                     if role == "viewer":
                         send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
                     if role == "co-host":
+                        meeting_url = meeting_url + f"?email={to_email}"
                         send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
                     if role == "participant":
+                        meeting_url = meeting_url + f"?email={to_email}"
                         send_remind_mail(to_email=email, subject=subject, event_name=event_name, event_url=meeting_url, event_info=description)
 
     return "sent"
