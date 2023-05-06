@@ -31,7 +31,8 @@ class ValidateOtp(APIView):
                     status_code = status.HTTP_200_OK
                     if old.invited == False:
                         if pub_otp == True:
-                            pass
+                            old.joined = True
+                            # pass
                         else:
                             old.joined = True
                         old.save()
