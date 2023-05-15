@@ -51,7 +51,7 @@ urlpatterns = [
     path('get/invitee/details/', get_invitee_details.as_view()),
     path('save/merkel/tree/details/', PostMerkelTreeDetails.as_view()),
     path('get/merkel/tree/details/', FetchMerkelTreeDetails.as_view()),
-    path('get/all/information/', GetCastInformation.as_view()),
+    path('get/cast/information/', GetCastInformation.as_view()),
 ]
 
 
