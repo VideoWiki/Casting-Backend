@@ -1,7 +1,13 @@
+import requests
 from rest_framework.views import APIView
 from bbb_api.models import Meeting
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.status import HTTP_400_BAD_REQUEST
+
+from rest_framework_api_key.models import APIKey
+
+from single_click.models import KeyDetails
 from .models import CastInviteeDetails
 from rest_framework.permissions import AllowAny
 from django.utils.crypto import get_random_string
@@ -10,7 +16,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from library.helper import user_info
 from django.core.signing import Signer
 from rest_framework_api_key.permissions import HasAPIKey
-from api.global_variable import BASE_URL, CLIENT_DOMAIN_URL
+from api.global_variable import BASE_URL, CLIENT_DOMAIN_URL, VERIFY_API_KEY_URL
+
+
 # Create your views here.
 
 
@@ -185,9 +193,18 @@ class delete_invitee(APIView):
 
 
 class GetCastInformation(APIView):
-    permission_classes = [HasAPIKey]
 
     def get(self, request):
+        payload = {'api_key': ''}
+        files = []
+        headers = {}
+        response = requests.request("POST", VERIFY_API_KEY_URL , headers=headers, data=payload, files=files)
+        if response.status_code != 200:
+            return Response({
+                "message": "invalid api key",
+                "status": False
+            }, status=HTTP_400_BAD_REQUEST)
+
         cast_id = request.GET.get("cast_id")
         try:
             cast_object = Meeting.objects.get(public_meeting_id=cast_id)
