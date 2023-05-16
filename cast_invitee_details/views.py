@@ -43,7 +43,7 @@ class add_invitees(APIView):
                                                       email=i["email"].lower(),
                                                       role=i["type"],
                                                       nft_enable=bool_nft_enable,
-                                                      invited= True,
+                                                      invited=True,
                                                       mint='not started'
                                                       )
                     if CastInviteeDetails.objects.filter(cast=obj, email=i["email"].lower()).exists():
@@ -76,10 +76,10 @@ class fetch_details(APIView):
         try:
             cast_object = Meeting.objects.get(public_meeting_id=cast_id)
         except ObjectDoesNotExist:
-           return  Response({
-               "status": False,
-               "message": "cast does not exists"
-           }, status= status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "status": False,
+                "message": "cast does not exists"
+            }, status=status.HTTP_400_BAD_REQUEST)
         user_id = cast_object.user_id
         curr_user_id = -1
         try:
@@ -128,7 +128,7 @@ class fetch_details(APIView):
                 return Response({
                     "status": True,
                     "data": inv_list
-                    })
+                })
             else:
                 return Response({
                     "status": False,
@@ -139,8 +139,7 @@ class fetch_details(APIView):
             return Response({
                 "status": False,
                 "message": "user permission error"
-            }, status= status.HTTP_400_BAD_REQUEST)
-
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class delete_invitee(APIView):
@@ -150,10 +149,10 @@ class delete_invitee(APIView):
         try:
             cast_object = Meeting.objects.get(public_meeting_id=cast_id)
         except ObjectDoesNotExist:
-           return  Response({
-               "status": False,
-               "message": "cast does not exists"
-           }, status= status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "status": False,
+                "message": "cast does not exists"
+            }, status=status.HTTP_400_BAD_REQUEST)
         user_id = cast_object.user_id
         curr_user_id = -1
         try:
@@ -191,10 +190,11 @@ class delete_invitee(APIView):
 class GetCastInformation(APIView):
 
     def get(self, request):
-        payload = {'api_key': ''}
+        api_key = request.data["apikey"]
+        payload = {'api_key': api_key}
         files = []
         headers = {}
-        response = requests.request("POST", VERIFY_API_KEY_URL , headers=headers, data=payload, files=files)
+        response = requests.request("POST", VERIFY_API_KEY_URL, headers=headers, data=payload, files=files)
         if response.status_code != 200:
             return Response({
                 "message": "invalid api key",
@@ -326,13 +326,3 @@ def send_otp(email):
         return key
     else:
         return False
-
-
-
-
-
-
-
-
-
-
