@@ -5,9 +5,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
-from rest_framework_api_key.models import APIKey
-
-from single_click.models import KeyDetails
 from .models import CastInviteeDetails
 from rest_framework.permissions import AllowAny
 from django.utils.crypto import get_random_string
@@ -15,7 +12,6 @@ from .helper import send_otp_details
 from django.core.exceptions import ObjectDoesNotExist
 from library.helper import user_info
 from django.core.signing import Signer
-from rest_framework_api_key.permissions import HasAPIKey
 from api.global_variable import BASE_URL, CLIENT_DOMAIN_URL, VERIFY_API_KEY_URL
 
 
