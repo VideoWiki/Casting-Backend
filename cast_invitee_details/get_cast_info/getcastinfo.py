@@ -12,7 +12,7 @@ from api.global_variable import BASE_URL, CLIENT_DOMAIN_URL, VERIFY_API_KEY_URL
 class GetCastInformation(APIView):
 
     def get(self, request):
-        api_key = request.data.get('apikey')
+        api_key = request.GET.get('apikey')
         print(api_key, "apikey")
         payload = {'api_key': str(api_key)}
         files = []
