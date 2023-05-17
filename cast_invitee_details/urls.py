@@ -1,4 +1,6 @@
 from django.urls import path
+
+from .get_cast_info.getcastinfo import GetCastInformation
 from .views import add_invitees, \
     fetch_details, \
     delete_invitee
@@ -50,8 +52,8 @@ urlpatterns = [
     path('event/post/vc/details/', postNftMail.as_view()),
     path('get/invitee/details/', get_invitee_details.as_view()),
     path('save/merkel/tree/details/', PostMerkelTreeDetails.as_view()),
-    path('get/merkel/tree/details/', FetchMerkelTreeDetails.as_view())
-
+    path('get/merkel/tree/details/', FetchMerkelTreeDetails.as_view()),
+    path('get/cast/information/', GetCastInformation.as_view()),
 ]
 
 

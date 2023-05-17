@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from bbb_api.models import Meeting
 from rest_framework.response import Response
 from rest_framework import status
+
 from .models import CastInviteeDetails
 from rest_framework.permissions import AllowAny
 from django.utils.crypto import get_random_string
@@ -9,6 +10,8 @@ from .helper import send_otp_details
 from django.core.exceptions import ObjectDoesNotExist
 from library.helper import user_info
 from django.core.signing import Signer
+
+
 # Create your views here.
 
 
@@ -37,7 +40,7 @@ class add_invitees(APIView):
                                                       email=i["email"].lower(),
                                                       role=i["type"],
                                                       nft_enable=bool_nft_enable,
-                                                      invited= True,
+                                                      invited=True,
                                                       mint='not started'
                                                       )
                     if CastInviteeDetails.objects.filter(cast=obj, email=i["email"].lower()).exists():
@@ -70,10 +73,10 @@ class fetch_details(APIView):
         try:
             cast_object = Meeting.objects.get(public_meeting_id=cast_id)
         except ObjectDoesNotExist:
-           return  Response({
-               "status": False,
-               "message": "cast does not exists"
-           }, status= status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "status": False,
+                "message": "cast does not exists"
+            }, status=status.HTTP_400_BAD_REQUEST)
         user_id = cast_object.user_id
         curr_user_id = -1
         try:
@@ -122,7 +125,7 @@ class fetch_details(APIView):
                 return Response({
                     "status": True,
                     "data": inv_list
-                    })
+                })
             else:
                 return Response({
                     "status": False,
@@ -133,8 +136,7 @@ class fetch_details(APIView):
             return Response({
                 "status": False,
                 "message": "user permission error"
-            }, status= status.HTTP_400_BAD_REQUEST)
-
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class delete_invitee(APIView):
@@ -144,10 +146,10 @@ class delete_invitee(APIView):
         try:
             cast_object = Meeting.objects.get(public_meeting_id=cast_id)
         except ObjectDoesNotExist:
-           return  Response({
-               "status": False,
-               "message": "cast does not exists"
-           }, status= status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "status": False,
+                "message": "cast does not exists"
+            }, status=status.HTTP_400_BAD_REQUEST)
         user_id = cast_object.user_id
         curr_user_id = -1
         try:
@@ -183,19 +185,10 @@ class delete_invitee(APIView):
 
 
 
+
 def send_otp(email):
     if email:
         key = get_random_string(6, '0123456789')
         return key
     else:
         return False
-
-
-
-
-
-
-
-
-
-
