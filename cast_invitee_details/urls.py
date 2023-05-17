@@ -1,7 +1,9 @@
 from django.urls import path
+
+from .get_cast_info.getcastinfo import GetCastInformation
 from .views import add_invitees, \
     fetch_details, \
-    delete_invitee, GetCastInformation
+    delete_invitee
 from .add_wallet_address.addMetamaskAddress import AddUser
 from .email_checker.email_checker import CheckEmail
 from .otp.send_otp import SendOtp
