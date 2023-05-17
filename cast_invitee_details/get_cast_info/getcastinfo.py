@@ -13,10 +13,12 @@ class GetCastInformation(APIView):
 
     def get(self, request):
         api_key = request.data.get('apikey')
+        print(api_key, "apikey")
         payload = {'api_key': str(api_key)}
         files = []
         headers = {}
         response = requests.post(VERIFY_API_KEY_URL, headers=headers, data=payload, files=files)
+        print(response.text, response.status_code, "lll")
         if response.status_code != requests.codes.ok:
             return Response({
                 "message": "Invalid Api Key",
