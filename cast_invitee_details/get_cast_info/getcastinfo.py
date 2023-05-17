@@ -13,7 +13,7 @@ class GetCastInformation(APIView):
 
     def get(self, request):
         api_key = request.data.get('apikey')
-        payload = {'api_key': api_key}
+        payload = {'api_key': str(api_key)}
         files = []
         headers = {}
         response = requests.post(VERIFY_API_KEY_URL, headers=headers, data=payload, files=files)
