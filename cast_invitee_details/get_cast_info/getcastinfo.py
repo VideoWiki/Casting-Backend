@@ -86,7 +86,6 @@ class GetCastInformation(APIView):
                 if cast_object.meeting_type == 'public':
                     join_data = {
                         "event_name": cast_object.event_name,
-                        "event_creator_name": cast_object.event_name,
                         "public_meeting_id": cast_object.public_meeting_id,
                         "date": cast_object.schedule_time.date(),
                         "creator_url": {
@@ -110,7 +109,6 @@ class GetCastInformation(APIView):
                     for i in cast_invite_object:
                         join_data = {
                             "event_name": cast_object.event_name,
-                            "event_creator_name": cast_object.event_name,
                             "public_meeting_id": cast_object.public_meeting_id,
                             "date": cast_object.schedule_time.date(),
                         }
@@ -127,6 +125,7 @@ class GetCastInformation(APIView):
                 print("Join urls", join_urls)
                 data = {
                     "event_name": cast_object.event_name,
+                    "event_creator_name": cast_object.event_creator_name,
                     "description": cast_object.description,
                     "cast_type": cast_object.meeting_type,
                     "collect_attendee_email": cast_object.public_otp,
@@ -168,6 +167,7 @@ class GetCastInformation(APIView):
             else:
                 data = {
                     "event_name": cast_object.event_name,
+                    "event_creator_name": cast_object.event_creator_name,
                     "description": cast_object.description,
                     "cast_type": cast_object.meeting_type,
                     "invitee_list": inv_list,
