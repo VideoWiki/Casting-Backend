@@ -171,6 +171,15 @@ class Meeting(models.Model):
     def start(self):
         call = 'create'
         voicebridge = 70000 + random.randint(0, 9999)
+        meeting_url =  CLIENT_DOMAIN_URL + "/e/{}/".format(self.public_meeting_id)
+        if self.meeting_type == 'private':
+            moderator_url = meeting_url + f"?email=your-email"
+            participant_url = meeting_url + f"?email=your-email"
+        else:
+            participant_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(self.public_meeting_id,
+                                                                          self.hashed_attendee_password)
+            moderator_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(self.public_meeting_id,
+                                                                        self.hashed_moderator_password)
         tuple_1 = (
             ('name', self.event_name),
             ('meetingID', self.private_meeting_id),
@@ -205,7 +214,10 @@ class Meeting(models.Model):
             ('meta_primary-color', self.primary_color),
             ('meta_secondary-color', self.secondary_color),
             ('meta_back-image', self.back_image),
-            ('meta_gl-listed', False)
+            ('meta_gl-listed', False),
+            ('meta_participant-url', participant_url),
+            ('meta_moderator-url', moderator_url),
+            ('meta_logout-url', self.logout_url)
         )
         tuple_2 = ('bannerText', self.banner_text)
         if self.banner_text == None:
