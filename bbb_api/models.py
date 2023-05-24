@@ -217,7 +217,7 @@ class Meeting(models.Model):
             ('meta_gl-listed', False),
             ('meta_participantUrl', participant_url),
             ('meta_pmoderatorUrl', moderator_url),
-            ('meta_participantUrll', self.logout_url)
+            ('meta_participantUr', self.logout_url)
         )
         tuple_2 = ('bannerText', self.banner_text)
         if self.banner_text == None:
