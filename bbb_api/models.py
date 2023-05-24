@@ -5,7 +5,7 @@ from hashlib import sha1
 import xml.etree.ElementTree as ET
 import random
 from api import settings
-from api.global_variable import BASE_DIR, BASE_URL
+from api.global_variable import BASE_DIR, BASE_URL, CLIENT_DOMAIN_URL
 from django.core.validators import MaxValueValidator, MinValueValidator
 import django.utils.timezone
 from api.global_variable import SALT, BBB_API_URL
