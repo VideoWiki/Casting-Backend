@@ -172,7 +172,10 @@ class Meeting(models.Model):
         call = 'create'
         voicebridge = 70000 + random.randint(0, 9999)
         meeting_url =  CLIENT_DOMAIN_URL + "/e/{}/".format(self.public_meeting_id)
-        if self.meeting_type == 'private':
+        if self.user_id == 0:
+            moderator_url = {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(self.public_meeting_id,self.hashed_moderator_password)}
+            participant_url = {CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(self.public_meeting_id,self.hashed_attendee_password)}
+        elif self.meeting_type == 'private':
             moderator_url = meeting_url + f"?email=your-email"
             participant_url = meeting_url + f"?email=your-email"
         else:
@@ -180,6 +183,15 @@ class Meeting(models.Model):
                                                                           self.hashed_attendee_password)
             moderator_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(self.public_meeting_id,
                                                                         self.hashed_moderator_password)
+
+        # if self.meeting_type == 'private':
+        #     moderator_url = meeting_url + f"?email=your-email"
+        #     participant_url = meeting_url + f"?email=your-email"
+        # else:
+        #     participant_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(self.public_meeting_id,
+        #                                                                   self.hashed_attendee_password)
+        #     moderator_url = CLIENT_DOMAIN_URL + "/e/{}/?pass={}".format(self.public_meeting_id,
+        #                                                                 self.hashed_moderator_password)
         tuple_1 = (
             ('name', self.event_name),
             ('meetingID', self.private_meeting_id),
