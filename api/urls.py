@@ -8,5 +8,7 @@ urlpatterns = [
     path('api/', include('custom_background.urls')),
     path('api/', include('class_details.urls')),
     path('api/', include('single_click.urls')),
-    path('api/', include(('add_text_to_image.urls')))
+    path('api/', include('add_text_to_image.urls')),
+    path('api/', include('td_feedback.urls')),
+
 ]
