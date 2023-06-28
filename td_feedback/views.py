@@ -39,3 +39,18 @@ class FeedbackAPIView(APIView):
             })
 
         return Response(serialized_feedbacks, status=status.HTTP_200_OK)
+
+    def delete(self, request):
+        room_id = request.data.get('room_id')
+
+        if not room_id:
+            return Response({'error': 'Missing room_id parameter'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the feedback exists for the given room_id
+        feedbacks = Feedback.objects.filter(room_id=room_id)
+        if not feedbacks.exists():
+            return Response({'error': 'No feedback found for this room_id'}, status=status.HTTP_404_NOT_FOUND)
+
+        feedbacks.delete()
+
+        return Response({'message': 'Feedback deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
