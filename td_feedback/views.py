@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from .models import Feedback
 from rest_framework.response import Response
 from rest_framework import status
+from datetime import datetime, timedelta
+
 
 class FeedbackAPIView(APIView):
     def post(self, request):
@@ -37,6 +39,10 @@ class FeedbackAPIView(APIView):
                 'feedback_text': feedback.feedback_text,
                 'created_at': feedback.created_at
             })
+
+        two_days_ago = datetime.now() - timedelta(days=1)
+        old_feedbacks = Feedback.objects.filter(created_at__lt=two_days_ago)
+        old_feedbacks.delete()
 
         return Response(serialized_feedbacks, status=status.HTTP_200_OK)
 
