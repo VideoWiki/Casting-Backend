@@ -6,6 +6,6 @@ from django.contrib import admin
 class FeedbackAdmin(admin.ModelAdmin):
     list_display = ('id', )
 
-@admin.register(Feedback)
+@admin.register(UserCount)
 class UserCountAdmin(admin.ModelAdmin):
     list_display = ('id', )
