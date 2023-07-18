@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'single_click',
     'rest_framework_api_key',
     'add_text_to_image',
-    'td_feedback'
+    'td_feedback',
+    'rest_framework'
 
 ]
 

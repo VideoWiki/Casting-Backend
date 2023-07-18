@@ -1,4 +1,16 @@
+from dotenv import load_dotenv
+load_dotenv()
 import os
+
+access_token = os.getenv("access_token")
+m_api_key = os.getenv("m_api_key")
+p_api_key = os.getenv("p_api_key")
+access_token2 = os.getenv("access_token2")
+m_api_key2 = os.getenv("m_api_key2")
+aws_access_key_id = os.getenv("aws_access_key_id")
+aws_secret_access_key = os.getenv("aws_secret_access_keyaccess_token")
+
+
 development = True
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # BASE_URL = "http://api.cast.video.wiki"
@@ -12,11 +24,11 @@ if development == False:
     }
 
     ROLLBAR_ACCESS = {
-        'access_token': '3a684ebfdcc34ff69446d583519d5666'
+        'access_token': access_token
     }
 
-    MANDRILL_API_KEY = "'md-Oay7kVe0ZMHb1umALd72dw'"
-    PIXABAY_API_KEY = '14852807-36c181b80405fd874ccda74a5f7'
+    MANDRILL_API_KEY = m_api_key
+    PIXABAY_API_KEY = p_api_key
 
 else:
     Q_C = {
@@ -51,15 +63,15 @@ else:
         }
 
     ROLLBAR_ACCESS  = {
-        'access_token': '0dc5164901214f248c1aa3a338562d44',
+        'access_token': access_token2,
         'environment': 'development' if development else 'production',
         'root': BASE_DIR,
     }
 
-    MANDRILL_API_KEY = "feczsxGoFPR7Kc1Wq841Vw"
+    MANDRILL_API_KEY = m_api_key2
 
-AWS_ACCESS_KEY_ID = 'AKIAVYPW7ED4TK47VUNP'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = aws_access_key_id
+AWS_SECRET_ACCESS_KEY = aws_secret_access_key
 AWS_STORAGE_BUCKET_NAME = 'video.wiki'
 AWS_LOCATION = 'us-east-2'
 AWS_BASE_URL = 'https://s3.us-east-2.amazonaws.com/video.wiki/media/cover_images/'
