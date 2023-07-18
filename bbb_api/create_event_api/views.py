@@ -37,27 +37,27 @@ class create_event(APIView):
         if attendee_password == '':
             random_password = generate_random_key()
             meeting.attendee_password = random_password
-            meeting.hashed_attendee_password = get_random_string()
+            meeting.hashed_attendee_password = get_random_string(20)
         else:
             meeting.attendee_password = attendee_password
-            meeting.hashed_attendee_password = get_random_string()
+            meeting.hashed_attendee_password = get_random_string(20)
         mod_password = request.data['moderator_password']
 
         if mod_password == '':
             random_password = generate_random_key()
             meeting.moderator_password = random_password
-            meeting.hashed_moderator_password = get_random_string()
+            meeting.hashed_moderator_password = get_random_string(20)
         else:
             meeting.moderator_password = mod_password
-            meeting.hashed_moderator_password = get_random_string()
+            meeting.hashed_moderator_password = get_random_string(20)
         viewer_password = request.data["viewer_password"]
         if viewer_password == '':
             random_password = generate_random_key()
             meeting.viewer_password = random_password
-            meeting.hashed_viewer_password = get_random_string()
+            meeting.hashed_viewer_password = get_random_string(20)
         else:
             meeting.viewer_password = viewer_password
-            meeting.hashed_viewer_password = get_random_string()
+            meeting.hashed_viewer_password = get_random_string(20)
         mode_viewer = request.data["viewer_mode"]
         if mode_viewer == "True":
             mode_viewer = True

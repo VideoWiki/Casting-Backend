@@ -1,0 +1,12 @@
+sudo curl -O https://calligraphic.net/d/20537/ikaros_regular.ttf.zip
+unzip ikaros_regular.ttf.zip
+sudo apt install unzip
+unzip ikaros_regular.ttf.zip
+sudo unzip ikaros_regular.ttf.zip
+ls
+sudo rm -r ikaros_regular.ttf.zip
+ls
+sudo cp Ikaros-Regular.ttf ~/../../usr/share/fonts/truetype/
+fc-list
+sudo apt install fontconfig
+fc-list

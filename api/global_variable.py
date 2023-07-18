@@ -1,10 +1,12 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
 development = True
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # BASE_URL = "http://api.cast.video.wiki"
 if development == False:
     Q_C = {'orm': 'default', 'sync': True}
-    BASE_URL = 'http://localhost:8000/'
+    BASE_URL = os.getenv("BASE_URL")
 
     DATABASE = {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -12,11 +14,11 @@ if development == False:
     }
 
     ROLLBAR_ACCESS = {
-        'access_token': '3a684ebfdcc34ff69446d583519d5666'
+        'access_token': os.getenv("access_token")
     }
 
-    MANDRILL_API_KEY = "'md-Oay7kVe0ZMHb1umALd72dw'"
-    PIXABAY_API_KEY = '14852807-36c181b80405fd874ccda74a5f7'
+    MANDRILL_API_KEY = os.getenv("MANDRILL_API_KEY")
+    PIXABAY_API_KEY = os.getenv("PIXABAY_API_KEY")
 
 else:
     Q_C = {
@@ -36,7 +38,7 @@ else:
             'db': 0, },
         'error_reporter': {
             'rollbar': {
-                'access_token': '0dc5164901214f248c1aa3a338562d44',
+                'access_token': os.getenv("access_token2"),
                 'environment': 'Django-Q'
             }
         }
@@ -51,15 +53,15 @@ else:
         }
 
     ROLLBAR_ACCESS  = {
-        'access_token': '0dc5164901214f248c1aa3a338562d44',
+        'access_token': os.getenv("access_token2"),
         'environment': 'development' if development else 'production',
         'root': BASE_DIR,
     }
 
-    MANDRILL_API_KEY = "feczsxGoFPR7Kc1Wq841Vw"
+    MANDRILL_API_KEY = os.getenv("MANDRILL_API_KEY2")
 
-AWS_ACCESS_KEY_ID = 'AKIAVYPW7ED4TK47VUNP'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = 'video.wiki'
 AWS_LOCATION = 'us-east-2'
 AWS_BASE_URL = 'https://s3.us-east-2.amazonaws.com/video.wiki/media/cover_images/'
@@ -73,5 +75,5 @@ TYPEFORM_URL_PRE_REG = "https://gtbrdd.typeform.com/to/xQ5sUFNz#event_name="
 # BBB_API_URL = "https://class.video.wiki/bigbluebutton/"
 # SALT = "Mxa621WXrztimJ9swYh38ZORHPyVBN0prSjlN6ftWI"
 BBB_API_URL = "https://room.video.wiki/bigbluebutton/"
-SALT = "ij70A1rWDGrdf8TdGuIocfaVJShNg7cvnxgxsthJ0"
+SALT = os.getenv("SALT")
 VERIFY_API_KEY_URL = "https://api.video.wiki/api/verify/key/"

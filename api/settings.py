@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from .global_variable import DATABASE,Q_C,BASE_DIR,ROLLBAR_ACCESS
@@ -19,7 +21,7 @@ from .global_variable import DATABASE,Q_C,BASE_DIR,ROLLBAR_ACCESS
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%eofe@gp@9wnnfc*9jzihbjkf-xd$^$2p_oxl6lnwvg8mwp1##'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -44,9 +46,11 @@ INSTALLED_APPS = [
     'library',
     'class_details',
     'single_click',
+    'rest_framework',
     'rest_framework_api_key',
     'add_text_to_image',
     'td_feedback'
+    
 
 ]
 
@@ -80,7 +84,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'api.wsgi.application'
+WSGI_APPLICATION = os.getenv("WSGI_APPLICATION")
 
 
 # Database
